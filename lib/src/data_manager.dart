@@ -58,8 +58,10 @@ class DataManager {
           saveIncludedList(includeSegment.list!);
         }
       }
+      DataManager().setWidgetActivity(widget!.data!.distributionInfo!.isWidgetActive!);
+      DataManager().setCompanyId(widget.data!.distributionInfo!.companyId!);
 
-      _callbacks.onWidgetSuccess(widget, isSurveyInitialize);
+
     }, onError: (error) {
       if (error is DioException) {}
     });

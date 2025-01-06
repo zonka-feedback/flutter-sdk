@@ -199,7 +199,7 @@ class ZFSurvey implements ApiResponseCallbacks {
               await _getZfSurveyUrl();
               if ( DataManager().getContactId().isEmpty) {
                   if (DataManager().getExternalVisitorId().isEmpty) {
-                      // DataManager().createContact(_survey.getSurveyToken(), false);
+
                   } else {
                       DataManager().hitSurveyActiveApi(_survey.getSurveyToken(), true);
                   }
@@ -212,10 +212,10 @@ class ZFSurvey implements ApiResponseCallbacks {
           bool widgetActive = DataManager().isWidgetActive();
           String openUrl =  _url + Constant.EMBED_URL;
           if (widgetActive) {
-              // bool  segmentAllowed = checkSegmenting();
-              // if (segmentAllowed) {
-                 await ZFSurveyDialog.show(context: _context,surveyUrl: openUrl);
-              // }
+              bool  segmentAllowed = checkSegmenting();
+              if (segmentAllowed) {
+                 await ZFSurveyDialog.show(context: _context , surveyUrl: openUrl);
+              }
           }
   }
 
@@ -231,22 +231,17 @@ class ZFSurvey implements ApiResponseCallbacks {
       case AppLifecycleState.resumed:
         SessionService().sessionStarted();
         // SessionService().sessionListPrint();
-      // App is visible and in the foreground
-
+        // App is visible and in the foreground
         // Perform actions like resuming tasks, fetching data, or sending analytics
         break;
 
-      case AppLifecycleState.inactive:
-      // App is inactive (e.g., a phone call or app switcher is open)
+     case AppLifecycleState.inactive:
+        // App is inactive (e.g., a phone call or app switcher is open)
         // Perform actions like pausing animations or saving unsaved work
         break;
 
       case AppLifecycleState.paused:
         SessionService().sessionEnded();
-        // SessionService().sessionListPrint();
-
-
-        // Save data, release resources, or pause background tasks
         break;
 
       case AppLifecycleState.detached:
@@ -271,36 +266,18 @@ class ZFSurvey implements ApiResponseCallbacks {
     }
   }
 
-  @override
-  void onSessionUpdateSuccess(List<String> idList) {
-  }
 
-  @override
-  void onWidgetSuccess(WidgetResponse ? widget, bool isSurveyInitialize) {
-    DataManager().setWidgetActivity(widget!.data!.distributionInfo!.isWidgetActive!);
-    DataManager().setCompanyId(widget.data!.distributionInfo!.companyId!);
-   
-     if (widget.data!.distributionInfo!.isWidgetActive!) {
-
-            if (isSurveyInitialize) {
-                bool segmentAllowed = checkSegmenting();
-                if (segmentAllowed) {
-                 startSurvey();
-              }
-            }
-        }
-  }
 
 
   void clear() {
   // Clear preferences
    DataManager().clearPreference();
-
   // Save updated data
    DataManager().saveFirstSeen();
    DataManager().saveCookieId();
    Hive.deleteFromDisk();
 
 }
+
 
 }
