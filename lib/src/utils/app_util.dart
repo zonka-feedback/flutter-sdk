@@ -2,10 +2,8 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/widgets.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:intl/intl.dart';
-
 import '../../zonka_sdk.dart';
 import '../constant.dart';
 
@@ -29,8 +27,7 @@ class AppUtils {
 
   /// Get Device Serial Number
   Future<String?> getDeviceSerial() async {
-    AndroidDeviceInfo value = await DeviceInfoPlugin().androidInfo;
-    value.serialNumber;
+
     var serialInfo = await _zonkaSdkPlugin.getDeviceSerial();
     return serialInfo;
   }
@@ -58,7 +55,7 @@ class AppUtils {
         }
       }
     } catch (e) {
-      print("Error fetching IP Address: $e");
+          rethrow;
     }
     return "N/A";
   }
@@ -84,7 +81,7 @@ class AppUtils {
   /// Check if Network is Connected
   Future<bool> isNetworkConnected() async {
     var connectivityResult = await Connectivity().checkConnectivity();
-    return connectivityResult != ConnectivityResult.none;
+    return connectivityResult .first != ConnectivityResult.none;
   }
 
   /// Calculate Time Difference in Seconds
@@ -136,7 +133,7 @@ String timeStampToDate(int timeStamp, String format) {
     // Return UTC time in milliseconds since epoch
     return utcDateTime.millisecondsSinceEpoch;
   } catch (e) {
-    print("Error parsing date: $e");
+
     return -1; // Return an error value
   }
 }
@@ -148,9 +145,9 @@ String timeStampToDate(int timeStamp, String format) {
       Constant.DEVICE_RESOLUTION: getDeviceResolution(context),
       Constant.DEVICE_SERIAL: await getDeviceSerial(),
       Constant.GET_NETWORK: await getNetworkType(),
-      Constant.DEVICE_NAME: Platform.operatingSystem,
-      Constant.DEVICE_MODEL: await getDeviceId(),
-      Constant.DEVICE_BRAND: Platform.localHostname,
+      Constant.DEVICE_NAME: await _zonkaSdkPlugin.getDeviceName(),
+      Constant.DEVICE_MODEL: await _zonkaSdkPlugin.getModelName(),
+      Constant.DEVICE_BRAND:  await _zonkaSdkPlugin.getBrandName(),
       Constant.TIME_ZONE: DateTime.now().timeZoneName,
       Constant.DEVICE_TYPE: isTablet(context) ? "Tablet" : "Mobile",
       Constant.DEVICE_OS: Constant.ANDROID,

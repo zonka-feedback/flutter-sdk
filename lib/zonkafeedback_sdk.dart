@@ -236,7 +236,7 @@ class ZFSurvey implements ApiResponseCallbacks {
     switch (state) {
       case AppLifecycleState.resumed:
         SessionService().sessionStarted();
-        // SessionService().sessionListPrint();
+        SessionService().sessionListPrint();
         // App is visible and in the foreground
         // Perform actions like resuming tasks, fetching data, or sending analytics
         break;
@@ -248,10 +248,12 @@ class ZFSurvey implements ApiResponseCallbacks {
 
       case AppLifecycleState.paused:
         SessionService().sessionEnded();
+        SessionService().sessionListPrint();
         break;
 
       case AppLifecycleState.detached:
         SessionService().sessionEnded();
+        SessionService().syncSessionServer(_survey.getSurveyToken());
 
         // Perform cleanup actions like closing database connections or saving state
         break;

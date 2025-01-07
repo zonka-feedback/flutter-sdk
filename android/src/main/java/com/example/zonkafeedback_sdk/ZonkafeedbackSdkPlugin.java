@@ -10,7 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.provider.Settings;
-
+import android.Manifest;
 
 import androidx.annotation.NonNull;
 
@@ -48,12 +48,12 @@ public class ZonkafeedbackSdkPlugin implements FlutterPlugin, MethodCallHandler 
     }
 
     else if (call.method.equals("getDeviceSerial")) {
-      String versionCode = getDeviceSerial();
+      String versionCode = getDeviceSerial(context);
       result.success(versionCode);
     }
 
     else if (call.method.equals("getDeviceName")) {
-      String versionCode = getDeviceSerial();
+      String versionCode = getDeviceSerial(context);
       result.success(versionCode);
     }
     else if(call.method.equals("getScreenName")){
@@ -116,12 +116,20 @@ public class ZonkafeedbackSdkPlugin implements FlutterPlugin, MethodCallHandler 
     return screenName;
   }
 
-  public String getDeviceSerial() {
-    final String Serial_No = Build.SERIAL;
-    if (Serial_No != null) {
-      return Serial_No;
+  public static String getDeviceSerial(Context context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      // Starting from Android 10, Build.SERIAL is restricted.
+      return "Unavailable (Restricted on Android 10+)";
+    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      // For Android 8 (Oreo) and Android 9 (Pie)
+      if (context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+        return Build.getSerial();
+      } else {
+        return "Permission required (READ_PHONE_STATE)";
+      }
     } else {
-      return " ";
+      // For devices running Android 7.1 (Nougat) and below
+      return Build.SERIAL != null ? Build.SERIAL : "Not available";
     }
   }
 

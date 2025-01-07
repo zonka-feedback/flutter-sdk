@@ -1,4 +1,3 @@
-
 import '../widget_response/data.dart';
 
 class WidgetResponse {

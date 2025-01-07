@@ -51,6 +51,12 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey> with WidgetsB
       context: context,
     );
   }
+  
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    ZFSurvey().sendAppLifecycleState(state);
+    super.didChangeAppLifecycleState(state);
+  }
 }
 ```
 

@@ -32,10 +32,10 @@ class SessionService {
         sessions.endTime = endTime;
         box.put(lastKey, sessions);
       } else {
-        print("No session found to end.");
+
       }
     } else {
-      print("Session list is empty.");
+
     }
   }
 
@@ -64,10 +64,14 @@ class SessionService {
       await DataManager().updateSessionToServer(token, sessions);
       box.clear();
     } else {
-      print("No sessions available.");
+
     }
   }
 
+  Future<void> clearSession() async {
+    var box = await Hive.openBox('registerSession');
+    box.clear();
+  }
 
 
 }

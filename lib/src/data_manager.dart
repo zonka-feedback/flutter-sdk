@@ -47,12 +47,13 @@ class DataManager {
       if (widget?.data?.distributionInfo?.embedSettings != null) {
         ExcludeSegment? excludeSegment = widget?.data?.distributionInfo?.embedSettings?.excludeSegment;
         IncludeSegment? includeSegment = widget?.data?.distributionInfo?.embedSettings?.includeSegment;
+
+        saveExcludeType(excludeSegment?.type??"");
+        saveIncludeType(includeSegment?.type??"");
         if (excludeSegment!.list!.isNotEmpty) {
           saveExcludedList(excludeSegment.list!);
-          saveExcludeType(excludeSegment.type!);
         } else if (includeSegment!.list!.isNotEmpty) {
           saveIncludedList(includeSegment.list!);
-          saveIncludeType(includeSegment.type!);
         } else {
           saveExcludedList(excludeSegment.list!);
           saveIncludedList(includeSegment.list!);
@@ -67,84 +68,6 @@ class DataManager {
     });
   }
 
-  // void createContact(String token, bool isContactCreated) async {
-  //   // Initialize a hash map for contact data
-  //   Map<String, dynamic> hashMap = {
-  //     Constant.COOKIE_ID: getCookieId(),
-  //     Constant.FIRST_SEEN: getFirstSeen(),
-  //     Constant.REQUEST_TYPE: Constant.ANDROID,
-  //     Constant.LAST_SEEN: AppUtils.instance.getCurrentTime(
-  //       DateTime.now().millisecondsSinceEpoch,
-  //       Constant.DATE_FORMAT,
-  //     ),
-  //     Constant.IP_ADDRESS: await AppUtils.instance.getLocalIpAddress(),
-  //   };
-  //   print("getcontactid ${getContactId().isNotEmpty}");
-  //   // Add conditional values to the map
-  //   if (getContactId().isNotEmpty) {
-  //     hashMap[Constant.CONTACT_ID] = getContactId();
-  //   } else if (getExternalVisitorId().isNotEmpty) {
-  //     hashMap[Constant.EXTERNAL_VISITOR_ID] = getExternalVisitorId();
-  //   }
-  //
-  //   if (getEmailId().isNotEmpty) {
-  //     hashMap[Constant.EMAIL_ID] = getEmailId();
-  //   }
-  //
-  //   if (getContactName().isNotEmpty) {
-  //     hashMap[Constant.CONTACT_NAME] = getContactName();
-  //   }
-  //
-  //   if (getMobileNo().isNotEmpty) {
-  //     hashMap[Constant.MOBILE_NO] = getMobileNo();
-  //   }
-  //
-  //   if (getUniqueId().isNotEmpty) {
-  //     hashMap[Constant.UNIQUE_ID] = getUniqueId();
-  //   }
-  //
-  //   // Add device-specific attributes to the map
-  //   hashMap.addAll({
-  //     Constant.UNIQUE_REF_CODE: token,
-  //     Constant.JOB_TYPE: "sdktd",
-  //     Constant.COMPANY_ID: DataManager().getCompanyID(),
-  //     Constant.CONTACT_DEVICE_OS: Constant.ANDROID,
-  //     Constant.CONTACT_DEVICE_NAME: await _zonkaSdkPlugin.getModelName(),
-  //     Constant.CONTACT_DEVICE_MODEL: await _zonkaSdkPlugin.getModelName(),
-  //     Constant.CONTACT_DEVICE_BRAND: await _zonkaSdkPlugin.getBrandName(),
-  //     Constant.CONTACT_DEVICE_OS_VERSION: await _zonkaSdkPlugin.getPlatformVersion(),
-  //     Constant.CONTACT_DEVICE: _zonkaSdkPlugin.getIsTablet().toString(),
-  //   });
-  //
-  //   // Call API to create contact
-  //   try {
-  //     ContactResponse contactResponse = await ApiManager.instance.hitCreateContactApi(hashMap);
-  //     print("createcontactlist ${contactResponse.data!.contactInfo}");
-  //     // Handle successful response
-  //     if (contactResponse.data != null) {
-  //       if (contactResponse.data?.contactInfo != null) {
-  //         final contactInfo = contactResponse.data?.contactInfo;
-  //         if (contactInfo!.id!.isNotEmpty) {
-  //           if (contactInfo.lists != null) {
-  //             saveContactList(contactInfo.lists!);
-  //           }
-  //           saveContactId(contactInfo.id ?? "");
-  //           _callbacks.onContactCreationSuccess(isContactCreated);
-  //         }
-  //       } else if (contactResponse.data?.evd != null) {
-  //         final evd = contactResponse.data?.evd;
-  //         if (evd!.id.isNotEmpty) {
-  //           saveEvdList(evd.lists);
-  //           saveExternalVisitorId(evd.id);
-  //           _callbacks.onContactCreationSuccess(isContactCreated);
-  //         }
-  //       }
-  //     }
-  //   } catch (e) {
-  //     // Handle error (similar to onFailure/onError in Java)
-  //     print("Error occurred: $e");
-  //   }
-  // }
 
   void createContactForDynamicAttribute(
     Map<String, dynamic> hashMapData,
@@ -187,12 +110,12 @@ class DataManager {
       Constant.UNIQUE_REF_CODE: token,
       Constant.JOB_TYPE: 'sdktd',
       Constant.COMPANY_ID: DataManager().getCompanyID(),
-      Constant.CONTACT_DEVICE_OS: 'ANDROID',
+      Constant.CONTACT_DEVICE_OS: Constant.ANDROID,
       Constant.CONTACT_DEVICE_NAME: await _zonkaSdkPlugin.getModelName() ?? "",
       Constant.CONTACT_DEVICE_MODEL: await _zonkaSdkPlugin.getModelName() ?? "",
       Constant.CONTACT_DEVICE_BRAND: await _zonkaSdkPlugin.getBrandName() ?? "",
       Constant.CONTACT_DEVICE_OS_VERSION: await _zonkaSdkPlugin.getPlatformVersion() ?? "",
-      Constant.CONTACT_DEVICE: (await _zonkaSdkPlugin.getIsTablet()).toString() ?? "",
+      Constant.CONTACT_DEVICE: (await _zonkaSdkPlugin.getIsTablet()).toString(),
     });
 
     hashMapData.addAll(hashMap);

@@ -1,7 +1,7 @@
 name: zonkafeedback_sdk
-description: "A new Flutter plugin project."
-version: 0.0.1
-homepage:
+description: "A Flutter plugin for seamless feedback collection and management with Zonka Feedback."
+version: 0.1.0
+homepage: https://www.zonkafeedback.com
 
 environment:
   sdk: ^3.5.4
@@ -10,27 +10,23 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  plugin_platform_interface: ^2.0.2
-  shared_preferences: ^2.3.3
-  device_info_plus: ^11.2.0
-  connectivity_plus: ^6.1.1
-  intl: ^0.19.0
-  dio: ^5.7.0
-  freezed: ^2.5.7
-  freezed_annotation: ^2.4.4
-  json_annotation: ^4.9.0
-  pretty_dio_logger: ^1.4.0
-  flutter_inappwebview: ^6.1.5
-  hive: ^2.2.3
-  path_provider: ^2.1.3
-  change_app_package_name: ^1.4.0
+  shared_preferences: '>=2.3.0 <3.0.0' # Covers versions within 2.x.x
+  connectivity_plus: '>=6.0.0 <7.0.0' # Safe for updates in 6.x.x
+  intl: '>=0.18.0 <1.0.0' # Supports 0.x.x but restricts breaking changes in 1.x
+  dio: '>=5.0.0 <6.0.0' # Compatible with 5.x.x
+  freezed_annotation: '>=2.4.0 <3.0.0' # Allows updates within 2.x.x
+  json_annotation: '>=4.5.0 <5.0.0' # Covers 4.x.x, avoiding breaking changes in 5.x
+  pretty_dio_logger: '>=1.4.0 <2.0.0' # Allows updates in the 1.x.x series
+  flutter_inappwebview: '>=6.1.0 <7.0.0' # Flexible within 6.x.x
+  hive: '>=2.2.0 <3.0.0' # Compatibility with 2.x.x versions
+  path_provider: '>=2.1.0 <3.0.0' # Updates within 2.x.x but restricts breaking changes
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
-  hive_generator: ^2.0.1
-  build_runner: ^2.4.11
+  flutter_lints: '>=4.0.0 <5.0.0' # Allows updates in 4.x.x
+  hive_generator: '>=2.0.0 <3.0.0' # Compatibility for 2.x.x versions
+  build_runner: '>=2.4.0 <3.0.0' # Flexible for 2.x.x updates
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -77,6 +73,7 @@ flutter:
   #       - asset: fonts/Schyler-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
+  #   - family: Trajan Pro
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
