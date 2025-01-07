@@ -123,34 +123,4 @@ ZFSurvey().clear();
 ---
 
 
-## Example Usage
 
-```dart
-import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: Text("Zonka Feedback Demo")),
-        body: Center(
-          child: ElevatedButton(
-            onPressed: () {
-              ZFSurvey().startSurvey();
-            },
-            child: Text("Start Survey"),
-          ),
-        ),
-      ),
-    );
-  }
-}
-```
----
-
-For more information, visit [Zonka Feedback](https://www.zonkafeedback.com/).

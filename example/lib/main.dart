@@ -28,11 +28,11 @@ class ZonkaFeedBackSurvey extends StatefulWidget {
   State<ZonkaFeedBackSurvey> createState() => _ZonkaFeedBackSurveyState();
 }
 
-class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
-    with WidgetsBindingObserver {
+class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>  with WidgetsBindingObserver {
+  
   @override
   void initState() {
-    ZFSurvey().init(token: 'rI4k8H', zfRegion: 'US', context: context);
+    ZFSurvey().init(token: 'zsX66I', zfRegion: 'US', context: context);
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
@@ -52,30 +52,58 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        child: ElevatedButton(
-          onPressed: () {
-            Map<String, dynamic> properties = {
-              'contact_name': 'Robin James',
-              'contact_email': 'robin@example.com',
-              'contact_uniqueId': '1XJ2',
-              'contact_mobile': '+14234XXXX'
-            };
 
-            ZFSurvey()
-                .sendDeviceDetails(true)
-                .sendCustomAttributes(properties)
-                .startSurvey();
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            
+            alignment: Alignment.center,
+            child: ElevatedButton(
+              onPressed: () {
+                Map<String, dynamic> properties = {
+                  'contact_name': 'Robin James',
+                  'contact_email': 'robin@example.com',
+                  'contact_uniqueId': '1XJ2',
+                  'contact_mobile': '+14234XXXX'
+                };
+          
+                ZFSurvey()
+                    .sendDeviceDetails(true)
+                    .sendCustomAttributes(properties)
+                    .startSurvey();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ),
+              child: const Text(
+                'START SURVEY',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           ),
-          child: const Text(
-            'START SURVEY',
-            style: TextStyle(color: Colors.white),
+
+SizedBox(
+  height: 20,
+),
+          Container(
+            
+            alignment: Alignment.center,
+            child: ElevatedButton(
+              onPressed: () {
+          
+                ZFSurvey().clear();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ),
+              child: const Text(
+                'CLEAR VALUES',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
