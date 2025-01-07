@@ -39,7 +39,7 @@ dependencies:
 Initialize the SDK in your app's main file (e.g., `lib/main.dart`):
 
 ```dart
-import 'package:zonkafeedback_sdk/zonka_feedback.dart';
+import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
 
 class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey> with WidgetsBindingObserver {
   @override
@@ -66,7 +66,7 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey> with WidgetsB
 To configure and start the survey in your app:
 
 ```dart
-import 'package:zonkafeedback_sdk/zonka_feedback.dart';
+import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
 
 ZFSurvey().startSurvey();
 ```
@@ -126,7 +126,7 @@ ZFSurvey().clear();
 ## Example Usage
 
 ```dart
-import 'package:zonkafeedback_sdk/zonka_feedback.dart';
+import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
 
 void main() {
   runApp(MyApp());
