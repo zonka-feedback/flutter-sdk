@@ -41,7 +41,7 @@ Initialize the SDK in your app's main file (e.g., `lib/main.dart`):
 ```dart
 import 'package:zonkafeedback_sdk/zonka_feedback.dart';
 
-class _MyAppState extends State<MyApp> {
+class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
