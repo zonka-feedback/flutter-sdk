@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
@@ -10,9 +7,8 @@ class AttributeForm extends StatefulWidget {
   _AttributeFormState createState() => _AttributeFormState();
 }
 
-class _AttributeFormState extends State<AttributeForm> with WidgetsBindingObserver {
-
-
+class _AttributeFormState extends State<AttributeForm>
+    with WidgetsBindingObserver {
   List<Map<String, String>> attributes = [
     {"key": "", "value": ""},
   ];
@@ -36,26 +32,29 @@ class _AttributeFormState extends State<AttributeForm> with WidgetsBindingObserv
     super.dispose();
   }
 
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     ZFSurvey().sendAppLifecycleState(state);
     super.didChangeAppLifecycleState(state);
   }
 
-
-
   void runSurvey() async {
-    await  ZFSurvey().init(token: sdkToken ,zfRegion:regionValue ,context: context);
+    await ZFSurvey()
+        .init(token: sdkToken, zfRegion: regionValue, context: context);
     final Map<String, String> customAttributes = {
       for (var attribute in attributes)
-        if (attribute['key'] != null && attribute['value'] != null && attribute['value']!.isNotEmpty)
+        if (attribute['key'] != null &&
+            attribute['value'] != null &&
+            attribute['value']!.isNotEmpty)
           attribute['key']!: attribute['value']!
     };
-    ZFSurvey().sendDeviceDetails(true).sendCustomAttributes(customAttributes).startSurvey();
+    ZFSurvey()
+        .sendDeviceDetails(true)
+        .sendCustomAttributes(customAttributes)
+        .startSurvey();
   }
 
-  void clearFunctionValue(){
+  void clearFunctionValue() {
     ZFSurvey().clear();
   }
 
@@ -71,18 +70,18 @@ class _AttributeFormState extends State<AttributeForm> with WidgetsBindingObserv
     });
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title:const Text('IN APP SDK',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),backgroundColor: Colors.lightBlue,
+        title: const Text(
+          'IN APP SDK',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.lightBlue,
         centerTitle: true,
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -92,33 +91,32 @@ class _AttributeFormState extends State<AttributeForm> with WidgetsBindingObserv
             ),
             // SDK Token Field
             TextFormField(
-              onChanged: (value){
+              onChanged: (value) {
                 setState(() {
-                  sdkToken  = value;
+                  sdkToken = value;
                 });
               },
-              decoration:const InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'SDK Token',
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 10),
             TextFormField(
-              onChanged: (value){
+              onChanged: (value) {
                 setState(() {
-                  regionValue  = value;
+                  regionValue = value;
                 });
               },
-              decoration:const InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Region Value',
                 border: OutlineInputBorder(),
               ),
             ),
-            const  SizedBox(height: 20),   // Dynamic Attributes List
+            const SizedBox(height: 20), // Dynamic Attributes List
             Expanded(
-
               child: ListView.separated(
-                separatorBuilder: (context, index){
+                separatorBuilder: (context, index) {
                   return const SizedBox(height: 10);
                 },
                 itemCount: attributes.length,
@@ -128,11 +126,14 @@ class _AttributeFormState extends State<AttributeForm> with WidgetsBindingObserv
                       // Attribute Field
                       Expanded(
                         child: TextFormField(
-                          initialValue:  attributes[index]["key"],
+                          initialValue: attributes[index]["key"],
                           decoration: InputDecoration(
-                            hintText: index == 0 ? 'contact_email': 'Attribute',
+                            hintText:
+                                index == 0 ? 'contact_email' : 'Attribute',
                             contentPadding: const EdgeInsets.all(5),
-                            hintStyle: TextStyle(fontSize: size.height/50, color: Colors.grey.shade500),
+                            hintStyle: TextStyle(
+                                fontSize: size.height / 50,
+                                color: Colors.grey.shade500),
                             border: OutlineInputBorder(),
                           ),
                           onChanged: (value) {
@@ -146,10 +147,12 @@ class _AttributeFormState extends State<AttributeForm> with WidgetsBindingObserv
                         child: TextFormField(
                           initialValue: attributes[index]["value"],
                           decoration: InputDecoration(
-                            hintText: index==0? 'email@gmail.com': 'Value',
+                            hintText: index == 0 ? 'email@gmail.com' : 'Value',
                             border: OutlineInputBorder(),
                             contentPadding: const EdgeInsets.all(5),
-                            hintStyle: TextStyle(fontSize: size.height/50,color: Colors.grey.shade500),
+                            hintStyle: TextStyle(
+                                fontSize: size.height / 50,
+                                color: Colors.grey.shade500),
                           ),
                           onChanged: (value) {
                             attributes[index]["value"] = value;
@@ -168,12 +171,14 @@ class _AttributeFormState extends State<AttributeForm> with WidgetsBindingObserv
               ),
             ),
 
-
             Column(
               children: [
                 ElevatedButton(
                   onPressed: addAttribute,
-                  child: Text('Add More',style: TextStyle(color: Colors.white),),
+                  child: Text(
+                    'Add More',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                   ),
@@ -199,18 +204,19 @@ class _AttributeFormState extends State<AttributeForm> with WidgetsBindingObserv
                   width: size.width,
                   child: ElevatedButton(
                     onPressed: runSurvey,
-                    child:  Text('RUN',style: TextStyle(color: Colors.white),),
+                    child: Text(
+                      'RUN',
+                      style: TextStyle(color: Colors.white),
+                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                     ),
                   ),
                 ),
-
               ],
             ),
 
             // Add More Button
-
           ],
         ),
       ),

@@ -1,5 +1,3 @@
-
-
 class IncludeSegment {
   List<String>? list;
   String? type;

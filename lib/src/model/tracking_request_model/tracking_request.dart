@@ -1,5 +1,3 @@
-
-
 import 'package:zonkafeedback_sdk/src/model/tracking_request_model/page_viewed_log.dart';
 
 class TrackingRequest {
@@ -161,4 +159,3 @@ class TrackingRequest {
     };
   }
 }
-

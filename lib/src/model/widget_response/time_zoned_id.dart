@@ -1,5 +1,3 @@
-
-
 class TimeZoneId {
   String? timeZone;
   String? displayName;

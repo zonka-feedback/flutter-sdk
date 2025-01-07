@@ -46,6 +46,7 @@ abstract class ZonkaSdkPlatform extends PlatformInterface {
   Future<String?> getScreenName() {
     throw UnimplementedError('getScreenName() has not been implemented.');
   }
+
   Future<String?> getDeviceId() {
     throw UnimplementedError('getDeviceId() has not been implemented.');
   }
@@ -54,6 +55,7 @@ abstract class ZonkaSdkPlatform extends PlatformInterface {
   Future<String?> getModelName() {
     throw UnimplementedError('getScreenName() has not been implemented.');
   }
+
   Future<String?> getBrandName() {
     throw UnimplementedError('getDeviceId() has not been implemented.');
   }
@@ -61,5 +63,4 @@ abstract class ZonkaSdkPlatform extends PlatformInterface {
   Future<bool?> getIsTablet() {
     throw UnimplementedError('getDeviceId() has not been implemented.');
   }
-
 }

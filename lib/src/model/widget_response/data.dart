@@ -1,5 +1,3 @@
-
-
 import 'distribution_info.dart';
 import 'company_info.dart';
 

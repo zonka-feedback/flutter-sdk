@@ -1,30 +1,26 @@
-
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferenceManager {
   static const String SHARED_PREF_FILE = "com.zf_sdk.ZFSurveyPref";
 
-  static final PreferenceManager _sharedPrefSingleton = PreferenceManager._internal();
-  factory PreferenceManager(){
+  static final PreferenceManager _sharedPrefSingleton =
+      PreferenceManager._internal();
+  factory PreferenceManager() {
     return _sharedPrefSingleton;
   }
   PreferenceManager._internal();
 
-
-  late SharedPreferences _sharedPref;  
+  late SharedPreferences _sharedPref;
 
   // Initialize the PreferenceManager instance with context and token
   Future<void> init(String token) async {
-   await _initializeSharedPreferences(token);
+    await _initializeSharedPreferences(token);
   }
 
   // Initialize SharedPreferences with a token
   Future<void> _initializeSharedPreferences(String token) async {
     _sharedPref = await SharedPreferences.getInstance();
   }
-
-
 
   // Get a long value from SharedPreferences
   int getLong(String key) {
@@ -62,7 +58,7 @@ class PreferenceManager {
   }
 
   // Get a list of strings from SharedPreferences
-  List<String> ? getStringList(String key,  List<String> ?defaultValue) {
+  List<String>? getStringList(String key, List<String>? defaultValue) {
     return _sharedPref.getStringList(key) ?? defaultValue;
   }
 

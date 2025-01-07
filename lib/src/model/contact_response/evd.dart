@@ -1,5 +1,3 @@
-
-
 class Evd {
   final String firstSeen;
   final String lastSeen;

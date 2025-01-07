@@ -1,4 +1,3 @@
-
 class SessionLog {
   String uniqueSessId;
 
@@ -10,7 +9,6 @@ class SessionLog {
 
   SessionLog({
     required this.uniqueSessId,
-
     required this.contactId,
     required this.cookieId,
     required this.ipAddress,

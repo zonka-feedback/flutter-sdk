@@ -14,7 +14,8 @@ class MethodChannelZonkaSdk extends ZonkaSdkPlatform {
   @override
   Future<String?> getPlatformVersion() async {
     try {
-      final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+      final version =
+          await methodChannel.invokeMethod<String>('getPlatformVersion');
       return version;
     } on PlatformException catch (e) {
       debugPrint('Failed to get platform version: ${e.message}');
@@ -26,7 +27,8 @@ class MethodChannelZonkaSdk extends ZonkaSdkPlatform {
   @override
   Future<String?> getAppVersionCode() async {
     try {
-      final versionCode = await methodChannel.invokeMethod<String>('getAppVersionCode');
+      final versionCode =
+          await methodChannel.invokeMethod<String>('getAppVersionCode');
       return versionCode;
     } on PlatformException catch (e) {
       debugPrint('Failed to get app version code: ${e.message}');
@@ -38,7 +40,8 @@ class MethodChannelZonkaSdk extends ZonkaSdkPlatform {
   @override
   Future<String?> getDeviceSerial() async {
     try {
-      final serial = await methodChannel.invokeMethod<String>('getDeviceSerial');
+      final serial =
+          await methodChannel.invokeMethod<String>('getDeviceSerial');
       return serial;
     } on PlatformException catch (e) {
       debugPrint('Failed to get device serial: ${e.message}');
@@ -50,7 +53,8 @@ class MethodChannelZonkaSdk extends ZonkaSdkPlatform {
   @override
   Future<String?> getDeviceName() async {
     try {
-      final deviceName = await methodChannel.invokeMethod<String>('getDeviceName');
+      final deviceName =
+          await methodChannel.invokeMethod<String>('getDeviceName');
       return deviceName;
     } on PlatformException catch (e) {
       debugPrint('Failed to get device name: ${e.message}');
@@ -62,7 +66,8 @@ class MethodChannelZonkaSdk extends ZonkaSdkPlatform {
   @override
   Future<String?> getScreenName() async {
     try {
-      final screenName = await methodChannel.invokeMethod<String>('getScreenName');
+      final screenName =
+          await methodChannel.invokeMethod<String>('getScreenName');
       return screenName;
     } on PlatformException catch (e) {
       debugPrint('Failed to get screen name: ${e.message}');
@@ -73,7 +78,8 @@ class MethodChannelZonkaSdk extends ZonkaSdkPlatform {
   @override
   Future<String?> getDeviceId() async {
     try {
-      final screenName = await methodChannel.invokeMethod<String>('getDeviceId');
+      final screenName =
+          await methodChannel.invokeMethod<String>('getDeviceId');
       return screenName;
     } on PlatformException catch (e) {
       debugPrint('Failed to get device id: ${e.message}');
@@ -84,17 +90,20 @@ class MethodChannelZonkaSdk extends ZonkaSdkPlatform {
   @override
   Future<String?> getModelName() async {
     try {
-      final modelName = await methodChannel.invokeMethod<String>('getModelName');
+      final modelName =
+          await methodChannel.invokeMethod<String>('getModelName');
       return modelName;
     } on PlatformException catch (e) {
       debugPrint('Failed to get device id: ${e.message}');
       return null;
     }
   }
+
   @override
   Future<String?> getBrandName() async {
     try {
-      final brandName = await methodChannel.invokeMethod<String>('getBrandName');
+      final brandName =
+          await methodChannel.invokeMethod<String>('getBrandName');
       return brandName;
     } on PlatformException catch (e) {
       debugPrint('Failed to get device id: ${e.message}');
@@ -112,7 +121,4 @@ class MethodChannelZonkaSdk extends ZonkaSdkPlatform {
       return null;
     }
   }
-
-
 }
-

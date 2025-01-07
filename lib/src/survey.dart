@@ -1,6 +1,3 @@
-
-
-
 import 'constant.dart';
 
 class Survey {
@@ -9,9 +6,7 @@ class Survey {
   bool deviceDetails = true;
   Map<String, dynamic>? hashMap;
 
-
   Survey(this.surveyToken, String zfRegion) {
-  
     if (surveyToken.isEmpty) {
       return;
     }
@@ -57,7 +52,7 @@ class Survey {
     }
     if (zfRegion.isNotEmpty && zfRegion.toUpperCase() == "IN") {
       return '${Constant.HTTPS}in${Constant.URL}$surveyToken';
-   }
+    }
     return '${Constant.HTTPS}us1${Constant.URL}$surveyToken';
   }
 }

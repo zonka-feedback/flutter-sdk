@@ -1,6 +1,6 @@
-
 class Constant {
-  static const String EMBED_URL = "zf_embed=1&zf_embedwidgetvariant=micro&zf_embedstrictui=micro&zf_sendexternalappevent=1";
+  static const String EMBED_URL =
+      "zf_embed=1&zf_embedwidgetvariant=micro&zf_embedstrictui=micro&zf_sendexternalappevent=1";
 
   static const String TAG = "zfTag";
 

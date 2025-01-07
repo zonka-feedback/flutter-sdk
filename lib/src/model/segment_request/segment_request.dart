@@ -1,5 +1,3 @@
-
-
 class SegmentRequest {
   String? workSpaceId;
   String? companyId;
@@ -85,7 +83,9 @@ class SegmentRequest {
       firstPageQStr: json['firstPageQStr'],
       firstSeen: json['firstSeen'],
       firstPage: json['firstPage'],
-      pagesViewed: json['pagesViewed'] != null ? List<String>.from(json['pagesViewed']) : null,
+      pagesViewed: json['pagesViewed'] != null
+          ? List<String>.from(json['pagesViewed'])
+          : null,
       firstReferringSite: json['firstReferringSite'],
       firstUserAgent: json['firstUserAgent'],
       firstBrowserLanguage: json['firstBrowserLanguage'],
@@ -108,9 +108,15 @@ class SegmentRequest {
       contactSubscriptionPlan: json['contact_subscription_plan'],
       contactSubscriptionPeriod: json['contact_subscription_period'],
       contactId: json['contactId'],
-      dynamicList: json['dynamicList'] != null ? List<String>.from(json['dynamicList']) : null,
-      includedSegment: json['includedSegment'] != null ? List<String>.from(json['includedSegment']) : null,
-      excludedSegment: json['excludedSegment'] != null ? List<String>.from(json['excludedSegment']) : null,
+      dynamicList: json['dynamicList'] != null
+          ? List<String>.from(json['dynamicList'])
+          : null,
+      includedSegment: json['includedSegment'] != null
+          ? List<String>.from(json['includedSegment'])
+          : null,
+      excludedSegment: json['excludedSegment'] != null
+          ? List<String>.from(json['excludedSegment'])
+          : null,
       lastWebWidgetShown: json['lastWebWidgetShown'],
       segmentCall: json['segmentCall'],
     );

@@ -1,5 +1,3 @@
-
-
 import '../contact_response/data.dart';
 
 class SessionResponse {
@@ -38,6 +36,4 @@ class SessionResponse {
       'err': err,
     };
   }
-
 }
-

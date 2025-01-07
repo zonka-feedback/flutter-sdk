@@ -1,5 +1,3 @@
-
-
 import './data.dart';
 
 class ContactResponse {
@@ -37,4 +35,3 @@ class ContactResponse {
     };
   }
 }
-

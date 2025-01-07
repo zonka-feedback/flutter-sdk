@@ -64,20 +64,17 @@ class ApiManager {
   }
 
   static String _getBaseUrl({required bool forContactTracking}) {
-
     String zfRegion = DataManager().getRegion();
 
     if (zfRegion.toUpperCase() == 'EU') {
       return forContactTracking
           ? 'https://e.zonkafeedback.com/api/v1/'
           : "${Constant.HTTPS}e${Constant.RETROFIT_URL}";
-    }
-    else if(zfRegion.toUpperCase() == 'IN'){
+    } else if (zfRegion.toUpperCase() == 'IN') {
       return forContactTracking
           ? 'https://in.apis.zonkafeedback.com/'
           : "${Constant.HTTPS}in1${Constant.RETROFIT_URL}";
-    }
-    else {
+    } else {
       return forContactTracking
           ? 'https://us1.apis.zonkafeedback.com/'
           : "${Constant.HTTPS}us1${Constant.RETROFIT_URL}";
@@ -115,13 +112,14 @@ class ApiManager {
       'contacts/tracking',
       data: data,
     );
-  print("contacttrackingapiresponse ${value.data} ${data}");
+    print("contacttrackingapiresponse ${value.data} ${data}");
     return ContactResponse.fromJson(value.data);
   }
 
-  Future<ContactResponse> hitCreateContactApiDynamic(Map<String, dynamic> data) async {
+  Future<ContactResponse> hitCreateContactApiDynamic(
+      Map<String, dynamic> data) async {
     return hitCreateContactApi(data);
-  } 
+  }
 
   Future<Response> sendEventToServer(Map<String, dynamic> eventRequest) async {
     final dioClient = _getApiServerClient();
@@ -131,7 +129,8 @@ class ApiManager {
     );
   }
 
-  Future<Response> updateSessionToServer(String token, UpdateSessionRequest sessionRequest) async {
+  Future<Response> updateSessionToServer(
+      String token, UpdateSessionRequest sessionRequest) async {
     final dioClient = _getApiServerClient();
     return await dioClient.post(
       'contacts/sessionsUpdate/$token',

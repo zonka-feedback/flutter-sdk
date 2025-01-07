@@ -12,17 +12,14 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp>  {
-
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-   return const MaterialApp(
-     home: ZonkaFeedBackSurvey(),
-   );
+    return const MaterialApp(
+      home: ZonkaFeedBackSurvey(),
+    );
   }
 }
-
-
 
 class ZonkaFeedBackSurvey extends StatefulWidget {
   const ZonkaFeedBackSurvey({super.key});
@@ -31,11 +28,11 @@ class ZonkaFeedBackSurvey extends StatefulWidget {
   State<ZonkaFeedBackSurvey> createState() => _ZonkaFeedBackSurveyState();
 }
 
-class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>  with WidgetsBindingObserver  {
-
+class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
+    with WidgetsBindingObserver {
   @override
   void initState() {
-    ZFSurvey().init(token: 'rI4k8H' ,zfRegion:'US' ,context: context);
+    ZFSurvey().init(token: 'rI4k8H', zfRegion: 'US', context: context);
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
@@ -52,15 +49,13 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>  with Widgets
     super.didChangeAppLifecycleState(state);
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         alignment: Alignment.center,
-        child:  ElevatedButton(
-          onPressed: (){
-
+        child: ElevatedButton(
+          onPressed: () {
             Map<String, dynamic> properties = {
               'contact_name': 'Robin James',
               'contact_email': 'robin@example.com',
@@ -68,17 +63,20 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>  with Widgets
               'contact_mobile': '+14234XXXX'
             };
 
-            ZFSurvey().sendDeviceDetails(true).sendCustomAttributes(properties).startSurvey();
-
+            ZFSurvey()
+                .sendDeviceDetails(true)
+                .sendCustomAttributes(properties)
+                .startSurvey();
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blue,
           ),
-          child: const Text('START SURVEY',style: TextStyle(color: Colors.white),),
+          child: const Text(
+            'START SURVEY',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ),
     );
   }
 }
-
-

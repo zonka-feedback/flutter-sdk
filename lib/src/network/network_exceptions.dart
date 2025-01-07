@@ -1,5 +1,3 @@
-
-
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -9,7 +7,8 @@ part 'network_exceptions.freezed.dart';
 abstract class NetworkExceptions with _$NetworkExceptions {
   const factory NetworkExceptions.requestCancelled() = RequestCancelled;
 
-  const factory NetworkExceptions.unauthorisedRequest(String reason) = UnauthorisedRequest;
+  const factory NetworkExceptions.unauthorisedRequest(String reason) =
+      UnauthorisedRequest;
 
   const factory NetworkExceptions.badRequest() = BadRequest;
 
@@ -42,7 +41,6 @@ abstract class NetworkExceptions with _$NetworkExceptions {
   const factory NetworkExceptions.unexpectedError() = UnexpectedError;
 
   static NetworkExceptions getDioException(error) {
-
     if (error is Exception) {
       try {
         late NetworkExceptions networkExceptions;
@@ -59,39 +57,46 @@ abstract class NetworkExceptions with _$NetworkExceptions {
               networkExceptions = const NetworkExceptions.requestCancelled();
               break;
             case DioExceptionType.connectionTimeout:
-              networkExceptions =const NetworkExceptions.requestTimeout();
+              networkExceptions = const NetworkExceptions.requestTimeout();
               break;
             case DioExceptionType.connectionError:
-              networkExceptions =const NetworkExceptions.noInternetConnection();
+              networkExceptions =
+                  const NetworkExceptions.noInternetConnection();
               break;
             case DioExceptionType.receiveTimeout:
-              networkExceptions =const NetworkExceptions.sendTimeout();
+              networkExceptions = const NetworkExceptions.sendTimeout();
               break;
             case DioExceptionType.badResponse:
               switch (error.response?.statusCode) {
                 case 400:
-                  networkExceptions =  NetworkExceptions.unauthorisedRequest(errorMessage);
+                  networkExceptions =
+                      NetworkExceptions.unauthorisedRequest(errorMessage);
                   break;
                 case 401:
-                  networkExceptions =  NetworkExceptions.unauthorisedRequest(errorMessage);
+                  networkExceptions =
+                      NetworkExceptions.unauthorisedRequest(errorMessage);
                   break;
                 case 403:
-                  networkExceptions = NetworkExceptions.unauthorisedRequest(errorMessage);
+                  networkExceptions =
+                      NetworkExceptions.unauthorisedRequest(errorMessage);
                   break;
                 case 404:
-                  networkExceptions =const NetworkExceptions.notFound("Not found");
+                  networkExceptions =
+                      const NetworkExceptions.notFound("Not found");
                   break;
                 case 409:
                   networkExceptions = const NetworkExceptions.conflict();
                   break;
                 case 408:
-                  networkExceptions =const NetworkExceptions.requestTimeout();
+                  networkExceptions = const NetworkExceptions.requestTimeout();
                   break;
                 case 500:
-                  networkExceptions =const NetworkExceptions.internalServerError();
+                  networkExceptions =
+                      const NetworkExceptions.internalServerError();
                   break;
                 case 503:
-                  networkExceptions = const NetworkExceptions.serviceUnavailable();
+                  networkExceptions =
+                      const NetworkExceptions.serviceUnavailable();
                   break;
                 default:
                   var responseCode = error.response?.statusCode;
@@ -101,19 +106,18 @@ abstract class NetworkExceptions with _$NetworkExceptions {
               }
               break;
             case DioExceptionType.sendTimeout:
-              networkExceptions =const NetworkExceptions.sendTimeout();
+              networkExceptions = const NetworkExceptions.sendTimeout();
               break;
-            case DioExceptionType.badCertificate: 
-            networkExceptions =const NetworkExceptions.unexpectedError();
+            case DioExceptionType.badCertificate:
+              networkExceptions = const NetworkExceptions.unexpectedError();
             case DioExceptionType.unknown:
-            networkExceptions =const NetworkExceptions.unexpectedError();
+              networkExceptions = const NetworkExceptions.unexpectedError();
           }
         } else if (error is SocketException) {
-          networkExceptions =const NetworkExceptions.noInternetConnection();
+          networkExceptions = const NetworkExceptions.noInternetConnection();
         } else {
-          networkExceptions =const NetworkExceptions.unexpectedError();
+          networkExceptions = const NetworkExceptions.unexpectedError();
         }
-
 
         return networkExceptions;
       } on FormatException {
@@ -130,8 +134,8 @@ abstract class NetworkExceptions with _$NetworkExceptions {
       }
     }
   }
-  
-   static String getErrorMessage(NetworkExceptions networkExceptions) {
+
+  static String getErrorMessage(NetworkExceptions networkExceptions) {
     var errorMessage = "";
     networkExceptions.when(notImplemented: () {
       errorMessage = "Not Implemented";

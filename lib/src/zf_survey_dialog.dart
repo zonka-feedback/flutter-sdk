@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class ZFSurveyDialog {
-
-  static Future<void> show({required BuildContext context, required String surveyUrl}) async {
+  static Future<void> show(
+      {required BuildContext context, required String surveyUrl}) async {
     return showDialog(
         context: context,
         builder: (BuildContext context) => Dialog(
-          insetPadding: EdgeInsets.zero,
+            insetPadding: EdgeInsets.zero,
             child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(10),),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(10),
+                ),
                 child: WebViewWithLoader(
                   surveyUrl: surveyUrl,
                 ))));
@@ -39,7 +41,7 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       ),
       alignment: Alignment.center,
       width: 320, // Match the width of your XML CardView
-      height: switchHeight ? 270 : size.height/1.8, //
+      height: switchHeight ? 270 : size.height / 1.8, //
       child: Stack(
         children: [
           InAppWebView(
@@ -51,12 +53,11 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
               _webViewController.addJavaScriptHandler(
                 handlerName: 'messageHandler',
                 callback: (args) {
-                  if(args[0] == 'zf-embed-expand-widget'){
+                  if (args[0] == 'zf-embed-expand-widget') {
                     setState(() {
                       switchHeight = false;
                     });
-                  }
-                  else if(args[0] == 'zf-embed-submit-close'){
+                  } else if (args[0] == 'zf-embed-submit-close') {
                     Navigator.of(context).pop();
                   }
                   return {"status": "Message received successfully!"};
@@ -70,8 +71,8 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
             },
           ),
           Positioned(
-            left: size.width/1.3,
-            bottom: switchHeight ?  size.height/3.5 : size.height/2 ,
+            left: size.width / 1.3,
+            bottom: switchHeight ? size.height / 3.5 : size.height / 2,
             child: IconButton(
               focusColor: Colors.black,
               icon: const Icon(
@@ -85,11 +86,11 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
             ),
           ),
           if (_isLoading)
-                    const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.lightBlue,
-                      ),
-                    ),
+            const Center(
+              child: CircularProgressIndicator(
+                color: Colors.lightBlue,
+              ),
+            ),
         ],
       ),
     );

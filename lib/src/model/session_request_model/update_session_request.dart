@@ -1,5 +1,3 @@
-
-
 import 'package:zonkafeedback_sdk/src/model/session_request_model/session_log.dart';
 
 class UpdateSessionRequest {
@@ -7,8 +5,8 @@ class UpdateSessionRequest {
   List<SessionLog>? sessionLogs;
 
   UpdateSessionRequest({
-     this.deviceType,
-     this.sessionLogs,
+    this.deviceType,
+    this.sessionLogs,
   });
 
   // fromJson method

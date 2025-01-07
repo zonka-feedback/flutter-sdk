@@ -45,11 +45,13 @@ class DataManager {
   void hitSurveyActiveApi(String token, bool isSurveyInitialize) async {
     _apiManager.hitSurveyActiveApi(token).then((widget) {
       if (widget?.data?.distributionInfo?.embedSettings != null) {
-        ExcludeSegment? excludeSegment = widget?.data?.distributionInfo?.embedSettings?.excludeSegment;
-        IncludeSegment? includeSegment = widget?.data?.distributionInfo?.embedSettings?.includeSegment;
+        ExcludeSegment? excludeSegment =
+            widget?.data?.distributionInfo?.embedSettings?.excludeSegment;
+        IncludeSegment? includeSegment =
+            widget?.data?.distributionInfo?.embedSettings?.includeSegment;
 
-        saveExcludeType(excludeSegment?.type??"");
-        saveIncludeType(includeSegment?.type??"");
+        saveExcludeType(excludeSegment?.type ?? "");
+        saveIncludeType(includeSegment?.type ?? "");
         if (excludeSegment!.list!.isNotEmpty) {
           saveExcludedList(excludeSegment.list!);
         } else if (includeSegment!.list!.isNotEmpty) {
@@ -59,15 +61,13 @@ class DataManager {
           saveIncludedList(includeSegment.list!);
         }
       }
-      DataManager().setWidgetActivity(widget!.data!.distributionInfo!.isWidgetActive!);
+      DataManager()
+          .setWidgetActivity(widget!.data!.distributionInfo!.isWidgetActive!);
       DataManager().setCompanyId(widget.data!.distributionInfo!.companyId!);
-
-
     }, onError: (error) {
       if (error is DioException) {}
     });
   }
-
 
   void createContactForDynamicAttribute(
     Map<String, dynamic> hashMapData,
@@ -78,7 +78,10 @@ class DataManager {
       Constant.COOKIE_ID: getCookieId(),
       Constant.FIRST_SEEN: getFirstSeen(),
       Constant.REQUEST_TYPE: 'ANDROID',
-      Constant.LAST_SEEN: AppUtils.instance.getCurrentTime(DateTime.now().millisecondsSinceEpoch, 'yyyy-MM-dd HH:mm:ss',),
+      Constant.LAST_SEEN: AppUtils.instance.getCurrentTime(
+        DateTime.now().millisecondsSinceEpoch,
+        'yyyy-MM-dd HH:mm:ss',
+      ),
       Constant.IP_ADDRESS: await AppUtils.instance.getLocalIpAddress(),
     };
 
@@ -114,19 +117,21 @@ class DataManager {
       Constant.CONTACT_DEVICE_NAME: await _zonkaSdkPlugin.getModelName() ?? "",
       Constant.CONTACT_DEVICE_MODEL: await _zonkaSdkPlugin.getModelName() ?? "",
       Constant.CONTACT_DEVICE_BRAND: await _zonkaSdkPlugin.getBrandName() ?? "",
-      Constant.CONTACT_DEVICE_OS_VERSION: await _zonkaSdkPlugin.getPlatformVersion() ?? "",
+      Constant.CONTACT_DEVICE_OS_VERSION:
+          await _zonkaSdkPlugin.getPlatformVersion() ?? "",
       Constant.CONTACT_DEVICE: (await _zonkaSdkPlugin.getIsTablet()).toString(),
     });
 
     hashMapData.addAll(hashMap);
 
-    ContactResponse contactResponse = await ApiManager().hitCreateContactApiDynamic(hashMapData);
+    ContactResponse contactResponse =
+        await ApiManager().hitCreateContactApiDynamic(hashMapData);
 
     if (contactResponse.data != null) {
       if (contactResponse.data?.contactInfo != null) {
         if (contactResponse.data!.contactInfo!.id!.isNotEmpty) {
           if (contactResponse.data!.contactInfo!.lists != null) {
-           await saveContactList(contactResponse.data!.contactInfo!.lists!);
+            await saveContactList(contactResponse.data!.contactInfo!.lists!);
           }
           saveContactId(contactResponse.data!.contactInfo!.id!);
           _callbacks.onContactCreationSuccess(isContactCreated);
@@ -135,8 +140,8 @@ class DataManager {
     }
   }
 
-
- Future<void> updateSessionToServer(String token, List<Sessions> sessionList) async {
+  Future<void> updateSessionToServer(
+      String token, List<Sessions> sessionList) async {
     UpdateSessionRequest sessionRequest = UpdateSessionRequest(
       deviceType: Constant.ANDROID,
     );
@@ -145,10 +150,12 @@ class DataManager {
     List<SessionLog> sessionLogList = [];
     for (int i = 0; i < sessionList.length; i++) {
       if (sessionList[i].endTime != null) {
-        if(sessionList[i].endTime != 0 && sessionList[i].startTime != 0) {
+        if (sessionList[i].endTime != 0 && sessionList[i].startTime != 0) {
           SessionLog sessionLog = SessionLog(
-            sessionStartedAt: AppUtils.instance.getCurrentTime(sessionList[i].startTime!, Constant.DATE_FORMAT),
-            sessionClosedAt: AppUtils.instance.getCurrentTime(sessionList[i].endTime!, Constant.DATE_FORMAT),
+            sessionStartedAt: AppUtils.instance.getCurrentTime(
+                sessionList[i].startTime!, Constant.DATE_FORMAT),
+            sessionClosedAt: AppUtils.instance
+                .getCurrentTime(sessionList[i].endTime!, Constant.DATE_FORMAT),
             uniqueSessId: sessionList[i].id,
             cookieId: getCookieId(),
             ipAddress: await AppUtils.instance.getLocalIpAddress(),
@@ -160,7 +167,7 @@ class DataManager {
     }
 
     sessionRequest.sessionLogs = sessionLogList;
-    _apiManager.updateSessionToServer(token, sessionRequest).then((value){});
+    _apiManager.updateSessionToServer(token, sessionRequest).then((value) {});
   }
 
   void setSessionEndTime(int sessionEndTime) {
@@ -178,7 +185,8 @@ class DataManager {
   void saveFirstSeen() {
     if (getFirstSeen().isEmpty) {
       int firstSeenTimeStamp = DateTime.now().millisecond;
-      String firstSeen = AppUtils.instance.getCurrentTime(firstSeenTimeStamp, "yyyy-MM-dd HH:mm:ss");
+      String firstSeen = AppUtils.instance
+          .getCurrentTime(firstSeenTimeStamp, "yyyy-MM-dd HH:mm:ss");
       PreferenceManager().putString(Constant.USER_FIRST_SEEN, firstSeen);
     }
   }
@@ -266,7 +274,7 @@ class DataManager {
     return PreferenceManager().getString(Constant.CONTACT_NAME, "");
   }
 
-  Future<void> saveContactList(List<String> lists)async {
+  Future<void> saveContactList(List<String> lists) async {
     PreferenceManager().putStringList(Constant.CONTACT_LIST, lists);
   }
 

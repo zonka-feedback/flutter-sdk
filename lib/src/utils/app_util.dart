@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/widgets.dart';
@@ -7,12 +6,12 @@ import 'package:intl/intl.dart';
 import '../../zonka_sdk.dart';
 import '../constant.dart';
 
-
 class AppUtils {
   AppUtils._privateConstructor();
 
   static final AppUtils instance = AppUtils._privateConstructor();
   final _zonkaSdkPlugin = ZonkaSdk();
+
   /// Get Application Version Code
   Future<String?> getAppVersionCode() async {
     final packageInfo = await _zonkaSdkPlugin.getAppVersionCode();
@@ -21,13 +20,12 @@ class AppUtils {
 
   /// Get Device ID (ANDROID_ID)
   Future<String?> getDeviceId() async {
-    var deviceInfo =await _zonkaSdkPlugin.getDeviceId();
+    var deviceInfo = await _zonkaSdkPlugin.getDeviceId();
     return deviceInfo;
   }
 
   /// Get Device Serial Number
   Future<String?> getDeviceSerial() async {
-
     var serialInfo = await _zonkaSdkPlugin.getDeviceSerial();
     return serialInfo;
   }
@@ -36,6 +34,7 @@ class AppUtils {
     var screenName = await _zonkaSdkPlugin.getScreenName();
     return screenName;
   }
+
   /// Get Device Resolution
   String getDeviceResolution(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -55,7 +54,7 @@ class AppUtils {
         }
       }
     } catch (e) {
-          rethrow;
+      rethrow;
     }
     return "N/A";
   }
@@ -81,7 +80,7 @@ class AppUtils {
   /// Check if Network is Connected
   Future<bool> isNetworkConnected() async {
     var connectivityResult = await Connectivity().checkConnectivity();
-    return connectivityResult .first != ConnectivityResult.none;
+    return connectivityResult.first != ConnectivityResult.none;
   }
 
   /// Calculate Time Difference in Seconds
@@ -100,43 +99,44 @@ class AppUtils {
 
   /// Generate Random Cookie ID
   String getCookieId(int length) {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     final random = Random();
     return String.fromCharCodes(
-      Iterable.generate(length, (_) => chars.codeUnitAt(random.nextInt(chars.length))),
+      Iterable.generate(
+          length, (_) => chars.codeUnitAt(random.nextInt(chars.length))),
     );
   }
-  
-String timeStampToDate(int timeStamp, String format) {
-  // Convert the timestamp (milliseconds since epoch) to DateTime
-  DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timeStamp);
-  
-  // Format the DateTime using the specified format
-  String formattedTime = DateFormat(format).format(dateTime);
 
-  
-  // Return the formatted time
-  return formattedTime;
-}
-  int getCurrentUtcTime(int timeStamp) {
-  try {
-    // Create a DateTime instance from the provided timestamp
-    DateTime localDate = DateTime.fromMillisecondsSinceEpoch(timeStamp);
+  String timeStampToDate(int timeStamp, String format) {
+    // Convert the timestamp (milliseconds since epoch) to DateTime
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timeStamp);
 
-    // Format the date into UTC timezone
-    DateFormat utcFormat = DateFormat("yyyy-MMM-dd HH:mm:ss");
-    String utcDateString = utcFormat.format(localDate.toUtc());
+    // Format the DateTime using the specified format
+    String formattedTime = DateFormat(format).format(dateTime);
 
-    // Parse the UTC-formatted date back to a DateTime
-    DateTime utcDateTime = utcFormat.parse(utcDateString);
-
-    // Return UTC time in milliseconds since epoch
-    return utcDateTime.millisecondsSinceEpoch;
-  } catch (e) {
-
-    return -1; // Return an error value
+    // Return the formatted time
+    return formattedTime;
   }
-}
+
+  int getCurrentUtcTime(int timeStamp) {
+    try {
+      // Create a DateTime instance from the provided timestamp
+      DateTime localDate = DateTime.fromMillisecondsSinceEpoch(timeStamp);
+
+      // Format the date into UTC timezone
+      DateFormat utcFormat = DateFormat("yyyy-MMM-dd HH:mm:ss");
+      String utcDateString = utcFormat.format(localDate.toUtc());
+
+      // Parse the UTC-formatted date back to a DateTime
+      DateTime utcDateTime = utcFormat.parse(utcDateString);
+
+      // Return UTC time in milliseconds since epoch
+      return utcDateTime.millisecondsSinceEpoch;
+    } catch (e) {
+      return -1; // Return an error value
+    }
+  }
 
   /// Get Device Info HashMap Equivalent
   Future<Map<String, dynamic>> getHiddenVariables(BuildContext context) async {
@@ -147,15 +147,13 @@ String timeStampToDate(int timeStamp, String format) {
       Constant.GET_NETWORK: await getNetworkType(),
       Constant.DEVICE_NAME: await _zonkaSdkPlugin.getDeviceName(),
       Constant.DEVICE_MODEL: await _zonkaSdkPlugin.getModelName(),
-      Constant.DEVICE_BRAND:  await _zonkaSdkPlugin.getBrandName(),
+      Constant.DEVICE_BRAND: await _zonkaSdkPlugin.getBrandName(),
       Constant.TIME_ZONE: DateTime.now().timeZoneName,
       Constant.DEVICE_TYPE: isTablet(context) ? "Tablet" : "Mobile",
       Constant.DEVICE_OS: Constant.ANDROID,
       Constant.DEVICE_OS_VERSION: Platform.operatingSystemVersion,
       Constant.SCREEN_NAME: await getScreenName(),
-      Constant.APP_VERSION_NAME:"1.0"
+      Constant.APP_VERSION_NAME: "1.0"
     };
   }
-
-
 }

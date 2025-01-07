@@ -21,7 +21,9 @@ class WidgetResponse {
       status: json['status'] as int?,
       success: json['success'] as bool?,
       message: json['message'] as String?,
-      data: json['data'] != null ? Data.fromJson(json['data'] as Map<String, dynamic>) : null,
+      data: json['data'] != null
+          ? Data.fromJson(json['data'] as Map<String, dynamic>)
+          : null,
       err: json['err'] as String?,
     );
   }
@@ -37,6 +39,3 @@ class WidgetResponse {
     };
   }
 }
-
-
-

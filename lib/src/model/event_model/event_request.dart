@@ -1,5 +1,3 @@
-
-
 class EventRequest {
   String? ipAddress;
   String? surveyRefCode;
@@ -26,8 +24,6 @@ class EventRequest {
     this.deviceModel,
     this.deviceBrand,
   });
-
-
 
   // Convert from JSON
   factory EventRequest.fromJson(Map<String, dynamic> json) {

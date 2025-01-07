@@ -8,10 +8,10 @@ class Sessions extends HiveObject {
   final String id;
 
   @HiveField(1)
-   int? startTime;
+  int? startTime;
 
   @HiveField(2)
-   int? endTime;
+  int? endTime;
 
   Sessions({
     required this.id,

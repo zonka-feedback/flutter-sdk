@@ -1,5 +1,3 @@
-
-
 import 'package:zonkafeedback_sdk/src/model/widget_response/time_zoned_id.dart';
 
 import 'country_id.dart';
@@ -28,8 +26,12 @@ class CompanyInfo {
   /// Creates an instance from a JSON map.
   factory CompanyInfo.fromJson(Map<String, dynamic> json) {
     return CompanyInfo(
-      countryId: json['countryId'] != null ? CountryId.fromJson(json['countryId']) : null,
-      timeZoneId: json['timeZoneId'] != null ? TimeZoneId.fromJson(json['timeZoneId']) : null,
+      countryId: json['countryId'] != null
+          ? CountryId.fromJson(json['countryId'])
+          : null,
+      timeZoneId: json['timeZoneId'] != null
+          ? TimeZoneId.fromJson(json['timeZoneId'])
+          : null,
       isActive: json['isActive'],
       isDeleted: json['isDeleted'],
       surveyWhiteLabelDomainValid: json['surveyWhiteLabelDomainValid'],

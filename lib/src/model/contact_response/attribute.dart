@@ -1,4 +1,3 @@
-
 class Attribute {
   String? id;
   String? value;
@@ -19,7 +18,8 @@ class Attribute {
     return Attribute(
       id: json['id'] as String?,
       value: json['value'] as String?,
-      field5e12d8c8ee2f084102f1ccc2: json['5e12d8c8ee2f084102f1ccc2'] as String?,
+      field5e12d8c8ee2f084102f1ccc2:
+          json['5e12d8c8ee2f084102f1ccc2'] as String?,
       contactCountry: json['contact_country'] as String?,
       type: json['type'] as String?,
     );
@@ -35,6 +35,4 @@ class Attribute {
       'type': type,
     };
   }
-
-
 }

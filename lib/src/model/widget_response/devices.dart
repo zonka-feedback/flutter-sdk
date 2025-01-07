@@ -1,5 +1,3 @@
-
-
 class Devices {
   final bool? desktop;
   final bool? tablet;

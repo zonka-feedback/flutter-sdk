@@ -84,7 +84,8 @@ class DistributionInfo {
       isDeleted: json['isDeleted'] as bool?,
       isActive: json['isActive'] as bool?,
       isWidgetActive: json['isWidgetActive'] as bool?,
-      allowMultipleResponsesFromSameDevice: json['allowMultipleResponsesFromSameDevice'] as bool?,
+      allowMultipleResponsesFromSameDevice:
+          json['allowMultipleResponsesFromSameDevice'] as bool?,
       isWorkspaceBasedWidget: json['isWorkspaceBasedWidget'] as bool?,
       smsMessage: json['smsMessage'] as String?,
       emailMessage: json['emailMessage'] as String?,
@@ -127,7 +128,8 @@ class DistributionInfo {
       'isDeleted': isDeleted,
       'isActive': isActive,
       'isWidgetActive': isWidgetActive,
-      'allowMultipleResponsesFromSameDevice': allowMultipleResponsesFromSameDevice,
+      'allowMultipleResponsesFromSameDevice':
+          allowMultipleResponsesFromSameDevice,
       'isWorkspaceBasedWidget': isWorkspaceBasedWidget,
       'smsMessage': smsMessage,
       'emailMessage': emailMessage,

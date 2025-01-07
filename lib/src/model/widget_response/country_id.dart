@@ -1,4 +1,3 @@
-
 class CountryId {
   final String? name;
   final String? shortName;

@@ -1,4 +1,3 @@
-
 class Trigger {
   int? after;
   int? scroll;

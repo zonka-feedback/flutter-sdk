@@ -1,5 +1,3 @@
-
-
 class ExcludeSegment {
   String? type;
   List<String>? list;

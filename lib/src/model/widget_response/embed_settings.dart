@@ -1,5 +1,3 @@
-
-
 import 'package:zonkafeedback_sdk/src/model/widget_response/trigger.dart';
 
 import 'devices.dart';
@@ -54,8 +52,10 @@ class EmbedSettings {
       buttonPosition: json['button_position'],
       variant: json['variant'],
       buttonText: json['button_text'],
-      trigger: json['trigger'] != null ? Trigger.fromJson(json['trigger']) : null,
-      devices: json['devices'] != null ? Devices.fromJson(json['devices']) : null,
+      trigger:
+          json['trigger'] != null ? Trigger.fromJson(json['trigger']) : null,
+      devices:
+          json['devices'] != null ? Devices.fromJson(json['devices']) : null,
       appearance: json['appearance'],
       visibleTill: json['visibleTill'],
       welcomescreen: json['welcomescreen'],
@@ -93,4 +93,3 @@ class EmbedSettings {
     };
   }
 }
-

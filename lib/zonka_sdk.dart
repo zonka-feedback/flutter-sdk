@@ -26,7 +26,6 @@ class ZonkaSdk {
     return ZonkaSdkPlatform.instance.getScreenName();
   }
 
-
   Future<String?> getDeviceId() {
     return ZonkaSdkPlatform.instance.getDeviceId();
   }
@@ -35,7 +34,6 @@ class ZonkaSdk {
   Future<String?> getModelName() {
     return ZonkaSdkPlatform.instance.getModelName();
   }
-
 
   Future<String?> getBrandName() {
     return ZonkaSdkPlatform.instance.getBrandName();

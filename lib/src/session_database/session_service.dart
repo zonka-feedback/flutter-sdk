@@ -1,4 +1,3 @@
-
 import 'package:hive/hive.dart';
 import 'package:zonkafeedback_sdk/src/session_database/sessions.dart';
 import '../data_manager.dart';
@@ -31,12 +30,8 @@ class SessionService {
       if (sessions != null) {
         sessions.endTime = endTime;
         box.put(lastKey, sessions);
-      } else {
-
-      }
-    } else {
-
-    }
+      } else {}
+    } else {}
   }
 
   Future<void> sessionListPrint() async {
@@ -46,7 +41,8 @@ class SessionService {
       print("Session List:");
       box.values.forEach((session) {
         if (session is Sessions) {
-          print("Session ID: ${session.id}, Start Time: ${session.startTime}, End Time: ${session.endTime}");
+          print(
+              "Session ID: ${session.id}, Start Time: ${session.startTime}, End Time: ${session.endTime}");
         }
       });
     } else {
@@ -63,15 +59,11 @@ class SessionService {
       List<Sessions> sessions = box.values.whereType<Sessions>().toList();
       await DataManager().updateSessionToServer(token, sessions);
       box.clear();
-    } else {
-
-    }
+    } else {}
   }
 
   Future<void> clearSession() async {
     var box = await Hive.openBox('registerSession');
     box.clear();
   }
-
-
 }

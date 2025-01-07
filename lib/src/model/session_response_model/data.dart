@@ -1,4 +1,3 @@
-
 class Data {
   List<String>? savedUniqueSessions;
   Data({this.savedUniqueSessions});
@@ -18,6 +17,4 @@ class Data {
       'savedUniqueSessions': savedUniqueSessions,
     };
   }
-
-
 }

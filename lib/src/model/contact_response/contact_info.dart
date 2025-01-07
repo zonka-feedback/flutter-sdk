@@ -1,4 +1,3 @@
-
 import 'attribute.dart';
 
 class ContactInfo {
@@ -82,7 +81,7 @@ class ContactInfo {
     this.bounced,
     this.surveys,
     this.locations,
-    this.attributes,  
+    this.attributes,
     this.source,
     this.numTasks,
     this.numPendingTasks,
@@ -147,7 +146,9 @@ class ContactInfo {
       bounced: json['bounced'] as bool?,
       surveys: json['surveys'] as List<dynamic>?,
       locations: json['locations'] as List<dynamic>?,
-      attributes: (json['attributes'] as List<dynamic>?)?.map((e) => Attribute.fromJson(e as Map<String, dynamic>)).toList(),
+      attributes: (json['attributes'] as List<dynamic>?)
+          ?.map((e) => Attribute.fromJson(e as Map<String, dynamic>))
+          .toList(),
       source: json['source'] as String?,
       numTasks: json['numTasks'] as int?,
       numPendingTasks: json['numPendingTasks'] as int?,
@@ -180,7 +181,8 @@ class ContactInfo {
       languageCode: json['languageCode'],
       surveysVisits: json['surveysVisits'] as List<dynamic>?,
       lastSessionActiveAt: json['lastSessionActiveAt'],
-      historyImportedFromAnonymous: json['historyImportedFromAnonymous'] as bool?,
+      historyImportedFromAnonymous:
+          json['historyImportedFromAnonymous'] as bool?,
       firstSeenOnIOS: json['firstSeenOnIOS'],
       firstSeenOnAndroid: json['firstSeenOnAndroid'],
       lastSeenOnIOS: json['lastSeenOnIOS'],
@@ -260,4 +262,3 @@ class ContactInfo {
     };
   }
 }
-
