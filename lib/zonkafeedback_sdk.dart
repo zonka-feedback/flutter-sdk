@@ -1,10 +1,8 @@
 library zonka_feedback;
 
 import 'package:flutter/cupertino.dart';
-import 'package:hive/hive.dart';
 import 'package:zonkafeedback_sdk/src/constant.dart';
 import 'package:zonkafeedback_sdk/src/data_manager.dart';
-import 'package:zonkafeedback_sdk/src/model/widget_response/widget.dart';
 import 'package:zonkafeedback_sdk/src/network/api_response_callback.dart';
 import 'package:zonkafeedback_sdk/src/session_database/hive_service.dart';
 import 'package:zonkafeedback_sdk/src/session_database/session_service.dart';
@@ -156,6 +154,7 @@ class ZFSurvey implements ApiResponseCallbacks {
       DataManager().getExcludedList()?.clear();
     }
 
+
     // Fetch contact response list
     List<String>? contactListSet = DataManager().getContactList();
     List<String> contactResponseList = [];
@@ -190,6 +189,14 @@ class ZFSurvey implements ApiResponseCallbacks {
       }
     }
 
+
+    String inclueType  = DataManager().getIncludeType();
+
+    if(inclueType == 'all'){
+      processEmbedSurvey = true;
+    }
+
+
     return processEmbedSurvey;
   }
 
@@ -197,9 +204,8 @@ class ZFSurvey implements ApiResponseCallbacks {
     bool checkNetworkConnection = await AppUtils.instance.isNetworkConnected();
           if (checkNetworkConnection) {
               await _getZfSurveyUrl();
-              if ( DataManager().getContactId().isEmpty) {
+              if (DataManager().getContactId().isEmpty) {
                   if (DataManager().getExternalVisitorId().isEmpty) {
-
                   } else {
                       DataManager().hitSurveyActiveApi(_survey.getSurveyToken(), true);
                   }
@@ -272,12 +278,12 @@ class ZFSurvey implements ApiResponseCallbacks {
   void clear() {
   // Clear preferences
    DataManager().clearPreference();
+   SessionService().clearSession();
   // Save updated data
    DataManager().saveFirstSeen();
    DataManager().saveCookieId();
-   Hive.deleteFromDisk();
 
-}
+ }
 
 
 }
