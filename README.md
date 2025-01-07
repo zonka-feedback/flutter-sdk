@@ -72,6 +72,15 @@ ZFSurvey().startSurvey();
 ```
 
 ---
+## Regions
+Use one of the following regions during initialization:
+- `US` - United States
+- `EU` - Europe
+- `IN` - India
+```dart
+ZFSurvey().init(token: '{{SDK_TOKEN}}', zfRegion: '{{REGION}}', context: context);
+```
+
 
 ## Optional Parameters
 
@@ -120,19 +129,8 @@ Clear visitor data on logout:
 ```dart
 ZFSurvey().clear();
 ```
-
 ---
 
-## Regions
-Use one of the following regions during initialization:
-- `US` - United States
-- `EU` - Europe
-- `IN` - India
-```dart
-ZFSurvey().init(token: '{{SDK_TOKEN}}', zfRegion: 'US', context: context);
-```
-
----
 
 ## Example Usage
 
