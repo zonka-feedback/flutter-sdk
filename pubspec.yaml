@@ -2,7 +2,7 @@ name: zonkafeedback_sdk
 description: "A Flutter plugin for seamless feedback collection and management with Zonka Feedback."
 version: 0.1.0
 homepage: https://www.zonkafeedback.com
-repository: https://github.com/zonka-feedback/flutter-sdk.git
+repository: https://github.com/zonka-feedback/flutter-sdk
 documentation: https://developers.zonkafeedback.com/docs/in-app-sdk/flutter-sdk
 
 
