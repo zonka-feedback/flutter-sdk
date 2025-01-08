@@ -1,21 +1,26 @@
 import 'package:hive/hive.dart';
 
-part 'sessions.g.dart';
 
-@HiveType(typeId: 0) // Assign a unique typeId for this model
-class Sessions extends HiveObject {
-  @HiveField(0)
-  final String id;
+class Sessions {
+  String id;
+  int startTime;
+  int endTime;
 
-  @HiveField(1)
-  int? startTime;
+  Sessions({required this.id, required this.startTime, required this.endTime});
 
-  @HiveField(2)
-  int? endTime;
+  // Convert Sessions object to a JSON map
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'startTime': startTime,
+    'endTime': endTime,
+  };
 
-  Sessions({
-    required this.id,
-    required this.startTime,
-    required this.endTime,
-  });
+  // Create Sessions object from a JSON map
+  factory Sessions.fromJson(Map<String, dynamic> json) {
+    return Sessions(
+      id: json['id'],
+      startTime: json['startTime'],
+      endTime: json['endTime'],
+    );
+  }
 }

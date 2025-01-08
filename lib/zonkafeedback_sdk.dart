@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:zonkafeedback_sdk/src/constant.dart';
 import 'package:zonkafeedback_sdk/src/data_manager.dart';
 import 'package:zonkafeedback_sdk/src/network/api_response_callback.dart';
-import 'package:zonkafeedback_sdk/src/session_database/hive_service.dart';
 import 'package:zonkafeedback_sdk/src/session_database/session_service.dart';
 import 'package:zonkafeedback_sdk/src/survey.dart';
 import 'package:zonkafeedback_sdk/src/utils/app_util.dart';
@@ -37,7 +36,6 @@ class ZFSurvey implements ApiResponseCallbacks {
     DataManager().saveFirstSeen();
     DataManager().saveCookieId();
     DataManager().initApiManager();
-    await HiveService().init();
     await SessionService().syncSessionServer(_survey.getSurveyToken());
     SessionService().sessionStarted();
     _initializeZFData();
@@ -140,6 +138,7 @@ class ZFSurvey implements ApiResponseCallbacks {
   }
 
   bool checkSegmenting() {
+
     // Fetch included list
     List<String>? includedListSet = DataManager().getIncludedList();
     List<String> includedList = [];
@@ -167,6 +166,12 @@ class ZFSurvey implements ApiResponseCallbacks {
 
     bool processEmbedSurvey = false;
 
+    String inclueType = DataManager().getIncludeType();
+
+    if (inclueType == 'all') {
+      processEmbedSurvey = true;
+    }
+
     // Check included segments
     if (includedList.isNotEmpty) {
       processEmbedSurvey = false;
@@ -192,11 +197,6 @@ class ZFSurvey implements ApiResponseCallbacks {
       }
     }
 
-    String inclueType = DataManager().getIncludeType();
-
-    if (inclueType == 'all') {
-      processEmbedSurvey = true;
-    }
 
     return processEmbedSurvey;
   }
@@ -249,8 +249,7 @@ class ZFSurvey implements ApiResponseCallbacks {
 
       case AppLifecycleState.detached:
         SessionService().sessionEnded();
-        SessionService().syncSessionServer(_survey.getSurveyToken());
-
+        SessionService().sessionListPrint();
         // Perform cleanup actions like closing database connections or saving state
         break;
       case AppLifecycleState.hidden:
