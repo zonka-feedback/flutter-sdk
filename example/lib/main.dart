@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
 
 void main() {
+   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

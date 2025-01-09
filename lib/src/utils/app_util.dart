@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:flutter/widgets.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/widgets.dart';
+// import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:intl/intl.dart';
 import '../../zonka_sdk.dart';
 import '../constant.dart';
@@ -62,6 +63,7 @@ class AppUtils {
   /// Get Network Type
   Future<String> getNetworkType() async {
     var connectivityResult = await Connectivity().checkConnectivity();
+    print("connectivityresult ${connectivityResult.first}");
     if (connectivityResult.first == ConnectivityResult.mobile) {
       return "Mobile";
     } else if (connectivityResult.first == ConnectivityResult.wifi) {
@@ -69,6 +71,7 @@ class AppUtils {
     } else {
       return "UNKNOWN";
     }
+   
   }
 
   /// Check if device is Tablet
@@ -81,6 +84,7 @@ class AppUtils {
   Future<bool> isNetworkConnected() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     return connectivityResult.first != ConnectivityResult.none;
+    
   }
 
   /// Calculate Time Difference in Seconds
@@ -99,8 +103,7 @@ class AppUtils {
 
   /// Generate Random Cookie ID
   String getCookieId(int length) {
-    const chars =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     final random = Random();
     return String.fromCharCodes(
       Iterable.generate(

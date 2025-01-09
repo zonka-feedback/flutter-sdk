@@ -218,6 +218,7 @@ class ZFSurvey implements ApiResponseCallbacks {
     }
     bool widgetActive = DataManager().isWidgetActive();
     String openUrl = _url + Constant.EMBED_URL;
+    print("openurlvalue $openUrl");
     if (widgetActive) {
       bool segmentAllowed = checkSegmenting();
       if (segmentAllowed) {

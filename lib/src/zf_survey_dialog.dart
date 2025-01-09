@@ -45,9 +45,18 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       child: Stack(
         children: [
           InAppWebView(
+          
             initialUrlRequest: URLRequest(
-              url: WebUri(widget.surveyUrl), // Fixed Uri parsing
+              url: WebUri (widget.surveyUrl), // Fixed Uri parsing
             ),
+            
+           initialSettings: InAppWebViewSettings(
+            
+    javaScriptEnabled: true,
+    allowsInlineMediaPlayback: true,
+    mediaPlaybackRequiresUserGesture: false,
+  ),
+
             onWebViewCreated: (controller) {
               _webViewController = controller;
               _webViewController.addJavaScriptHandler(
