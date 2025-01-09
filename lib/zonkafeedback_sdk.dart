@@ -178,18 +178,20 @@ class ZFSurvey implements ApiResponseCallbacks {
       if (contactResponseList.isNotEmpty) {
         for (String segmentInContact in contactResponseList) {
           if (includedList.contains(segmentInContact)) {
+            print("icnlusegmentationcalled");
             processEmbedSurvey = true;
             break;
           }
         }
       }
     }
-
+print("exludelistvalue $excludedList");
     // Check excluded segments
     if (excludedList.isNotEmpty) {
       if (contactResponseList.isNotEmpty) {
         for (String segmentInContact in contactResponseList) {
           if (excludedList.contains(segmentInContact)) {
+            print("excludedListgmentationcalled");
             processEmbedSurvey = false;
             break;
           }
