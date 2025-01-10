@@ -35,6 +35,21 @@ dependencies:
 
 ---
 
+
+## Configuration
+**Configuration for iOS** : Add the following snippet to your **Info.plist** file.
+
+```yaml
+  <key>NSAllowsArbitraryLoadsInWebContent</key>
+  <true/>
+  <key>NSAppTransportSecurity</key>
+  <dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+  </dict>
+```
+
+
 ## Initialization
 Initialize the SDK in your app's main file (e.g., `lib/main.dart`):
 
