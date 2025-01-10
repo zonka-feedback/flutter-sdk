@@ -21,10 +21,7 @@ class ZFSurvey implements ApiResponseCallbacks {
   late BuildContext _context;
 
   /// Initialize SDK with necessary details
-  Future<void> init(
-      {required String token,
-      required String zfRegion,
-      required BuildContext context}) async {
+  Future<void> init({required String token , required String zfRegion, required BuildContext context}) async {
     _context = context;
     await DataManager().init(token);
     _initializeSDK(token, zfRegion);
@@ -85,9 +82,7 @@ class ZFSurvey implements ApiResponseCallbacks {
 
   void addCustomParam(Map<String, dynamic>? hashMap) {
     if (hashMap == null) return;
-    hashMap.forEach((key, value) {
-      _customVariableString += '$key=$value&';
-    });
+    hashMap.forEach((key, value) { _customVariableString += '$key=$value&';});
     userInfo(hashMap);
   }
 
@@ -118,8 +113,7 @@ class ZFSurvey implements ApiResponseCallbacks {
 
     if (_survey.getDeviceDetails()) {
       _customVariableString = "";
-      Map<String, dynamic> value =
-          await AppUtils.instance.getHiddenVariables(_context);
+      Map<String, dynamic> value = await AppUtils.instance.getHiddenVariables(_context);
       addCustomParam(value);
       _url = _url + _customVariableString;
     }
@@ -220,6 +214,7 @@ print("exludelistvalue $excludedList");
     }
     bool widgetActive = DataManager().isWidgetActive();
     String openUrl = _url + Constant.EMBED_URL;
+    print("openurlvalue $openUrl");
     if (widgetActive) {
       bool segmentAllowed = checkSegmenting();
       if (segmentAllowed) {

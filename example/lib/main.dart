@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
 
 void main() {
+   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -65,7 +66,7 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>  with Widgets
                   'contact_name': 'Robin James',
                   'contact_email': 'robin@example.com',
                   'contact_uniqueId': '1XJ2',
-                  'contact_mobile': '+14234XXXX'
+                  
                 };
           
                 ZFSurvey()

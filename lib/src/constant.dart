@@ -19,6 +19,8 @@ class Constant {
   static const String DEVICE_BRAND = "zf_sdk_device_brand";
   static const String TIME_ZONE = "zf_sdk_timezone";
   static const String ANDROID = "Android";
+  static const String IOS = "Ios";
+
   static const String DEVICE_TYPE = "zf_sdk_device_type";
   static const String DEVICE_OS_VERSION = "zf_sdk_os_version";
   static const String APP_VERSION_NAME = "zf_sdk_version";

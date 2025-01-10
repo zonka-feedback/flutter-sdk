@@ -2,19 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class ZFSurveyDialog {
-  static Future<void> show(
-      {required BuildContext context, required String surveyUrl}) async {
+  static Future<void> show({required BuildContext context, required String surveyUrl}) async {
     return showDialog(
         context: context,
         builder: (BuildContext context) => Dialog(
             insetPadding: EdgeInsets.zero,
-            child: ClipRRect(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
-                ),
-                child: WebViewWithLoader(
-                  surveyUrl: surveyUrl,
-                ))));
+            child: ClipRRect(borderRadius: const BorderRadius.all(Radius.circular(10),),
+            child: WebViewWithLoader(surveyUrl: surveyUrl,))));
   }
 }
 
@@ -43,11 +37,23 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       width: 320, // Match the width of your XML CardView
       height: switchHeight ? 270 : size.height / 1.8, //
       child: Stack(
+
+        alignment: Alignment.topRight,
         children: [
           InAppWebView(
+          
             initialUrlRequest: URLRequest(
-              url: WebUri(widget.surveyUrl), // Fixed Uri parsing
+              url: WebUri (widget.surveyUrl), // Fixed Uri parsing
             ),
+            
+           initialSettings: InAppWebViewSettings(
+       supportZoom:false,     
+    javaScriptEnabled: true,
+    allowsInlineMediaPlayback: true,
+    mediaPlaybackRequiresUserGesture: false,
+    
+  ),
+
             onWebViewCreated: (controller) {
               _webViewController = controller;
               _webViewController.addJavaScriptHandler(
@@ -71,8 +77,8 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
             },
           ),
           Positioned(
-            left: size.width / 1.3,
-            bottom: switchHeight ? size.height / 3.5 : size.height / 2,
+            // left: size.width / 1.3,
+            // bottom: switchHeight ? size.height / 3.5 : size.height / 2,
             child: IconButton(
               focusColor: Colors.black,
               icon: const Icon(
