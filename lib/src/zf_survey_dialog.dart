@@ -47,10 +47,11 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
             ),
             
            initialSettings: InAppWebViewSettings(
-            
+       supportZoom:false,     
     javaScriptEnabled: true,
     allowsInlineMediaPlayback: true,
     mediaPlaybackRequiresUserGesture: false,
+    
   ),
 
             onWebViewCreated: (controller) {

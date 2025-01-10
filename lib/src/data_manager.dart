@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:zonkafeedback_sdk/src/session_database/sessions.dart';
@@ -142,9 +143,9 @@ class DataManager {
 
   Future<void> updateSessionToServer(
       String token, List<Sessions> sessionList) async {
-    UpdateSessionRequest sessionRequest = UpdateSessionRequest(
-      deviceType: Constant.ANDROID,
-    );
+   UpdateSessionRequest sessionRequest = UpdateSessionRequest(
+  deviceType: Platform.isIOS ? Constant.IOS : Constant.ANDROID,
+);
 
     String contactIdValue = getContactId();
     List<SessionLog> sessionLogList = [];

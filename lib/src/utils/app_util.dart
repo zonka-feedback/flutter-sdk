@@ -153,7 +153,7 @@ class AppUtils {
       Constant.DEVICE_BRAND: await _zonkaSdkPlugin.getBrandName(),
       Constant.TIME_ZONE: DateTime.now().timeZoneName,
       Constant.DEVICE_TYPE: isTablet(context) ? "Tablet" : "Mobile",
-      Constant.DEVICE_OS: Constant.ANDROID,
+      Constant.DEVICE_OS: Platform.isIOS ? Constant.IOS : Constant.ANDROID,
       Constant.DEVICE_OS_VERSION: Platform.operatingSystemVersion,
       Constant.SCREEN_NAME: await getScreenName(),
       Constant.APP_VERSION_NAME: "1.0"
