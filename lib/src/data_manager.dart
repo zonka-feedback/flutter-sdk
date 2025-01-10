@@ -155,9 +155,9 @@ class DataManager {
       if (sessionList[i].endTime != 0 && sessionList[i].startTime != 0) {
         SessionLog sessionLog = SessionLog(
           sessionStartedAt: AppUtils.instance.getCurrentTime(
-              sessionList[i].startTime!, Constant.DATE_FORMAT),
+              sessionList[i].startTime, Constant.DATE_FORMAT),
           sessionClosedAt: AppUtils.instance
-              .getCurrentTime(sessionList[i].endTime!, Constant.DATE_FORMAT),
+              .getCurrentTime(sessionList[i].endTime, Constant.DATE_FORMAT),
           uniqueSessId: sessionList[i].id,
           cookieId: getCookieId(),
           ipAddress: await AppUtils.instance.getLocalIpAddress(),
