@@ -44,12 +44,14 @@ class DataManager {
   }
 
   void hitSurveyActiveApi(String token, bool isSurveyInitialize) async {
-    _apiManager.hitSurveyActiveApi(token).then((widget) {
+    _apiManager.hitSurveyActiveApi(token).then((widget) async{
       if (widget?.data?.distributionInfo?.embedSettings != null) {
         ExcludeSegment? excludeSegment =
             widget?.data?.distributionInfo?.embedSettings?.excludeSegment;
         IncludeSegment? includeSegment =
             widget?.data?.distributionInfo?.embedSettings?.includeSegment;
+        await clearExcludedList();
+        await clearIncludeList();
 
         saveExcludeType(excludeSegment?.type ?? "");
         saveIncludeType(includeSegment?.type ?? "");
@@ -285,6 +287,10 @@ class DataManager {
     PreferenceManager().putStringList(Constant.EXCLUDED_LIST, lists);
   }
 
+ Future<void> clearExcludedList() async{
+  await PreferenceManager().putStringList(Constant.EXCLUDED_LIST, []);
+  }
+
   List<String>? getExcludedList() {
     return PreferenceManager().getStringList(Constant.EXCLUDED_LIST, null);
   }
@@ -297,8 +303,12 @@ class DataManager {
     return PreferenceManager().getStringList(Constant.INCLUDED_LIST, null);
   }
 
-  void saveExcludeType(String type) {
-    PreferenceManager().putString(Constant.EXCLUDE_TYPE, type);
+  Future<void> clearIncludeList()async {
+    await PreferenceManager().putStringList(Constant.INCLUDED_LIST, []);
+  }
+
+  Future<void>  saveExcludeType(String type) async{
+    await PreferenceManager().putString(Constant.EXCLUDE_TYPE, type);
   }
 
   void saveIncludeType(String type) {
