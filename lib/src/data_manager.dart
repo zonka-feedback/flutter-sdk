@@ -149,22 +149,20 @@ class DataManager {
     String contactIdValue = getContactId();
     List<SessionLog> sessionLogList = [];
     for (int i = 0; i < sessionList.length; i++) {
-      if (sessionList[i].endTime != null) {
-        if (sessionList[i].endTime != 0 && sessionList[i].startTime != 0) {
-          SessionLog sessionLog = SessionLog(
-            sessionStartedAt: AppUtils.instance.getCurrentTime(
-                sessionList[i].startTime!, Constant.DATE_FORMAT),
-            sessionClosedAt: AppUtils.instance
-                .getCurrentTime(sessionList[i].endTime!, Constant.DATE_FORMAT),
-            uniqueSessId: sessionList[i].id,
-            cookieId: getCookieId(),
-            ipAddress: await AppUtils.instance.getLocalIpAddress(),
-            contactId: contactIdValue,
-          );
-          sessionLogList.add(sessionLog);
-        }
+      if (sessionList[i].endTime != 0 && sessionList[i].startTime != 0) {
+        SessionLog sessionLog = SessionLog(
+          sessionStartedAt: AppUtils.instance.getCurrentTime(
+              sessionList[i].startTime!, Constant.DATE_FORMAT),
+          sessionClosedAt: AppUtils.instance
+              .getCurrentTime(sessionList[i].endTime!, Constant.DATE_FORMAT),
+          uniqueSessId: sessionList[i].id,
+          cookieId: getCookieId(),
+          ipAddress: await AppUtils.instance.getLocalIpAddress(),
+          contactId: contactIdValue,
+        );
+        sessionLogList.add(sessionLog);
       }
-    }
+        }
 
     sessionRequest.sessionLogs = sessionLogList;
     _apiManager.updateSessionToServer(token, sessionRequest).then((value) {});
