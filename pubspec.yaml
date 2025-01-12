@@ -19,9 +19,9 @@ dependencies:
   freezed_annotation: ^2.4.4 # Allows updates within 2.x.x
   json_annotation: ^4.9.0 # Covers 4.x.x, avoiding breaking changes in 5.x
   pretty_dio_logger: ^1.4.0 # Allows updates in the 1.x.x series
-  flutter_inappwebview: ^6.1.5 # Flexible within 6.x.x
   path_provider: ^2.1.5 # Updates within 2.x.x but restricts breaking changes
   plugin_platform_interface: ^2.0.2
+  webview_flutter: ^4.10.0
 
 dev_dependencies:
   flutter_test:

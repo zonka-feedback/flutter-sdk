@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class ZFSurveyDialog {
-  static Future<void> show({required BuildContext context, required String surveyUrl}) async {
+  static Future<void> show({
+    required BuildContext context,
+    required String surveyUrl,
+  }) async {
     return showDialog(
-        context: context,
-        builder: (BuildContext context) => Dialog(
-            insetPadding: EdgeInsets.zero,
-            child: ClipRRect(borderRadius: const BorderRadius.all(Radius.circular(10),),
-            child: WebViewWithLoader(surveyUrl: surveyUrl,))));
+      context: context,
+      builder: (BuildContext context) => Dialog(
+        insetPadding: EdgeInsets.zero,
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          child: WebViewWithLoader(surveyUrl: surveyUrl),
+        ),
+      ),
+    );
   }
 }
 
 class WebViewWithLoader extends StatefulWidget {
   final String surveyUrl;
-  const WebViewWithLoader({super.key, required this.surveyUrl});
+
+  const WebViewWithLoader({Key? key, required this.surveyUrl}) : super(key: key);
 
   @override
   _WebViewWithLoaderState createState() => _WebViewWithLoaderState();
@@ -22,8 +30,50 @@ class WebViewWithLoader extends StatefulWidget {
 
 class _WebViewWithLoaderState extends State<WebViewWithLoader> {
   bool _isLoading = true;
-  late InAppWebViewController _webViewController;
-  bool switchHeight = true;
+  bool isExpanded = false;
+  late final WebViewController _webViewController;
+
+  @override
+  void initState() {
+    super.initState();
+    _webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..addJavaScriptChannel(
+        'messageHandler',
+        onMessageReceived: (message) {
+          _handleJavaScriptMessage(message.message);
+        },
+      )
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (url) {
+            setState(() {
+              _isLoading = false;
+            });
+          },
+          onWebResourceError: (error) {
+            setState(() {
+              _isLoading = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Failed to load page: ${error.description}')),
+            );
+          },
+        ),
+      )
+       ..enableZoom(false)
+      ..loadRequest(Uri.parse(widget.surveyUrl));
+  }
+
+  void _handleJavaScriptMessage(String message) {
+    if (message == 'zf-embed-expand-widget') {
+      setState(() {
+        isExpanded = true;
+      });
+    } else if (message == 'zf-embed-submit-close') {
+      Navigator.of(context).pop();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,68 +84,22 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
         color: Colors.white,
       ),
       alignment: Alignment.center,
-      width: 320, // Match the width of your XML CardView
-      height: switchHeight ? 270 : size.height / 1.8, //
+      width: 320,
+      height: isExpanded ? size.height / 1.8 : 270,
       child: Stack(
-
         alignment: Alignment.topRight,
         children: [
-          InAppWebView(
-          
-            initialUrlRequest: URLRequest(
-              url: WebUri (widget.surveyUrl), // Fixed Uri parsing
-            ),
-            
-           initialSettings: InAppWebViewSettings(
-       supportZoom:false,     
-    javaScriptEnabled: true,
-    allowsInlineMediaPlayback: true,
-    mediaPlaybackRequiresUserGesture: false,
-    
-  ),
-
-            onWebViewCreated: (controller) {
-              _webViewController = controller;
-              _webViewController.addJavaScriptHandler(
-                handlerName: 'messageHandler',
-                callback: (args) {
-                  if (args[0] == 'zf-embed-expand-widget') {
-                    setState(() {
-                      switchHeight = false;
-                    });
-                  } else if (args[0] == 'zf-embed-submit-close') {
-                    Navigator.of(context).pop();
-                  }
-                  return {"status": "Message received successfully!"};
-                },
-              );
+         WebViewWidget(controller: _webViewController),
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.black),
+            tooltip: 'Close dialog',
+            onPressed: () {
+              Navigator.of(context).pop();
             },
-            onLoadStop: (controller, url) async {
-              setState(() {
-                _isLoading = false;
-              });
-            },
-          ),
-          Positioned(
-            // left: size.width / 1.3,
-            // bottom: switchHeight ? size.height / 3.5 : size.height / 2,
-            child: IconButton(
-              focusColor: Colors.black,
-              icon: const Icon(
-                Icons.close,
-                weight: 25,
-                color: Colors.black, // Icon color
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
           ),
           if (_isLoading)
             const Center(
-              child: CircularProgressIndicator(
-                color: Colors.lightBlue,
-              ),
+              child: CircularProgressIndicator(color: Colors.lightBlue),
             ),
         ],
       ),
