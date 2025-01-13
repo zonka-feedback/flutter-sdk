@@ -40,8 +40,6 @@ dependencies:
 **Configuration for iOS** : Add the following snippet to your **Info.plist** file.
 
 ```yaml
-  <key>NSAllowsArbitraryLoadsInWebContent</key>
-  <true/>
   <key>NSAppTransportSecurity</key>
   <dict>
     <key>NSAllowsArbitraryLoads</key>
@@ -75,6 +73,10 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey> with WidgetsB
   }
 }
 ```
+For Display Type use one of the following:
+
+popup : to show the survey as a popup in the center of the screen
+slide-up : to show the survey as a slide-up bottom sheet
 
 ---
 

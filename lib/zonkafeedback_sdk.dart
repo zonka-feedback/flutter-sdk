@@ -20,13 +20,17 @@ class ZFSurvey implements ApiResponseCallbacks {
   static String _customVariableString = "";
   late ZFSurveyDialog zfSurveyDialog;
   late BuildContext _context;
-  String? uiType = 'dialogBox';
+  String? uiType = 'popup';
 
   /// Initialize SDK with necessary details
-  Future<void> init({required String token, required String zfRegion, required BuildContext context, String? displayType}) async {
+  Future<void> init(
+      {required String token,
+      required String zfRegion,
+      required BuildContext context,
+      String? displayType}) async {
     _context = context;
     await DataManager().init(token);
-    uiType = displayType ?? 'dialogBox';
+    uiType = displayType ?? 'popup';
     _initializeSDK(token, zfRegion);
   }
 
@@ -104,7 +108,6 @@ class ZFSurvey implements ApiResponseCallbacks {
       _customVariableString = "";
       _url = "${_url}cookieId=${DataManager().getCookieId()}&";
     }
-
 
     if (DataManager().getExternalVisitorId().isNotEmpty) {
       _customVariableString = "";
@@ -217,13 +220,12 @@ class ZFSurvey implements ApiResponseCallbacks {
     }
     bool widgetActive = DataManager().isWidgetActive();
     String openUrl = _url + Constant.EMBED_URL;
-    print("openurl $openUrl");
     if (widgetActive) {
       bool segmentAllowed = checkSegmenting();
       if (segmentAllowed) {
-        if (uiType == 'dialogBox') {
+        if (uiType == 'popup') {
           await ZFSurveyDialog.show(context: _context, surveyUrl: openUrl);
-        } else if (uiType == 'bottomSheet') {
+        } else if (uiType == 'slide-up') {
           await ZfBottomSheetDialog.show(context: _context, surveyUrl: openUrl);
         }
       }

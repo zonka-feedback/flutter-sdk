@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.0
+- Added support for Survey Display type (popup & slide-up)
+
 ## 1.0.0
 - Official Flutter SDK for Zonka Feedback
 
