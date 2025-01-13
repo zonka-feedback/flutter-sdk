@@ -7,6 +7,7 @@ import 'package:zonkafeedback_sdk/src/network/api_response_callback.dart';
 import 'package:zonkafeedback_sdk/src/session_database/session_service.dart';
 import 'package:zonkafeedback_sdk/src/survey.dart';
 import 'package:zonkafeedback_sdk/src/utils/app_util.dart';
+import 'package:zonkafeedback_sdk/src/zf_bottom_sheet.dart';
 import 'package:zonkafeedback_sdk/src/zf_survey_dialog.dart';
 
 class ZFSurvey implements ApiResponseCallbacks {
@@ -19,14 +20,13 @@ class ZFSurvey implements ApiResponseCallbacks {
   static String _customVariableString = "";
   late ZFSurveyDialog zfSurveyDialog;
   late BuildContext _context;
+  String? uiType = 'dialogBox';
 
   /// Initialize SDK with necessary details
-  Future<void> init(
-      {required String token,
-      required String zfRegion,
-      required BuildContext context}) async {
+  Future<void> init({required String token, required String zfRegion, required BuildContext context, String? displayType}) async {
     _context = context;
     await DataManager().init(token);
+    uiType = displayType ?? 'dialogBox';
     _initializeSDK(token, zfRegion);
   }
 
@@ -105,6 +105,7 @@ class ZFSurvey implements ApiResponseCallbacks {
       _url = "${_url}cookieId=${DataManager().getCookieId()}&";
     }
 
+
     if (DataManager().getExternalVisitorId().isNotEmpty) {
       _customVariableString = "";
       _url =
@@ -177,20 +178,18 @@ class ZFSurvey implements ApiResponseCallbacks {
       if (contactResponseList.isNotEmpty) {
         for (String segmentInContact in contactResponseList) {
           if (includedList.contains(segmentInContact)) {
-            print("icnlusegmentationcalled");
             processEmbedSurvey = true;
             break;
           }
         }
       }
     }
-    print("exludelistvalue $excludedList");
+
     // Check excluded segments
     if (excludedList.isNotEmpty) {
       if (contactResponseList.isNotEmpty) {
         for (String segmentInContact in contactResponseList) {
           if (excludedList.contains(segmentInContact)) {
-            print("excludedListgmentationcalled");
             processEmbedSurvey = false;
             break;
           }
@@ -218,11 +217,15 @@ class ZFSurvey implements ApiResponseCallbacks {
     }
     bool widgetActive = DataManager().isWidgetActive();
     String openUrl = _url + Constant.EMBED_URL;
-    print("openurlvalue $openUrl");
+    print("openurl $openUrl");
     if (widgetActive) {
       bool segmentAllowed = checkSegmenting();
       if (segmentAllowed) {
-        await ZFSurveyDialog.show(context: _context, surveyUrl: openUrl);
+        if (uiType == 'dialogBox') {
+          await ZFSurveyDialog.show(context: _context, surveyUrl: openUrl);
+        } else if (uiType == 'bottomSheet') {
+          await ZfBottomSheetDialog.show(context: _context, surveyUrl: openUrl);
+        }
       }
     }
   }

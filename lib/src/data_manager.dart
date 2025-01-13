@@ -256,7 +256,7 @@ class DataManager {
   }
 
   String getEmailId() {
-    return PreferenceManager().getString(Constant.EMAIL_ID, "");
+    return   PreferenceManager().getString(Constant.EMAIL_ID, "");
   }
 
   String getMobileNo() {

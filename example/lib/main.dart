@@ -33,7 +33,12 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
     with WidgetsBindingObserver {
   @override
   void initState() {
-    ZFSurvey().init(token: 'zsX66I', zfRegion: 'US', context: context);
+    ZFSurvey().init(
+        token: 'rI4k8H',
+        zfRegion: 'US',
+        context: context,
+        uiTypePassed:'bottomSheet'
+        );
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
