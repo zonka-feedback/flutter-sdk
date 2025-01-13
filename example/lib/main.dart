@@ -37,7 +37,7 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
         token: 'rI4k8H',
         zfRegion: 'US',
         context: context,
-        uiTypePassed:'bottomSheet'
+        displayType:'bottomSheet'
         );
     WidgetsBinding.instance.addObserver(this);
     super.initState();
