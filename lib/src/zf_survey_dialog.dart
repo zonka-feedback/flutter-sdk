@@ -22,7 +22,8 @@ class ZFSurveyDialog {
 class WebViewWithLoader extends StatefulWidget {
   final String surveyUrl;
 
-  const WebViewWithLoader({Key? key, required this.surveyUrl}) : super(key: key);
+  const WebViewWithLoader({Key? key, required this.surveyUrl})
+      : super(key: key);
 
   @override
   _WebViewWithLoaderState createState() => _WebViewWithLoaderState();
@@ -56,12 +57,13 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
               _isLoading = false;
             });
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Failed to load page: ${error.description}')),
+              SnackBar(
+                  content: Text('Failed to load page: ${error.description}')),
             );
           },
         ),
       )
-       ..enableZoom(false)
+      ..enableZoom(false)
       ..loadRequest(Uri.parse(widget.surveyUrl));
   }
 
@@ -89,7 +91,7 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       child: Stack(
         alignment: Alignment.topRight,
         children: [
-         WebViewWidget(controller: _webViewController),
+          WebViewWidget(controller: _webViewController),
           IconButton(
             icon: const Icon(Icons.close, color: Colors.black),
             tooltip: 'Close dialog',

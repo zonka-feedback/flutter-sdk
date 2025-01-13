@@ -44,7 +44,7 @@ class DataManager {
   }
 
   void hitSurveyActiveApi(String token, bool isSurveyInitialize) async {
-    _apiManager.hitSurveyActiveApi(token).then((widget) async{
+    _apiManager.hitSurveyActiveApi(token).then((widget) async {
       if (widget?.data?.distributionInfo?.embedSettings != null) {
         ExcludeSegment? excludeSegment =
             widget?.data?.distributionInfo?.embedSettings?.excludeSegment;
@@ -145,17 +145,17 @@ class DataManager {
 
   Future<void> updateSessionToServer(
       String token, List<Sessions> sessionList) async {
-   UpdateSessionRequest sessionRequest = UpdateSessionRequest(
-  deviceType: Platform.isIOS ? Constant.IOS : Constant.ANDROID,
-);
+    UpdateSessionRequest sessionRequest = UpdateSessionRequest(
+      deviceType: Platform.isIOS ? Constant.IOS : Constant.ANDROID,
+    );
 
     String contactIdValue = getContactId();
     List<SessionLog> sessionLogList = [];
     for (int i = 0; i < sessionList.length; i++) {
       if (sessionList[i].endTime != 0 && sessionList[i].startTime != 0) {
         SessionLog sessionLog = SessionLog(
-          sessionStartedAt: AppUtils.instance.getCurrentTime(
-              sessionList[i].startTime, Constant.DATE_FORMAT),
+          sessionStartedAt: AppUtils.instance
+              .getCurrentTime(sessionList[i].startTime, Constant.DATE_FORMAT),
           sessionClosedAt: AppUtils.instance
               .getCurrentTime(sessionList[i].endTime, Constant.DATE_FORMAT),
           uniqueSessId: sessionList[i].id,
@@ -165,7 +165,7 @@ class DataManager {
         );
         sessionLogList.add(sessionLog);
       }
-        }
+    }
 
     sessionRequest.sessionLogs = sessionLogList;
     _apiManager.updateSessionToServer(token, sessionRequest).then((value) {});
@@ -287,8 +287,8 @@ class DataManager {
     PreferenceManager().putStringList(Constant.EXCLUDED_LIST, lists);
   }
 
- Future<void> clearExcludedList() async{
-  await PreferenceManager().putStringList(Constant.EXCLUDED_LIST, []);
+  Future<void> clearExcludedList() async {
+    await PreferenceManager().putStringList(Constant.EXCLUDED_LIST, []);
   }
 
   List<String>? getExcludedList() {
@@ -303,11 +303,11 @@ class DataManager {
     return PreferenceManager().getStringList(Constant.INCLUDED_LIST, null);
   }
 
-  Future<void> clearIncludeList()async {
+  Future<void> clearIncludeList() async {
     await PreferenceManager().putStringList(Constant.INCLUDED_LIST, []);
   }
 
-  Future<void>  saveExcludeType(String type) async{
+  Future<void> saveExcludeType(String type) async {
     await PreferenceManager().putString(Constant.EXCLUDE_TYPE, type);
   }
 

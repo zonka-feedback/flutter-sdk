@@ -71,7 +71,6 @@ class AppUtils {
     } else {
       return "UNKNOWN";
     }
-   
   }
 
   /// Check if device is Tablet
@@ -84,7 +83,6 @@ class AppUtils {
   Future<bool> isNetworkConnected() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     return connectivityResult.first != ConnectivityResult.none;
-    
   }
 
   /// Calculate Time Difference in Seconds
@@ -103,7 +101,8 @@ class AppUtils {
 
   /// Generate Random Cookie ID
   String getCookieId(int length) {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     final random = Random();
     return String.fromCharCodes(
       Iterable.generate(

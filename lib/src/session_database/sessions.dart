@@ -1,4 +1,3 @@
-
 class Sessions {
   String id;
   int startTime;
@@ -8,10 +7,10 @@ class Sessions {
 
   // Convert Sessions object to a JSON map
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'startTime': startTime,
-    'endTime': endTime,
-  };
+        'id': id,
+        'startTime': startTime,
+        'endTime': endTime,
+      };
 
   // Create Sessions object from a JSON map
   factory Sessions.fromJson(Map<String, dynamic> json) {

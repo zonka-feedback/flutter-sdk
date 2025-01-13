@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
 
 void main() {
-   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -29,8 +29,8 @@ class ZonkaFeedBackSurvey extends StatefulWidget {
   State<ZonkaFeedBackSurvey> createState() => _ZonkaFeedBackSurveyState();
 }
 
-class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>  with WidgetsBindingObserver {
-  
+class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     ZFSurvey().init(token: 'zsX66I', zfRegion: 'US', context: context);
@@ -53,12 +53,10 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>  with Widgets
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            
             alignment: Alignment.center,
             child: ElevatedButton(
               onPressed: () {
@@ -66,9 +64,8 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>  with Widgets
                   'contact_name': 'Robin James',
                   'contact_email': 'robin@example.com',
                   'contact_uniqueId': '1XJ2',
-                  
                 };
-          
+
                 ZFSurvey()
                     .sendDeviceDetails(true)
                     .sendCustomAttributes(properties)
@@ -83,16 +80,13 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>  with Widgets
               ),
             ),
           ),
-
-SizedBox(
-  height: 20,
-),
+          SizedBox(
+            height: 20,
+          ),
           Container(
-            
             alignment: Alignment.center,
             child: ElevatedButton(
               onPressed: () {
-          
                 ZFSurvey().clear();
               },
               style: ElevatedButton.styleFrom(

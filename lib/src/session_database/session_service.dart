@@ -4,8 +4,6 @@ import '../utils/app_util.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 class SessionService {
   static final SessionService _singleton = SessionService._internal();
 
@@ -53,7 +51,8 @@ class SessionService {
       print("Session List:");
       for (var sessionJson in sessions) {
         Sessions session = Sessions.fromJson(jsonDecode(sessionJson));
-        print("Session ID: ${session.id}, Start Time: ${session.startTime}, End Time: ${session.endTime}");
+        print(
+            "Session ID: ${session.id}, Start Time: ${session.startTime}, End Time: ${session.endTime}");
       }
     } else {
       print("No sessions available.");
