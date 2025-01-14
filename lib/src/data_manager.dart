@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:zonkafeedback_sdk/src/session_database/sessions.dart';
 import 'package:zonkafeedback_sdk/src/sharedpreference/preference_manager.dart';
 import 'package:zonkafeedback_sdk/src/utils/app_util.dart';
+import 'package:zonkafeedback_sdk/src/utils/encryption_service.dart';
 
 import '../zonka_sdk.dart';
 import 'constant.dart';
@@ -256,15 +257,19 @@ class DataManager {
   }
 
   String getEmailId() {
-    return PreferenceManager().getString(Constant.EMAIL_ID, "");
+
+    String encryptValue = EncryptionService().encryptData(PreferenceManager().getString(Constant.EMAIL_ID, ""));
+    return encryptValue;
   }
 
   String getMobileNo() {
-    return PreferenceManager().getString(Constant.MOBILE_NO, "");
+    String encryptValue = EncryptionService().encryptData(PreferenceManager().getString(Constant.MOBILE_NO, ""));
+    return encryptValue;
   }
 
   String getUniqueId() {
-    return PreferenceManager().getString(Constant.UNIQUE_ID, "");
+    String encryptValue =  EncryptionService().encryptData(PreferenceManager().getString(Constant.UNIQUE_ID, ""));
+    return encryptValue ;
   }
 
   String getRegion() {

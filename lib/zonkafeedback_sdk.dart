@@ -7,6 +7,7 @@ import 'package:zonkafeedback_sdk/src/network/api_response_callback.dart';
 import 'package:zonkafeedback_sdk/src/session_database/session_service.dart';
 import 'package:zonkafeedback_sdk/src/survey.dart';
 import 'package:zonkafeedback_sdk/src/utils/app_util.dart';
+import 'package:zonkafeedback_sdk/src/utils/encryption_service.dart';
 import 'package:zonkafeedback_sdk/src/zf_bottom_sheet.dart';
 import 'package:zonkafeedback_sdk/src/zf_survey_dialog.dart';
 
@@ -29,6 +30,7 @@ class ZFSurvey implements ApiResponseCallbacks {
       required BuildContext context,
       String? displayType}) async {
     _context = context;
+    EncryptionService().init("my32lengthsupersecretnooneknows1");
     await DataManager().init(token);
     uiType = displayType ?? 'popup';
     _initializeSDK(token, zfRegion);
@@ -220,6 +222,7 @@ class ZFSurvey implements ApiResponseCallbacks {
     }
     bool widgetActive = DataManager().isWidgetActive();
     String openUrl = _url + Constant.EMBED_URL;
+    print("zonkafeedbackopnurl $openUrl");
     if (widgetActive) {
       bool segmentAllowed = checkSegmenting();
       if (segmentAllowed) {

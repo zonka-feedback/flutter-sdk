@@ -38,20 +38,13 @@ class _AttributeFormState extends State<AttributeForm>
     super.didChangeAppLifecycleState(state);
   }
 
-  void runSurvey() async {
-    await ZFSurvey()
-        .init(token: sdkToken, zfRegion: regionValue, context: context);
+  void runSurvey(String displayType) async {
+    await ZFSurvey().init(token: sdkToken, zfRegion: regionValue, context: context, displayType: displayType);
     final Map<String, String> customAttributes = {
       for (var attribute in attributes)
-        if (attribute['key'] != null &&
-            attribute['value'] != null &&
-            attribute['value']!.isNotEmpty)
-          attribute['key']!: attribute['value']!
+        if (attribute['key'] != null && attribute['value'] != null && attribute['value']!.isNotEmpty) attribute['key']!: attribute['value']!
     };
-    ZFSurvey()
-        .sendDeviceDetails(true)
-        .sendCustomAttributes(customAttributes)
-        .startSurvey();
+    ZFSurvey().sendDeviceDetails(true).sendCustomAttributes(customAttributes).startSurvey();
   }
 
   void clearFunctionValue() {
@@ -175,43 +168,80 @@ class _AttributeFormState extends State<AttributeForm>
               children: [
                 ElevatedButton(
                   onPressed: addAttribute,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8), // Adjust the value as needed
+                    ),
+                  ),
                   child: Text(
                     'Add More',
                     style: TextStyle(color: Colors.white),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                  ),
+
                 ),
 
-                TextButton(
-                  onPressed: clearAllAttributes,
-                  child: Text('Clear All'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.blue,
-                  ),
-                ),
-                // Clear All Button
-                TextButton(
-                  onPressed: clearFunctionValue,
-                  child: Text('Clear Function'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.blue,
-                  ),
-                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: clearAllAttributes,
+                      child: Text('Clear All'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.blue,
+                      ),
+                    ),
+                    // Clear All Button
+                    TextButton(
+                      onPressed: clearFunctionValue,
+                      child: Text('Clear Local Storage'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.blue,
+                      ),
+                    ),
 
-                Container(
-                  width: size.width,
-                  child: ElevatedButton(
-                    onPressed: runSurvey,
-                    child: Text(
-                      'RUN',
-                      style: TextStyle(color: Colors.white),
+                  ],
+                )
+            ,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8), // Adjust the value as needed
+                          ),
+                        ),
+                        onPressed: (){
+                          runSurvey('popup');
+                        },
+                        child: Text(
+                          'popup',
+                          style: TextStyle(color: Colors.white),
+                        ),
+
+                      ),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                    SizedBox(width: size.width/10,),
+                    ElevatedButton(
+                      onPressed: (){
+                        runSurvey('slide-up');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8), // Adjust the value as needed
+                        ),
+                      ),
+                      child: Text(
+                        'slide-up',
+                        style: TextStyle(color: Colors.white),
+                      ),
+
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),

@@ -5,14 +5,14 @@
 The Zonka Feedback Flutter SDK requires:
 - **Zonka Feedback Account:** An active Zonka Feedback account.
 - **SDK Token:** Obtain this token for the survey you want to implement:
-    1. Create a Zonka Feedback account.
+    1. Create a [Zonka Feedback account](https://www.zonkafeedback.com/free-trial-signup?utm_campaign=Free%20Trial%20Buttons&utm_source=flutter_sdk).
     2. Create a new survey with the desired questions.
     3. Navigate to the **Distribute** menu → **In-App** tab.
     4. Enable the toggle to view your SDK token.
 
 Follow the steps below to integrate the SDK into your app.
 
-> Learn more about creating surveys on [Zonka Feedback](https://www.zonkafeedback.com/).
+> Learn more about creating surveys on [Zonka Feedback](https://help.zonkafeedback.com/en/articles/6389318-getting-started-with-zonka-feedback).
 
 ---
 
