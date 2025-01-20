@@ -73,7 +73,7 @@ class ApiManager {
     } else if (zfRegion.toUpperCase() == 'IN') {
       return forContactTracking
           ? 'https://in.apis.zonkafeedback.com/'
-          : "${Constant.HTTPS}in1${Constant.RETROFIT_URL}";
+          : "${Constant.HTTPS}in${Constant.RETROFIT_URL}";
     } else {
       return forContactTracking
           ? 'https://us1.apis.zonkafeedback.com/'

@@ -30,7 +30,7 @@ class ZFSurvey implements ApiResponseCallbacks {
       required BuildContext context,
       String? displayType}) async {
     _context = context;
-    EncryptionService().init("my32lengthsupersecretnooneknows1");
+    // EncryptionService().init("my32lengthsupersecretnooneknows1");
     await DataManager().init(token);
     uiType = displayType ?? 'popup';
     _initializeSDK(token, zfRegion);

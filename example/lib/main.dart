@@ -18,7 +18,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return  MaterialApp(
       home: ZonkaFeedBackSurvey(),
     );
   }
@@ -35,7 +35,7 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
     with WidgetsBindingObserver {
   @override
   void initState() {
-    ZFSurvey().init(token: 'rI4k8H', zfRegion: 'US', context: context, displayType: 'popup');
+    ZFSurvey().init(token: 'WaO7o0', zfRegion: 'IN', context: context, displayType: 'popup');
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
@@ -64,8 +64,8 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
               onPressed: () {
                 Map<String, dynamic> properties = {
                   'contact_name': 'Robin James',
-                  'contact_email': 'robin@example.com',
-                  'contact_uniqueId': '1XJ2',
+                  'contact_email': 'manavgarg@example.com',
+                  'contact_uniqueId': 'fhebfkebd',
                 };
 
                 ZFSurvey()

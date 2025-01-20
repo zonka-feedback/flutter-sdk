@@ -258,18 +258,20 @@ class DataManager {
 
   String getEmailId() {
 
-    String encryptValue = EncryptionService().encryptData(PreferenceManager().getString(Constant.EMAIL_ID, ""));
-    return encryptValue;
+
+   return PreferenceManager().getString(Constant.EMAIL_ID, "");
+
   }
 
   String getMobileNo() {
-    String encryptValue = EncryptionService().encryptData(PreferenceManager().getString(Constant.MOBILE_NO, ""));
-    return encryptValue;
+    // String encryptValue = EncryptionService().encryptData(PreferenceManager().getString(Constant.MOBILE_NO, ""));
+    // return encryptValue;
+
+    return PreferenceManager().getString(Constant.MOBILE_NO, "");
   }
 
   String getUniqueId() {
-    String encryptValue =  EncryptionService().encryptData(PreferenceManager().getString(Constant.UNIQUE_ID, ""));
-    return encryptValue ;
+    return PreferenceManager().getString(Constant.UNIQUE_ID, "");
   }
 
   String getRegion() {
