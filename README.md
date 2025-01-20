@@ -83,11 +83,6 @@ To configure the display type for the survey, use one of the following options:
 2. **slide-up**  
    - Displays the survey as a slide-up bottom sheet.
    
-For Display Type use one of the following:
-
-popup : to show the survey as a popup in the center of the screen
-slide-up : to show the survey as a slide-up bottom sheet
-
 ---
 
 ## Setup
