@@ -73,6 +73,16 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey> with WidgetsB
   }
 }
 ```
+# Survey Display Type Configuration
+
+To configure the display type for the survey, use one of the following options:
+
+1. **popup**  
+   - Shows the survey as a popup in the center of the screen.
+
+2. **slide-up**  
+   - Displays the survey as a slide-up bottom sheet.
+   
 For Display Type use one of the following:
 
 popup : to show the survey as a popup in the center of the screen

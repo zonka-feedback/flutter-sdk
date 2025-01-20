@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
 
-import 'attribute_form.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +17,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(
       home: ZonkaFeedBackSurvey(),
     );
   }
@@ -35,7 +34,11 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
     with WidgetsBindingObserver {
   @override
   void initState() {
-    ZFSurvey().init(token: 'WaO7o0', zfRegion: 'IN', context: context, displayType: 'popup');
+    ZFSurvey().init(
+        token: 'WaO7o0',
+        zfRegion: 'IN',
+        context: context,
+        displayType: 'popup');
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }

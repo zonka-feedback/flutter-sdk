@@ -39,12 +39,22 @@ class _AttributeFormState extends State<AttributeForm>
   }
 
   void runSurvey(String displayType) async {
-    await ZFSurvey().init(token: sdkToken, zfRegion: regionValue, context: context, displayType: displayType);
+    await ZFSurvey().init(
+        token: sdkToken,
+        zfRegion: regionValue,
+        context: context,
+        displayType: displayType);
     final Map<String, String> customAttributes = {
       for (var attribute in attributes)
-        if (attribute['key'] != null && attribute['value'] != null && attribute['value']!.isNotEmpty) attribute['key']!: attribute['value']!
+        if (attribute['key'] != null &&
+            attribute['value'] != null &&
+            attribute['value']!.isNotEmpty)
+          attribute['key']!: attribute['value']!
     };
-    ZFSurvey().sendDeviceDetails(true).sendCustomAttributes(customAttributes).startSurvey();
+    ZFSurvey()
+        .sendDeviceDetails(true)
+        .sendCustomAttributes(customAttributes)
+        .startSurvey();
   }
 
   void clearFunctionValue() {
@@ -171,16 +181,15 @@ class _AttributeFormState extends State<AttributeForm>
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8), // Adjust the value as needed
+                      borderRadius: BorderRadius.circular(
+                          8), // Adjust the value as needed
                     ),
                   ),
                   child: Text(
                     'Add More',
                     style: TextStyle(color: Colors.white),
                   ),
-
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -199,10 +208,8 @@ class _AttributeFormState extends State<AttributeForm>
                         foregroundColor: Colors.blue,
                       ),
                     ),
-
                   ],
-                )
-            ,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -211,35 +218,37 @@ class _AttributeFormState extends State<AttributeForm>
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8), // Adjust the value as needed
+                            borderRadius: BorderRadius.circular(
+                                8), // Adjust the value as needed
                           ),
                         ),
-                        onPressed: (){
+                        onPressed: () {
                           runSurvey('popup');
                         },
                         child: Text(
                           'popup',
                           style: TextStyle(color: Colors.white),
                         ),
-
                       ),
                     ),
-                    SizedBox(width: size.width/10,),
+                    SizedBox(
+                      width: size.width / 10,
+                    ),
                     ElevatedButton(
-                      onPressed: (){
+                      onPressed: () {
                         runSurvey('slide-up');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8), // Adjust the value as needed
+                          borderRadius: BorderRadius.circular(
+                              8), // Adjust the value as needed
                         ),
                       ),
                       child: Text(
                         'slide-up',
                         style: TextStyle(color: Colors.white),
                       ),
-
                     ),
                   ],
                 ),

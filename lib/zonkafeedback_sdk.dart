@@ -7,7 +7,6 @@ import 'package:zonkafeedback_sdk/src/network/api_response_callback.dart';
 import 'package:zonkafeedback_sdk/src/session_database/session_service.dart';
 import 'package:zonkafeedback_sdk/src/survey.dart';
 import 'package:zonkafeedback_sdk/src/utils/app_util.dart';
-import 'package:zonkafeedback_sdk/src/utils/encryption_service.dart';
 import 'package:zonkafeedback_sdk/src/zf_bottom_sheet.dart';
 import 'package:zonkafeedback_sdk/src/zf_survey_dialog.dart';
 

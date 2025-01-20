@@ -5,8 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:zonkafeedback_sdk/src/session_database/sessions.dart';
 import 'package:zonkafeedback_sdk/src/sharedpreference/preference_manager.dart';
 import 'package:zonkafeedback_sdk/src/utils/app_util.dart';
-import 'package:zonkafeedback_sdk/src/utils/encryption_service.dart';
-
 import '../zonka_sdk.dart';
 import 'constant.dart';
 import 'model/contact_response/contact_response.dart';
@@ -257,10 +255,7 @@ class DataManager {
   }
 
   String getEmailId() {
-
-
-   return PreferenceManager().getString(Constant.EMAIL_ID, "");
-
+    return PreferenceManager().getString(Constant.EMAIL_ID, "");
   }
 
   String getMobileNo() {
