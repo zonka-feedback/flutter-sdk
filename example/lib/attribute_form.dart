@@ -45,8 +45,7 @@ class _AttributeFormState extends State<AttributeForm>
         zfRegion: regionValue,
         context: context,
         displayType: displayType,
-        displayHeight: heightValue
-        );
+        displayHeight: heightValue);
     final Map<String, String> customAttributes = {
       for (var attribute in attributes)
         if (attribute['key'] != null &&
@@ -119,11 +118,11 @@ class _AttributeFormState extends State<AttributeForm>
                 border: OutlineInputBorder(),
               ),
             ),
-   const SizedBox(height: 10),
- TextFormField(
+            const SizedBox(height: 10),
+            TextFormField(
               onChanged: (value) {
                 setState(() {
-                  heightValue = double.parse(value) ;
+                  heightValue = double.parse(value);
                 });
               },
               decoration: const InputDecoration(

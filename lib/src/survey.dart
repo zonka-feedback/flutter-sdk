@@ -54,6 +54,5 @@ class Survey {
       return '${Constant.HTTPS}in${Constant.URL}$surveyToken';
     }
     return '${Constant.HTTPS}us1${Constant.URL}$surveyToken';
-
   }
 }

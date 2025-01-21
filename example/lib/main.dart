@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
 
-
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
@@ -40,8 +38,7 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
         zfRegion: 'IN',
         context: context,
         displayType: 'popup',
-        displayHeight: 1.5
-        );
+        displayHeight: 1.5);
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }

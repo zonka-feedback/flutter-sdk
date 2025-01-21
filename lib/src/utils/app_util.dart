@@ -100,7 +100,8 @@ class AppUtils {
 
   /// Generate Random Cookie ID
   String getCookieId(int length) {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     final random = Random();
     return String.fromCharCodes(
       Iterable.generate(

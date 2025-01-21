@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ZfBottomSheetDialog {
-  static Future<void> show({
-    required BuildContext context,
-    required String surveyUrl,
-    required double height
-  }) async {
+  static Future<void> show(
+      {required BuildContext context,
+      required String surveyUrl,
+      required double height}) async {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true, // Allows content-driven height
@@ -27,7 +26,10 @@ class ZfBottomSheetDialog {
             ),
             child: Container(
               color: Colors.white, // Background color of the bottom sheet
-              child: WebViewWithLoader(surveyUrl: surveyUrl,height: height,),
+              child: WebViewWithLoader(
+                surveyUrl: surveyUrl,
+                height: height,
+              ),
             ),
           ),
         );
@@ -39,7 +41,8 @@ class ZfBottomSheetDialog {
 class WebViewWithLoader extends StatefulWidget {
   final String surveyUrl;
   final double height;
-  const WebViewWithLoader({Key? key, required this.surveyUrl, required this.height})
+  const WebViewWithLoader(
+      {Key? key, required this.surveyUrl, required this.height})
       : super(key: key);
 
   @override
@@ -99,7 +102,8 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
   @override
   Widget build(BuildContext context) {
     // Adjust height dynamically based on isExpanded
-    double height = isExpanded ? MediaQuery.of(context).size.height / widget.height : 270;
+    double height =
+        isExpanded ? MediaQuery.of(context).size.height / widget.height : 270;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300), // Smooth resizing

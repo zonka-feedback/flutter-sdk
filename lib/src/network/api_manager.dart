@@ -78,12 +78,8 @@ class ApiManager {
       return forContactTracking
           ? 'https://us1.apis.zonkafeedback.com/'
           : "${Constant.HTTPS}us1${Constant.RETROFIT_URL}";
-    }    
-  
+    }
   }
-
-  
-
 
   Dio _getContactTrackingClient() {
     _contactTrackingHostClient = _configureRetrofitService(
