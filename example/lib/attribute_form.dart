@@ -45,7 +45,7 @@ class _AttributeFormState extends State<AttributeForm>
         zfRegion: regionValue,
         context: context,
         displayType: displayType,
-        height: heightValue
+        displayHeight: heightValue
         );
     final Map<String, String> customAttributes = {
       for (var attribute in attributes)

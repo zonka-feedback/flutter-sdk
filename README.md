@@ -73,9 +73,9 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey> with WidgetsB
   }
 }
 ```
-# Survey Display Type Configuration
+# Survey Display Configuration options
 
-To configure the display type for the survey, use one of the following options:
+To configure the display type for the survey, use one of the following options with `displayType`:
 
 1. **popup**  
    - Shows the survey as a popup in the center of the screen.
@@ -83,6 +83,11 @@ To configure the display type for the survey, use one of the following options:
 2. **slide-up**  
    - Displays the survey as a slide-up bottom sheet.
    
+To configure the display height for the survey, pass value in `displayHeight`:
+Value should be between 1 to 2. If not passed the default value is 1.6
+
+ 
+ 
 ---
 
 ## Setup
@@ -144,6 +149,3 @@ Clear visitor data on logout:
 ZFSurvey().clear();
 ```
 ---
-
-
-

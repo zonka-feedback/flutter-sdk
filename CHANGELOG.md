@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.2
+- Added support for display height
+
 ## 1.1.1
 - Performance Improvements
 

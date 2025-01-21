@@ -94,7 +94,6 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       height: isExpanded ? size.height / widget.height : 270,
       child: Stack(
         alignment: Alignment.topRight,
- 
         children: [
           WebViewWidget(controller: _webViewController),
           IconButton(
