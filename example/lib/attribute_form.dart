@@ -14,6 +14,7 @@ class _AttributeFormState extends State<AttributeForm>
   ];
   String sdkToken = "Sgt8J2";
   String regionValue = "US";
+  double heightValue = 1.8;
   void addAttribute() {
     setState(() {
       attributes.add({"key": "", "value": ""});
@@ -43,7 +44,9 @@ class _AttributeFormState extends State<AttributeForm>
         token: sdkToken,
         zfRegion: regionValue,
         context: context,
-        displayType: displayType);
+        displayType: displayType,
+        height: heightValue
+        );
     final Map<String, String> customAttributes = {
       for (var attribute in attributes)
         if (attribute['key'] != null &&
@@ -116,6 +119,19 @@ class _AttributeFormState extends State<AttributeForm>
                 border: OutlineInputBorder(),
               ),
             ),
+   const SizedBox(height: 10),
+ TextFormField(
+              onChanged: (value) {
+                setState(() {
+                  heightValue = double.parse(value) ;
+                });
+              },
+              decoration: const InputDecoration(
+                labelText: 'Height Value',
+                border: OutlineInputBorder(),
+              ),
+            ),
+
             const SizedBox(height: 20), // Dynamic Attributes List
             Expanded(
               child: ListView.separated(

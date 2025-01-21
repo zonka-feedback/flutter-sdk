@@ -21,17 +21,14 @@ class ZFSurvey implements ApiResponseCallbacks {
   late ZFSurveyDialog zfSurveyDialog;
   late BuildContext _context;
   String? uiType = 'popup';
+  double ? _surveyHeight = 1;
 
   /// Initialize SDK with necessary details
-  Future<void> init(
-      {required String token,
-      required String zfRegion,
-      required BuildContext context,
-      String? displayType}) async {
+  Future<void> init({required String token,required String zfRegion,required BuildContext context, String? displayType, double ? height}) async {
     _context = context;
-    // EncryptionService().init("my32lengthsupersecretnooneknows1");
     await DataManager().init(token);
     uiType = displayType ?? 'popup';
+    _surveyHeight = height!<=1 || height >=2 ? 1.8 : height;
     _initializeSDK(token, zfRegion);
   }
 
@@ -226,9 +223,9 @@ class ZFSurvey implements ApiResponseCallbacks {
       bool segmentAllowed = checkSegmenting();
       if (segmentAllowed) {
         if (uiType == 'popup') {
-          await ZFSurveyDialog.show(context: _context, surveyUrl: openUrl);
+          await ZFSurveyDialog.show(context: _context, surveyUrl: openUrl, height: _surveyHeight??1.8);
         } else if (uiType == 'slide-up') {
-          await ZfBottomSheetDialog.show(context: _context, surveyUrl: openUrl);
+          await ZfBottomSheetDialog.show(context: _context, surveyUrl: openUrl,height: _surveyHeight??1.8);
         }
       }
     }

@@ -5,6 +5,7 @@ class ZFSurveyDialog {
   static Future<void> show({
     required BuildContext context,
     required String surveyUrl,
+    required double height
   }) async {
     return showDialog(
       context: context,
@@ -12,7 +13,7 @@ class ZFSurveyDialog {
         insetPadding: EdgeInsets.zero,
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(10)),
-          child: WebViewWithLoader(surveyUrl: surveyUrl),
+          child: WebViewWithLoader(surveyUrl: surveyUrl, height: height,),
         ),
       ),
     );
@@ -21,8 +22,8 @@ class ZFSurveyDialog {
 
 class WebViewWithLoader extends StatefulWidget {
   final String surveyUrl;
-
-  const WebViewWithLoader({Key? key, required this.surveyUrl})
+  final double height;
+  const WebViewWithLoader({Key? key, required this.surveyUrl, required this.height})
       : super(key: key);
 
   @override
@@ -65,10 +66,12 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       )
       ..enableZoom(false)
       ..loadRequest(Uri.parse(widget.surveyUrl));
+      
   }
 
   void _handleJavaScriptMessage(String message) {
     if (message == 'zf-embed-expand-widget') {
+      print("expandedcalled");
       setState(() {
         isExpanded = true;
       });
@@ -87,9 +90,11 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       ),
       alignment: Alignment.center,
       width: 320,
-      height: isExpanded ? size.height / 1.8 : 270,
+     
+      height: isExpanded ? size.height / widget.height : 270,
       child: Stack(
         alignment: Alignment.topRight,
+ 
         children: [
           WebViewWidget(controller: _webViewController),
           IconButton(
