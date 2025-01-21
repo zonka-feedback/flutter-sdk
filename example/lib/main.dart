@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
-import 'package:zonkafeedback_sdk_example/attribute_form.dart';
+
 
 
 void main() {
@@ -19,7 +19,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: AttributeForm(),
+      home: ZonkaFeedBackSurvey(),
     );
   }
 }
@@ -39,7 +39,9 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
         token: '6M1Sol',
         zfRegion: 'IN',
         context: context,
-        displayType: 'popup');
+        displayType: 'popup',
+        displayHeight: 1.5
+        );
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
