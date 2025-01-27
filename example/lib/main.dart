@@ -85,7 +85,7 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Container(

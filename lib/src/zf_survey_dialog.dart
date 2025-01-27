@@ -60,10 +60,7 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
             setState(() {
               _isLoading = false;
             });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text('Failed to load page: ${error.description}')),
-            );
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to load page: ${error.description}')),);
           },
         ),
       )
@@ -73,7 +70,6 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
 
   void _handleJavaScriptMessage(String message) {
     if (message == 'zf-embed-expand-widget') {
-      print("expandedcalled");
       setState(() {
         isExpanded = true;
       });
@@ -84,7 +80,7 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    double height = isExpanded ? MediaQuery.of(context).size.height / widget.height : 290;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -92,14 +88,16 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       ),
       alignment: Alignment.center,
       width: 320,
-      height: isExpanded ? size.height / widget.height : 270,
+      height: height,
       child: Stack(
         alignment: Alignment.topRight,
         children: [
           WebViewWidget(controller: _webViewController),
           IconButton(
+            padding: const EdgeInsets.only(left: 20,bottom: 20),
             icon: const Icon(Icons.close, color: Colors.black),
             tooltip: 'Close dialog',
+            iconSize: 17,
             onPressed: () {
               Navigator.of(context).pop();
             },

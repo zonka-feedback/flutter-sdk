@@ -120,7 +120,9 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
             ),
           IconButton(
             icon: const Icon(Icons.close, color: Colors.black),
+            padding: const EdgeInsets.only(left: 10,bottom: 20),
             tooltip: 'Close dialog',
+            iconSize: 17,
             onPressed: () {
               Navigator.of(context).pop();
             },
