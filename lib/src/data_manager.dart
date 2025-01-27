@@ -63,7 +63,8 @@ class DataManager {
           saveIncludedList(includeSegment.list!);
         }
       }
-      DataManager().setWidgetActivity(widget!.data!.distributionInfo!.isWidgetActive!);
+      DataManager()
+          .setWidgetActivity(widget!.data!.distributionInfo!.isWidgetActive!);
       DataManager().setCompanyId(widget.data!.distributionInfo!.companyId!);
     }, onError: (error) {
       if (error is DioException) {}
@@ -125,7 +126,8 @@ class DataManager {
 
     hashMapData.addAll(hashMap);
 
-    ContactResponse contactResponse = await ApiManager().hitCreateContactApiDynamic(hashMapData);
+    ContactResponse contactResponse =
+        await ApiManager().hitCreateContactApiDynamic(hashMapData);
 
     if (contactResponse.data != null) {
       if (contactResponse.data?.contactInfo != null) {
@@ -183,7 +185,8 @@ class DataManager {
   void saveFirstSeen() {
     if (getFirstSeen().isEmpty) {
       int firstSeenTimeStamp = DateTime.now().millisecond;
-      String firstSeen = AppUtils.instance.getCurrentTime(firstSeenTimeStamp, "yyyy-MM-dd HH:mm:ss");
+      String firstSeen = AppUtils.instance
+          .getCurrentTime(firstSeenTimeStamp, "yyyy-MM-dd HH:mm:ss");
       PreferenceManager().putString(Constant.USER_FIRST_SEEN, firstSeen);
     }
   }
