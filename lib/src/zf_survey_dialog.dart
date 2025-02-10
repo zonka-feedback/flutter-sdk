@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ZFSurveyDialog {
-  static Future<void> show(
-      {required BuildContext context,
-      required String surveyUrl,
-      required double height}) async {
+  static Future<void> show({required BuildContext context,required String surveyUrl, required double expandedHeight, required double fixedHeight, required String crossIconPosition}) async {
     return showDialog(
       context: context,
       builder: (BuildContext context) => Dialog(
@@ -14,7 +11,10 @@ class ZFSurveyDialog {
           borderRadius: const BorderRadius.all(Radius.circular(10)),
           child: WebViewWithLoader(
             surveyUrl: surveyUrl,
-            height: height,
+            fixedHeight: fixedHeight,
+            expandedHeight:  expandedHeight,
+            crossIconPosition:crossIconPosition ,
+            
           ),
         ),
       ),
@@ -24,12 +24,12 @@ class ZFSurveyDialog {
 
 class WebViewWithLoader extends StatefulWidget {
   final String surveyUrl;
-  final double height;
-  const WebViewWithLoader(
-      {Key? key, required this.surveyUrl, required this.height})
-      : super(key: key);
+  final double fixedHeight;
+  final double expandedHeight;
+  final String crossIconPosition;
+  const WebViewWithLoader({Key? key, required this.surveyUrl, required this.fixedHeight , required this.expandedHeight, required this.crossIconPosition}) : super(key: key);
 
-  @override
+   @override
   _WebViewWithLoaderState createState() => _WebViewWithLoaderState();
 }
 
@@ -83,33 +83,48 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
 
   @override
   Widget build(BuildContext context) {
-    double height =
-        isExpanded ? MediaQuery.of(context).size.height / widget.height : 290;
+    Size size = MediaQuery.of(context).size;
+    double height = isExpanded ? widget.expandedHeight : widget.fixedHeight;
     return Container(
+    
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.white,
       ),
       alignment: Alignment.center,
-      width: 320,
+      width: size.width/1.09,
       height: height,
-      child: Stack(
-        alignment: Alignment.topRight,
+      child: Column(
+        crossAxisAlignment:widget.crossIconPosition == "right" ?  CrossAxisAlignment.start:CrossAxisAlignment.end,
         children: [
-          WebViewWidget(controller: _webViewController),
           IconButton(
-            padding: const EdgeInsets.only(left: 20, bottom: 20),
             icon: const Icon(Icons.close, color: Colors.black),
             tooltip: 'Close dialog',
-            iconSize: 17,
+             iconSize: 24,
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
-          if (_isLoading)
-            const Center(
-              child: CircularProgressIndicator(color: Colors.lightBlue),
+      
+         
+          Expanded(
+            child: Stack( 
+              children: [
+                WebViewWidget(controller: _webViewController),
+                if (_isLoading)
+                  const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.lightBlue,
+                    ),
+                  ),
+              
+              ],
             ),
+          ),
+          // if (_isLoading)
+          //   const Center(
+          //     child: CircularProgressIndicator(color: Colors.lightBlue),
+          //   ),
         ],
       ),
     );

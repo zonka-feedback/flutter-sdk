@@ -14,7 +14,8 @@ class _AttributeFormState extends State<AttributeForm>
   ];
   String sdkToken = "Sgt8J2";
   String regionValue = "US";
-  double heightValue = 1.8;
+  double? fixedHeight ;
+  double ?expandedHeight ;
   void addAttribute() {
     setState(() {
       attributes.add({"key": "", "value": ""});
@@ -45,7 +46,9 @@ class _AttributeFormState extends State<AttributeForm>
         zfRegion: regionValue,
         context: context,
         displayType: displayType,
-        displayHeight: heightValue);
+        minimumHeight: fixedHeight,
+           closeIconPosition: "right",
+       expandedHeight: expandedHeight);
     final Map<String, String> customAttributes = {
       for (var attribute in attributes)
         if (attribute['key'] != null &&
@@ -78,6 +81,7 @@ class _AttributeFormState extends State<AttributeForm>
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -122,11 +126,25 @@ class _AttributeFormState extends State<AttributeForm>
             TextFormField(
               onChanged: (value) {
                 setState(() {
-                  heightValue = double.parse(value);
+                  fixedHeight = double.parse(value);
                 });
               },
               decoration: const InputDecoration(
-                labelText: 'Height Value',
+                labelText: 'Fixed Height Value',
+                border: OutlineInputBorder(),
+              ),
+            ),
+
+
+            const SizedBox(height: 10),
+            TextFormField(
+              onChanged: (value) {
+                setState(() {
+                  expandedHeight = double.parse(value);
+                });
+              },
+              decoration: const InputDecoration(
+                labelText: 'Expanded Height Value',
                 border: OutlineInputBorder(),
               ),
             ),

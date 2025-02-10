@@ -63,6 +63,9 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey> with WidgetsB
       token: '{{SDK_TOKEN}}', // Replace with your SDK token
       zfRegion: '{{REGION}}', // Options: US, EU, IN
       context: context,
+      minimumHeight: 410,
+      closeIconPosition: "right",
+      expandedHeight: 580
     );
   }
   
@@ -83,9 +86,28 @@ To configure the display type for the survey, use one of the following options w
 2. **slide-up**  
    - Displays the survey as a slide-up bottom sheet.
    
-To configure the display height for the survey, pass value in `displayHeight`:
-Value should be between 1 to 2. If not passed the default value is 1.6
 
+# Survey Height Configuration
+ 
+
+1. **minimum-height**  
+   - You can give minimum height to survey ui slide-up and popup using key `minimumHeight`.
+
+2. **expanded-height**  
+   - You can give maximum height to survey ui slide-up and popup using key `expandedHeight`.
+
+
+# Close Icon Position
+ 
+To configure the close icon for the survey, use one of the following options with `closeIconPosition`:
+
+1. **left**  
+   - You can give poistion to close icon to left by using value `left`.
+
+2. **right**  
+   -  You can give poistion to close icon to right by using value `right`.
+
+  
  
  
 ---
@@ -149,3 +171,6 @@ Clear visitor data on logout:
 ZFSurvey().clear();
 ```
 ---
+
+
+

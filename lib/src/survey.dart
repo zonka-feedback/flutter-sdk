@@ -55,6 +55,6 @@ class Survey {
     }
     return '${Constant.HTTPS}us1${Constant.URL}$surveyToken';
 
-    // return 'https://s.zf2.zonkaplatform.com/$surveyToken';
+    //  return 'https://s.zf2.zonkaplatform.com/$surveyToken';
   }
 }
