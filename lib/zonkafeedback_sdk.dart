@@ -22,17 +22,24 @@ class ZFSurvey implements ApiResponseCallbacks {
   late BuildContext _context;
   String? uiType = 'popup';
   double? _expandedHeightValue = 580;
-  double ? _fixedHeightValue = 410;
-  String ? _crossIconPosition = "left";
+  double? _fixedHeightValue = 410;
+  String? _crossIconPosition = "left";
 
   /// Initialize SDK with necessary details
-  Future<void> init({required String token,required String zfRegion,required BuildContext context, String? displayType, double? expandedHeight ,  double ? minimumHeight , String ? closeIconPosition}) async {
+  Future<void> init(
+      {required String token,
+      required String zfRegion,
+      required BuildContext context,
+      String? displayType,
+      double? expandedHeight,
+      double? minimumHeight,
+      String? closeIconPosition}) async {
     _context = context;
     await DataManager().init(token);
     uiType = displayType ?? 'popup';
-    _expandedHeightValue = expandedHeight??580;
-    _fixedHeightValue = minimumHeight??410;
-    _crossIconPosition= closeIconPosition;
+    _expandedHeightValue = expandedHeight ?? 580;
+    _fixedHeightValue = minimumHeight ?? 410;
+    _crossIconPosition = closeIconPosition;
     _initializeSDK(token, zfRegion);
   }
 
@@ -124,7 +131,8 @@ class ZFSurvey implements ApiResponseCallbacks {
 
     if (_survey.getDeviceDetails()) {
       _customVariableString = "";
-      Map<String, dynamic> value = await AppUtils.instance.getHiddenVariables(_context);
+      Map<String, dynamic> value =
+          await AppUtils.instance.getHiddenVariables(_context);
       addCustomParam(value);
       _url = _url + _customVariableString;
     }
@@ -227,22 +235,20 @@ class ZFSurvey implements ApiResponseCallbacks {
       if (segmentAllowed) {
         if (uiType == 'popup') {
           await ZFSurveyDialog.show(
-              context: _context,
-              surveyUrl: openUrl,
-              fixedHeight: _fixedHeightValue??100,
-              expandedHeight: _expandedHeightValue??100,
-              crossIconPosition: _crossIconPosition??"left",
-              
-              );
+            context: _context,
+            surveyUrl: openUrl,
+            fixedHeight: _fixedHeightValue ?? 100,
+            expandedHeight: _expandedHeightValue ?? 100,
+            crossIconPosition: _crossIconPosition ?? "left",
+          );
         } else if (uiType == 'slide-up') {
           await ZfBottomSheetDialog.show(
-              context: _context,
-              surveyUrl: openUrl,
-              fixedHeight: _fixedHeightValue??100,
-              expandedHeight: _expandedHeightValue??100,
-              crossIconPosition: _crossIconPosition??"left",
-              
-           );
+            context: _context,
+            surveyUrl: openUrl,
+            fixedHeight: _fixedHeightValue ?? 100,
+            expandedHeight: _expandedHeightValue ?? 100,
+            crossIconPosition: _crossIconPosition ?? "left",
+          );
         }
       }
     }

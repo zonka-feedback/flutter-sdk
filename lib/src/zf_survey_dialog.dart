@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ZFSurveyDialog {
-  static Future<void> show({required BuildContext context,required String surveyUrl, required double expandedHeight, required double fixedHeight, required String crossIconPosition}) async {
+  static Future<void> show(
+      {required BuildContext context,
+      required String surveyUrl,
+      required double expandedHeight,
+      required double fixedHeight,
+      required String crossIconPosition}) async {
     return showDialog(
       context: context,
       builder: (BuildContext context) => Dialog(
@@ -12,9 +17,8 @@ class ZFSurveyDialog {
           child: WebViewWithLoader(
             surveyUrl: surveyUrl,
             fixedHeight: fixedHeight,
-            expandedHeight:  expandedHeight,
-            crossIconPosition:crossIconPosition ,
-            
+            expandedHeight: expandedHeight,
+            crossIconPosition: crossIconPosition,
           ),
         ),
       ),
@@ -27,9 +31,15 @@ class WebViewWithLoader extends StatefulWidget {
   final double fixedHeight;
   final double expandedHeight;
   final String crossIconPosition;
-  const WebViewWithLoader({Key? key, required this.surveyUrl, required this.fixedHeight , required this.expandedHeight, required this.crossIconPosition}) : super(key: key);
+  const WebViewWithLoader(
+      {Key? key,
+      required this.surveyUrl,
+      required this.fixedHeight,
+      required this.expandedHeight,
+      required this.crossIconPosition})
+      : super(key: key);
 
-   @override
+  @override
   _WebViewWithLoaderState createState() => _WebViewWithLoaderState();
 }
 
@@ -86,29 +96,29 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
     Size size = MediaQuery.of(context).size;
     double height = isExpanded ? widget.expandedHeight : widget.fixedHeight;
     return Container(
-    
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.white,
       ),
       alignment: Alignment.center,
-      width: size.width/1.09,
+      width: size.width / 1.09,
       height: height,
       child: Column(
-        crossAxisAlignment:widget.crossIconPosition == "right" ?  CrossAxisAlignment.start:CrossAxisAlignment.end,
+        crossAxisAlignment: widget.crossIconPosition == "right"
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.end,
         children: [
           IconButton(
             icon: const Icon(Icons.close, color: Colors.black),
             tooltip: 'Close dialog',
-             iconSize: 24,
+            iconSize: 24,
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
-      
-         
+
           Expanded(
-            child: Stack( 
+            child: Stack(
               children: [
                 WebViewWidget(controller: _webViewController),
                 if (_isLoading)
@@ -117,7 +127,6 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
                       color: Colors.lightBlue,
                     ),
                   ),
-              
               ],
             ),
           ),

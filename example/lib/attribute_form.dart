@@ -14,8 +14,8 @@ class _AttributeFormState extends State<AttributeForm>
   ];
   String sdkToken = "Sgt8J2";
   String regionValue = "US";
-  double? fixedHeight ;
-  double ?expandedHeight ;
+  double? fixedHeight;
+  double? expandedHeight;
   void addAttribute() {
     setState(() {
       attributes.add({"key": "", "value": ""});
@@ -47,8 +47,8 @@ class _AttributeFormState extends State<AttributeForm>
         context: context,
         displayType: displayType,
         minimumHeight: fixedHeight,
-           closeIconPosition: "right",
-       expandedHeight: expandedHeight);
+        closeIconPosition: "right",
+        expandedHeight: expandedHeight);
     final Map<String, String> customAttributes = {
       for (var attribute in attributes)
         if (attribute['key'] != null &&
@@ -134,7 +134,6 @@ class _AttributeFormState extends State<AttributeForm>
                 border: OutlineInputBorder(),
               ),
             ),
-
 
             const SizedBox(height: 10),
             TextFormField(

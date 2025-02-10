@@ -2,17 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ZfBottomSheetDialog {
-  static Future<void> show({required BuildContext context,required String surveyUrl, required double expandedHeight, required double fixedHeight ,  required String crossIconPosition}) async {
+  static Future<void> show(
+      {required BuildContext context,
+      required String surveyUrl,
+      required double expandedHeight,
+      required double fixedHeight,
+      required String crossIconPosition}) async {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true, // Allows content-driven height
       isDismissible: false, // Prevent accidental dismissal
-      backgroundColor: Colors.transparent, // Transparent background for custom styling
+      backgroundColor:
+          Colors.transparent, // Transparent background for custom styling
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(
             top: 20, // Optional padding for better visibility
-            bottom: MediaQuery.of(context).viewInsets.bottom, // Respect the keyboard
+            bottom: MediaQuery.of(context)
+                .viewInsets
+                .bottom, // Respect the keyboard
           ),
           child: ClipRRect(
             borderRadius: const BorderRadius.vertical(
@@ -39,7 +47,13 @@ class WebViewWithLoader extends StatefulWidget {
   final double fixedHeight;
   final double expandedHeight;
   final String crossIcon;
-  const WebViewWithLoader({Key? key, required this.surveyUrl,required this.expandedHeight, required this.fixedHeight, required this.crossIcon}) : super(key: key);
+  const WebViewWithLoader(
+      {Key? key,
+      required this.surveyUrl,
+      required this.expandedHeight,
+      required this.fixedHeight,
+      required this.crossIcon})
+      : super(key: key);
 
   @override
   _WebViewWithLoaderState createState() => _WebViewWithLoaderState();
@@ -96,29 +110,28 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
 
   @override
   Widget build(BuildContext context) {
-   
     double height = isExpanded ? widget.expandedHeight : widget.fixedHeight;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300), // Smooth resizing
-      height :height ,
+      height: height,
       child: Column(
-      // mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: widget.crossIcon == "right" ? CrossAxisAlignment.start:CrossAxisAlignment.end,
+        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: widget.crossIcon == "right"
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.end,
         children: [
-
           IconButton(
             icon: const Icon(Icons.close, color: Colors.black),
             alignment: Alignment.topLeft,
             tooltip: 'Close dialog',
-            padding: const EdgeInsets.only(left: 12,top: 28),
+            padding: const EdgeInsets.only(left: 12, top: 28),
             iconSize: 24,
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
-       
           Expanded(
-            child: Stack( 
+            child: Stack(
               children: [
                 WebViewWidget(controller: _webViewController),
                 if (_isLoading)
@@ -127,7 +140,6 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
                       color: Colors.lightBlue,
                     ),
                   ),
-              
               ],
             ),
           ),
