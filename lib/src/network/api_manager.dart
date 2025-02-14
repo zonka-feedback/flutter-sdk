@@ -66,21 +66,21 @@ class ApiManager {
   static String _getBaseUrl({required bool forContactTracking}) {
     String zfRegion = DataManager().getRegion();
 
-    // if (zfRegion.toUpperCase() == 'EU') {
-    //   return forContactTracking
-    //       ? 'https://e.zonkafeedback.com/api/v1/'
-    //       : "${Constant.HTTPS}e${Constant.RETROFIT_URL}";
-    // } else if (zfRegion.toUpperCase() == 'IN') {
-    //   return forContactTracking
-    //       ? 'https://in.apis.zonkafeedback.com/'
-    //       : "${Constant.HTTPS}in${Constant.RETROFIT_URL}";
-    // } else {
-    //   return forContactTracking
-    //       ? 'https://us1.apis.zonkafeedback.com/'
-    //       : "${Constant.HTTPS}us1${Constant.RETROFIT_URL}";
-    // }
+    if (zfRegion.toUpperCase() == 'EU') {
+      return forContactTracking
+          ? 'https://e.zonkafeedback.com/api/v1/'
+          : "${Constant.HTTPS}e${Constant.RETROFIT_URL}";
+    } else if (zfRegion.toUpperCase() == 'IN') {
+      return forContactTracking
+          ? 'https://in.apis.zonkafeedback.com/'
+          : "${Constant.HTTPS}in${Constant.RETROFIT_URL}";
+    } else {
+      return forContactTracking
+          ? 'https://us1.apis.zonkafeedback.com/'
+          : "${Constant.HTTPS}us1${Constant.RETROFIT_URL}";
+    }
 
-    return "https://us1.zonkasurvey.com/api/v1/";
+    // return "https://us1.zonkasurvey.com/api/v1/";
   }
 
   Dio _getContactTrackingClient() {
