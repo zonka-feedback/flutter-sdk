@@ -114,22 +114,11 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300), // Smooth resizing
       height: height,
-      child: Column(
-        // mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: widget.crossIcon == "right"
-            ? CrossAxisAlignment.start
-            : CrossAxisAlignment.end,
+      child: Stack(
+      
+       alignment: widget.crossIcon =="right" ? AlignmentDirectional.topStart:AlignmentDirectional.topEnd,
         children: [
-          IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
-            alignment: Alignment.topLeft,
-            tooltip: 'Close dialog',
-            padding: const EdgeInsets.only(left: 12, top: 28),
-            iconSize: 24,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
+      
           Expanded(
             child: Stack(
               children: [
@@ -142,6 +131,16 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
                   ),
               ],
             ),
+          ),
+              IconButton(
+            icon: const Icon(Icons.close, color: Colors.black),
+            alignment: Alignment.topLeft,
+            tooltip: 'Close dialog',
+            padding: const EdgeInsets.only(left: 12, top: 28),
+            iconSize: 24,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
         ],
       ),

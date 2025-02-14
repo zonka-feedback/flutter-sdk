@@ -103,20 +103,10 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       alignment: Alignment.center,
       width: size.width / 1.09,
       height: height,
-      child: Column(
-        crossAxisAlignment: widget.crossIconPosition == "right"
-            ? CrossAxisAlignment.start
-            : CrossAxisAlignment.end,
+      child: Stack(
+  alignment: widget.crossIconPosition =="right" ? AlignmentDirectional.topStart:AlignmentDirectional.topEnd,
         children: [
-          IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
-            tooltip: 'Close dialog',
-            iconSize: 24,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-
+         
           Expanded(
             child: Stack(
               children: [
@@ -130,6 +120,16 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
               ],
             ),
           ),
+           IconButton(
+            icon: const Icon(Icons.close, color: Colors.black),
+            tooltip: 'Close dialog',
+            iconSize: 24,
+              padding: const EdgeInsets.only(left: 12, top: 28),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+
           // if (_isLoading)
           //   const Center(
           //     child: CircularProgressIndicator(color: Colors.lightBlue),
