@@ -47,7 +47,7 @@ class _AttributeFormState extends State<AttributeForm>
         context: context,
         displayType: displayType,
         minimumHeight: fixedHeight,
-        closeIconPosition: "right",
+        closeIconPosition: "left",
         expandedHeight: expandedHeight);
     final Map<String, String> customAttributes = {
       for (var attribute in attributes)

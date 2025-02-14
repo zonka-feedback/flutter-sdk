@@ -9,11 +9,10 @@ class ZfBottomSheetDialog {
       required double fixedHeight,
       required String crossIconPosition}) async {
     return showModalBottomSheet(
-      context: context,
+      context: context,   
       isScrollControlled: true, // Allows content-driven height
       isDismissible: false, // Prevent accidental dismissal
-      backgroundColor:
-          Colors.transparent, // Transparent background for custom styling
+      backgroundColor: Colors.transparent, // Transparent background for custom styling
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(
@@ -111,37 +110,36 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
   @override
   Widget build(BuildContext context) {
     double height = isExpanded ? widget.expandedHeight : widget.fixedHeight;
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300), // Smooth resizing
       height: height,
       child: Stack(
+      alignment: Alignment.topCenter,
       
-       alignment: widget.crossIcon =="right" ? AlignmentDirectional.topStart:AlignmentDirectional.topEnd,
         children: [
       
-          Expanded(
-            child: Stack(
-              children: [
-                WebViewWidget(controller: _webViewController),
-                if (_isLoading)
-                  const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.lightBlue,
-                    ),
-                  ),
-              ],
+          WebViewWidget(controller: _webViewController),
+          if (_isLoading)
+            const Center(
+              child: CircularProgressIndicator(
+                color: Colors.lightBlue,
+              ),
             ),
-          ),
-              IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
-            alignment: Alignment.topLeft,
-            tooltip: 'Close dialog',
-            padding: const EdgeInsets.only(left: 12, top: 28),
-            iconSize: 24,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
+              Container(
+                width: 360,
+                color: Colors.transparent,
+                margin:  const EdgeInsets.only(left: 10, top: 21),
+                child: IconButton(
+                            icon: const Icon(Icons.close, color: Colors.black),
+                            alignment: widget.crossIcon =="right" ?  Alignment.topRight:Alignment.topLeft,
+                            tooltip: 'Close dialog',
+                            iconSize: 24,
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+              ),
         ],
       ),
     );

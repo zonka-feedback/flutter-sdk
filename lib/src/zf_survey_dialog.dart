@@ -104,31 +104,35 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       width: size.width / 1.09,
       height: height,
       child: Stack(
-  alignment: widget.crossIconPosition =="right" ? AlignmentDirectional.topStart:AlignmentDirectional.topEnd,
+          alignment: Alignment.topCenter,
+  // alignment: widget.crossIconPosition =="left" ? AlignmentDirectional.topStart:AlignmentDirectional.topEnd,
         children: [
          
-          Expanded(
-            child: Stack(
-              children: [
-                WebViewWidget(controller: _webViewController),
-                if (_isLoading)
-                  const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.lightBlue,
-                    ),
+          Stack(
+            children: [
+              WebViewWidget(controller: _webViewController),
+              if (_isLoading)
+                const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.lightBlue,
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
-           IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
-            tooltip: 'Close dialog',
-            iconSize: 24,
-              padding: const EdgeInsets.only(left: 12, top: 28),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
+           Container(
+                width: 360,
+                color: Colors.transparent,
+                margin:  const EdgeInsets.only(left: 10, top: 21),
+                child: IconButton(
+                            icon: const Icon(Icons.close, color: Colors.black),
+                            alignment: widget.crossIconPosition =="right" ?  Alignment.topRight:Alignment.topLeft,
+                            tooltip: 'Close dialog',
+                            iconSize: 24,
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+              ),
 
           // if (_isLoading)
           //   const Center(
