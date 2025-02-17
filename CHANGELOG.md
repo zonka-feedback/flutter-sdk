@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.5
+- UI Updates
+
 ## 1.1.4
 - UI Updates
 

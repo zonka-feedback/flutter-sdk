@@ -104,10 +104,9 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       width: size.width / 1.09,
       height: height,
       child: Stack(
-          alignment: Alignment.topCenter,
-  // alignment: widget.crossIconPosition =="left" ? AlignmentDirectional.topStart:AlignmentDirectional.topEnd,
+        alignment: Alignment.topCenter,
+        // alignment: widget.crossIconPosition =="left" ? AlignmentDirectional.topStart:AlignmentDirectional.topEnd,
         children: [
-         
           Stack(
             children: [
               WebViewWidget(controller: _webViewController),
@@ -119,20 +118,22 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
                 ),
             ],
           ),
-           Container(
-                width: 360,
-                color: Colors.transparent,
-                margin:  const EdgeInsets.only(left: 10, top: 21),
-                child: IconButton(
-                            icon: const Icon(Icons.close, color: Colors.black),
-                            alignment: widget.crossIconPosition =="right" ?  Alignment.topRight:Alignment.topLeft,
-                            tooltip: 'Close dialog',
-                            iconSize: 24,
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-              ),
+          Container(
+            width: 360,
+            color: Colors.transparent,
+            margin: const EdgeInsets.only(left: 10, top: 21),
+            child: IconButton(
+              icon: const Icon(Icons.close, color: Colors.black),
+              alignment: widget.crossIconPosition == "right"
+                  ? Alignment.topRight
+                  : Alignment.topLeft,
+              tooltip: 'Close dialog',
+              iconSize: 24,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
 
           // if (_isLoading)
           //   const Center(
