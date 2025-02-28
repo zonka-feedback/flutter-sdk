@@ -5,6 +5,7 @@ class ZfBottomSheetDialog {
   static Future<void> show(
       {required BuildContext context,
       required String surveyUrl,
+      required bool autoClose,
       required double expandedHeight,
       required double fixedHeight,
       required String crossIconPosition}) async {
@@ -32,6 +33,7 @@ class ZfBottomSheetDialog {
                 surveyUrl: surveyUrl,
                 expandedHeight: expandedHeight,
                 fixedHeight: fixedHeight,
+                autoClose: autoClose,
                 crossIcon: crossIconPosition,
               ),
             ),
@@ -46,11 +48,13 @@ class WebViewWithLoader extends StatefulWidget {
   final String surveyUrl;
   final double fixedHeight;
   final double expandedHeight;
+  final  bool autoClose;
   final String crossIcon;
   const WebViewWithLoader(
       {Key? key,
       required this.surveyUrl,
       required this.expandedHeight,
+      required this.autoClose,
       required this.fixedHeight,
       required this.crossIcon})
       : super(key: key);
@@ -103,7 +107,7 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       setState(() {
         isExpanded = true;
       });
-    } else if (message == 'zf-embed-submit-close') {
+    } else if (message == 'zf-embed-submit-close' && widget.autoClose) {
       Navigator.of(context).pop();
     }
   }

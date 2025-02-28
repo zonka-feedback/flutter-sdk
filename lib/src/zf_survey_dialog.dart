@@ -5,6 +5,9 @@ class ZFSurveyDialog {
   static Future<void> show(
       {required BuildContext context,
       required String surveyUrl,
+
+required bool autoClose,
+
       required double expandedHeight,
       required double fixedHeight,
       required String crossIconPosition}) async {
@@ -19,6 +22,7 @@ class ZFSurveyDialog {
             fixedHeight: fixedHeight,
             expandedHeight: expandedHeight,
             crossIconPosition: crossIconPosition,
+            autoClose: autoClose,
           ),
         ),
       ),
@@ -31,11 +35,13 @@ class WebViewWithLoader extends StatefulWidget {
   final double fixedHeight;
   final double expandedHeight;
   final String crossIconPosition;
+  final bool autoClose;
   const WebViewWithLoader(
       {Key? key,
       required this.surveyUrl,
       required this.fixedHeight,
       required this.expandedHeight,
+      required this.autoClose,
       required this.crossIconPosition})
       : super(key: key);
 
@@ -86,7 +92,7 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       setState(() {
         isExpanded = true;
       });
-    } else if (message == 'zf-embed-submit-close') {
+    } else if (message == 'zf-embed-submit-close' && widget.autoClose) {
       Navigator.of(context).pop();
     }
   }

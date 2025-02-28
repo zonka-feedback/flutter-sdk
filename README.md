@@ -65,7 +65,8 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey> with WidgetsB
       context: context,
       minimumHeight: 410,
       closeIconPosition: "right",
-      expandedHeight: 580
+      expandedHeight: 580,
+      autoClose:false
     );
   }
   
@@ -97,18 +98,28 @@ To configure the display type for the survey, use one of the following options w
    - You can give maximum height to survey ui slide-up and popup using key `expandedHeight`.
 
 
-# Close Icon Position
+# Auto Close 
+ 
+To configure the auto close icon for the survey, use one of the following options with `autoClose`:
+
+1. **autoClose**  
+   - You can set autoClose `true` which enable survey to close automatically..
+
+2. **autoClose**  
+   - You can set autoClose `false` which disable survey to close automatically.
+
+  
+ # Close Icon Position
  
 To configure the close icon for the survey, use one of the following options with `closeIconPosition`:
 
 1. **left**  
-   - You can give poistion to close icon to left by using value `left`.
+   - You can give position to close icon to left by using value `left`.
 
 2. **right**  
-   -  You can give poistion to close icon to right by using value `right`.
+   -  You can give position to close icon to right by using value `right`.
 
   
- 
  
 ---
 
