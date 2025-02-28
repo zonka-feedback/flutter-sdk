@@ -18,7 +18,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: AttributeForm(),
+      home: ZonkaFeedBackSurvey(),
     );
   }
 }
@@ -35,12 +35,13 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
   @override
   void initState() {
     ZFSurvey().init(
-        token: '6M1Sol',
-        zfRegion: 'IN',
+        token: 'F91hYr',
+        zfRegion: 'US',
         context: context,
         displayType: 'slide-up',
         minimumHeight: 410,
         closeIconPosition: "right",
+        autoClose: true,
         expandedHeight: 580);
     WidgetsBinding.instance.addObserver(this);
     super.initState();

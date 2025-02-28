@@ -1,0 +1,2 @@
+C:/Users/Manav Garg/Projects/zonkafeedback_sdk/example/android/app/.cxx/Debug/a3r5k6i2/x86/CMakeFiles/edit_cache.dir
+C:/Users/Manav Garg/Projects/zonkafeedback_sdk/example/android/app/.cxx/Debug/a3r5k6i2/x86/CMakeFiles/rebuild_cache.dir

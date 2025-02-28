@@ -48,7 +48,7 @@ class WebViewWithLoader extends StatefulWidget {
   final String surveyUrl;
   final double fixedHeight;
   final double expandedHeight;
-  final  bool autoClose;
+  final bool autoClose;
   final String crossIcon;
   const WebViewWithLoader(
       {Key? key,

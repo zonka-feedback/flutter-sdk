@@ -5,9 +5,7 @@ class ZFSurveyDialog {
   static Future<void> show(
       {required BuildContext context,
       required String surveyUrl,
-
-required bool autoClose,
-
+      required bool autoClose,
       required double expandedHeight,
       required double fixedHeight,
       required String crossIconPosition}) async {

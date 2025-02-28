@@ -24,13 +24,14 @@ class ZFSurvey implements ApiResponseCallbacks {
   double? _expandedHeightValue = 580;
   double? _fixedHeightValue = 410;
   String? _crossIconPosition = "left";
-  bool ? _autoClose = true;
+  bool? _autoClose = true;
+
   /// Initialize SDK with necessary details
   Future<void> init(
       {required String token,
       required String zfRegion,
       required BuildContext context,
-      bool ? autoClose,
+      bool? autoClose,
       String? displayType,
       double? expandedHeight,
       double? minimumHeight,
@@ -41,7 +42,7 @@ class ZFSurvey implements ApiResponseCallbacks {
     _expandedHeightValue = expandedHeight ?? 580;
     _fixedHeightValue = minimumHeight ?? 410;
     _crossIconPosition = closeIconPosition;
-    _autoClose= autoClose;
+    _autoClose = autoClose;
     _initializeSDK(token, zfRegion);
   }
 
@@ -239,7 +240,7 @@ class ZFSurvey implements ApiResponseCallbacks {
           await ZFSurveyDialog.show(
             context: _context,
             surveyUrl: openUrl,
-              autoClose: _autoClose??true,
+            autoClose: _autoClose ?? true,
             fixedHeight: _fixedHeightValue ?? 100,
             expandedHeight: _expandedHeightValue ?? 100,
             crossIconPosition: _crossIconPosition ?? "left",
@@ -248,7 +249,7 @@ class ZFSurvey implements ApiResponseCallbacks {
           await ZfBottomSheetDialog.show(
             context: _context,
             surveyUrl: openUrl,
-            autoClose: _autoClose??true,
+            autoClose: _autoClose ?? true,
             fixedHeight: _fixedHeightValue ?? 100,
             expandedHeight: _expandedHeightValue ?? 100,
             crossIconPosition: _crossIconPosition ?? "left",
