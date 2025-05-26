@@ -60,7 +60,7 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey> with WidgetsB
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     ZFSurvey().init(
-      token: '{{SDK_TOKEN}}', // Replace with your SDK token
+      token: ['{{SDK_TOKEN}}'], // Replace with your SDK token
       zfRegion: '{{REGION}}', // Options: US, EU, IN
       context: context,
       minimumHeight: 410,

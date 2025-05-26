@@ -68,7 +68,6 @@ class SessionService {
           .map((sessionJson) => Sessions.fromJson(jsonDecode(sessionJson)))
           .toList();
       await DataManager().updateSessionToServer(token, sessionList);
-
       // Clear sessions after syncing
       await prefs.remove(_sessionKey);
     }

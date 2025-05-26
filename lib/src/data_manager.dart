@@ -30,9 +30,13 @@ class DataManager {
 
   DataManager._internal();
 
-  Future<void> init(String token) async {
-    await PreferenceManager().init(token);
+  Future<void> init() async {
+    await PreferenceManager().init();
   }
+
+  // Future<void> initMultipleToken(List<String>  token) async {
+  //   await PreferenceManager().init(token);
+  // }
 
   void initApiManager() {
     _apiManager = ApiManager.instance;
@@ -42,36 +46,49 @@ class DataManager {
     _callbacks = callbacks;
   }
 
-  void hitSurveyActiveApi(String token, bool isSurveyInitialize) async {
-    _apiManager.hitSurveyActiveApi(token).then((widget) async {
+  Future<void> hitSurveyActiveApi(String token) async {
+    await clearExcludedList();
+    await clearIncludeList();
+    await clearIncludeType();
+    await clearExcludeType();
+
+    try {
+      final widget = await _apiManager.hitSurveyActiveApi(token);
+
       if (widget?.data?.distributionInfo?.embedSettings != null) {
         ExcludeSegment? excludeSegment =
             widget?.data?.distributionInfo?.embedSettings?.excludeSegment;
         IncludeSegment? includeSegment =
             widget?.data?.distributionInfo?.embedSettings?.includeSegment;
-        await clearExcludedList();
-        await clearIncludeList();
 
-        saveExcludeType(excludeSegment?.type ?? "");
-        saveIncludeType(includeSegment?.type ?? "");
-        if (excludeSegment!.list!.isNotEmpty) {
-          saveExcludedList(excludeSegment.list!);
-        } else if (includeSegment!.list!.isNotEmpty) {
-          saveIncludedList(includeSegment.list!);
+        await saveExcludeType(excludeSegment?.type ?? "");
+        await saveIncludeType(includeSegment?.type ?? "");
+
+        if (excludeSegment?.list?.isNotEmpty ?? false) {
+          saveExcludedList(excludeSegment!.list!);
+        } else if (includeSegment?.list?.isNotEmpty ?? false) {
+          saveIncludedList(includeSegment!.list!);
         } else {
-          saveExcludedList(excludeSegment.list!);
-          saveIncludedList(includeSegment.list!);
+          // If both are empty, still saving empty lists
+          saveExcludedList(excludeSegment?.list ?? []);
+          saveIncludedList(includeSegment?.list ?? []);
         }
       }
+
+      DataManager().setWidgetActivity(
+          widget?.data?.distributionInfo?.isWidgetActive ?? false);
       DataManager()
-          .setWidgetActivity(widget!.data!.distributionInfo!.isWidgetActive!);
-      DataManager().setCompanyId(widget.data!.distributionInfo!.companyId!);
-    }, onError: (error) {
-      if (error is DioException) {}
-    });
+          .setCompanyId(widget?.data?.distributionInfo?.companyId ?? "");
+    } on DioException catch (error) {
+      // Handle Dio errors
+      print("DioException: $error");
+    } catch (e) {
+      // Handle other types of errors
+      print("Unexpected error: $e");
+    }
   }
 
-  void createContactForDynamicAttribute(
+  Future<void> createContactForDynamicAttribute(
     Map<String, dynamic> hashMapData,
     String token,
     bool isContactCreated,
@@ -135,7 +152,7 @@ class DataManager {
           if (contactResponse.data!.contactInfo!.lists != null) {
             await saveContactList(contactResponse.data!.contactInfo!.lists!);
           }
-          saveContactId(contactResponse.data!.contactInfo!.id!);
+          await saveContactId(contactResponse.data!.contactInfo!.id!);
           _callbacks.onContactCreationSuccess(isContactCreated);
         }
       }
@@ -198,32 +215,32 @@ class DataManager {
     }
   }
 
-  void saveContactId(String contactId) {
-    PreferenceManager().putString(Constant.CONTACT_ID, contactId);
+  Future<void> saveContactId(String contactId) async {
+    await PreferenceManager().putString(Constant.CONTACT_ID, contactId);
   }
 
-  void saveExternalVisitorId(String evd) {
-    PreferenceManager().putString(Constant.EXTERNAL_VISITOR_ID, evd);
+  Future<void> saveExternalVisitorId(String evd) async {
+    await PreferenceManager().putString(Constant.EXTERNAL_VISITOR_ID, evd);
   }
 
-  void saveEmailId(String emailId) {
-    PreferenceManager().putString(Constant.EMAIL_ID, emailId);
+  Future<void> saveEmailId(String emailId) async {
+    await PreferenceManager().putString(Constant.EMAIL_ID, emailId);
   }
 
-  void saveMobileNo(String mobileNo) {
-    PreferenceManager().putString(Constant.MOBILE_NO, mobileNo);
+  Future<void> saveMobileNo(String mobileNo) async {
+    await PreferenceManager().putString(Constant.MOBILE_NO, mobileNo);
   }
 
-  void saveUniqueId(String uniqueId) {
-    PreferenceManager().putString(Constant.UNIQUE_ID, uniqueId);
+  Future<void> saveUniqueId(String uniqueId) async {
+    await PreferenceManager().putString(Constant.UNIQUE_ID, uniqueId);
   }
 
-  void saveRegion(String zfRegion) {
-    PreferenceManager().putString(Constant.ZF_REGION, zfRegion);
+  Future<void> saveRegion(String zfRegion) async {
+    await PreferenceManager().putString(Constant.ZF_REGION, zfRegion);
   }
 
-  void saveContactName(String contactName) {
-    PreferenceManager().putString(Constant.CONTACT_NAME, contactName);
+  Future<void> saveContactName(String contactName) async {
+    await PreferenceManager().putString(Constant.CONTACT_NAME, contactName);
   }
 
   bool isWidgetActive() {
@@ -309,12 +326,20 @@ class DataManager {
     await PreferenceManager().putStringList(Constant.INCLUDED_LIST, []);
   }
 
+  Future<void> clearIncludeType() async {
+    await PreferenceManager().putString(Constant.INCLUDE_TYPE, "");
+  }
+
+  Future<void> clearExcludeType() async {
+    await PreferenceManager().putString(Constant.EXCLUDE_TYPE, "");
+  }
+
   Future<void> saveExcludeType(String type) async {
     await PreferenceManager().putString(Constant.EXCLUDE_TYPE, type);
   }
 
-  void saveIncludeType(String type) {
-    PreferenceManager().putString(Constant.INCLUDE_TYPE, type);
+  Future<void> saveIncludeType(String type) async {
+    await PreferenceManager().putString(Constant.INCLUDE_TYPE, type);
   }
 
   String getExcludeType() {

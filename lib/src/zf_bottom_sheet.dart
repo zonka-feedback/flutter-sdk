@@ -1,5 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 
 class ZfBottomSheetDialog {
   static Future<void> show(
@@ -10,37 +13,36 @@ class ZfBottomSheetDialog {
       required double fixedHeight,
       required String crossIconPosition}) async {
     return showModalBottomSheet(
-      context: context,
-      isScrollControlled: true, // Allows content-driven height
-      isDismissible: false, // Prevent accidental dismissal
-      backgroundColor:
-          Colors.transparent, // Transparent background for custom styling
-      builder: (BuildContext context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            top: 20, // Optional padding for better visibility
-            bottom: MediaQuery.of(context)
-                .viewInsets
-                .bottom, // Respect the keyboard
-          ),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(20),
+        context: context,
+        isScrollControlled: true, // Allows content-driven height
+        isDismissible: false, // Prevent accidental dismissal
+        backgroundColor:
+            Colors.transparent, // Transparent background for custom styling
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.only(
+              top: 20, // Optional padding for better visibility
+              bottom: MediaQuery.of(context)
+                  .viewInsets
+                  .bottom, // Respect the keyboard
             ),
-            child: Container(
-              color: Colors.white, // Background color of the bottom sheet
-              child: WebViewWithLoader(
-                surveyUrl: surveyUrl,
-                expandedHeight: expandedHeight,
-                fixedHeight: fixedHeight,
-                autoClose: autoClose,
-                crossIcon: crossIconPosition,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
+              child: Container(
+                color: Colors.white, // Background color of the bottom sheet
+                child: WebViewWithLoader(
+                  surveyUrl: surveyUrl,
+                  expandedHeight: expandedHeight,
+                  fixedHeight: fixedHeight,
+                  autoClose: autoClose,
+                  crossIcon: crossIconPosition,
+                ),
               ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        });
   }
 }
 
@@ -71,6 +73,7 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
   @override
   void initState() {
     super.initState();
+
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..addJavaScriptChannel(
@@ -122,7 +125,14 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       child: Stack(
         alignment: Alignment.topCenter,
         children: [
-          WebViewWidget(controller: _webViewController),
+          WebViewWidget(
+            controller: _webViewController,
+            gestureRecognizers: {
+              Factory<OneSequenceGestureRecognizer>(
+                () => EagerGestureRecognizer(),
+              ),
+            },
+          ),
           if (_isLoading)
             const Center(
               child: CircularProgressIndicator(

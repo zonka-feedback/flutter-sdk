@@ -1,6 +1,6 @@
 name: zonkafeedback_sdk
 description: "A Flutter plugin for seamless feedback collection and management with Zonka Feedback."
-version: 1.1.5
+version: 1.1.6
 homepage: https://www.zonkafeedback.com
 repository: https://github.com/zonka-feedback/flutter-sdk
 documentation: https://developers.zonkafeedback.com/docs/in-app-sdk/flutter-sdk
@@ -16,12 +16,12 @@ dependencies:
   connectivity_plus: ^6.1.1 # Safe for updates in 6.x.x
   intl: ^0.20.1 # Supports 0.x.x but restricts breaking changes in 1.x
   dio: ^5.7.0 # Compatible with 5.x.x
-  freezed_annotation: ^2.4.4 # Allows updates within 2.x.x
+  freezed_annotation: ^3.0.0 # Allows updates within 2.x.x
   json_annotation: ^4.9.0 # Covers 4.x.x, avoiding breaking changes in 5.x
   pretty_dio_logger: ^1.4.0 # Allows updates in the 1.x.x series
   path_provider: ^2.1.5 # Updates within 2.x.x but restricts breaking changes
   plugin_platform_interface: ^2.0.2
-  webview_flutter: ^4.10.0
+  webview_flutter: ^4.13.0
   encrypt: ^5.0.3
 
 dev_dependencies:

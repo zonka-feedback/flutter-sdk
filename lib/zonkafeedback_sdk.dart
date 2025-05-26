@@ -14,7 +14,7 @@ class ZFSurvey implements ApiResponseCallbacks {
   static final ZFSurvey _instance = ZFSurvey._internal();
   factory ZFSurvey() => _instance;
   ZFSurvey._internal();
-
+  Map<String, dynamic>? customAttributehashMap;
   static late Survey _survey;
   String _url = "";
   static String _customVariableString = "";
@@ -25,10 +25,15 @@ class ZFSurvey implements ApiResponseCallbacks {
   double? _fixedHeightValue = 410;
   String? _crossIconPosition = "left";
   bool? _autoClose = true;
+  String _regionValue = "";
+  bool _deviceDetailsValue = false;
+
+  List<String> _multipleTokens = [];
 
   /// Initialize SDK with necessary details
+
   Future<void> init(
-      {required String token,
+      {required List<String> token,
       required String zfRegion,
       required BuildContext context,
       bool? autoClose,
@@ -37,65 +42,63 @@ class ZFSurvey implements ApiResponseCallbacks {
       double? minimumHeight,
       String? closeIconPosition}) async {
     _context = context;
-    await DataManager().init(token);
+    await DataManager().init();
+    DataManager().saveRegion(zfRegion);
+    DataManager().saveFirstSeen();
+    DataManager().saveCookieId();
+    DataManager().initApiManager();
+    DataManager().setApiCallbacks(this);
     uiType = displayType ?? 'popup';
     _expandedHeightValue = expandedHeight ?? 580;
     _fixedHeightValue = minimumHeight ?? 410;
     _crossIconPosition = closeIconPosition;
     _autoClose = autoClose;
-    _initializeSDK(token, zfRegion);
+    _multipleTokens = token;
+    _regionValue = zfRegion;
   }
 
-  void _initializeSDK(String token, String zfRegion) async {
-    _survey = Survey(token, zfRegion);
-    DataManager().saveRegion(zfRegion);
-    DataManager().saveFirstSeen();
-    DataManager().saveCookieId();
-    DataManager().initApiManager();
-    await SessionService().syncSessionServer(_survey.getSurveyToken());
-    SessionService().sessionStarted();
-    _initializeZFData();
+  Future<bool> checkTokenIsValid(String token) async {
+    // await _initializeZFData(token);
+    bool widgetActive = DataManager().isWidgetActive();
+    bool segmentAllowed = checkSegmenting();
+    return widgetActive && segmentAllowed;
   }
 
-  void _initializeZFData() async {
-    DataManager().setApiCallbacks(this);
-    bool checkInternetConnection = await AppUtils.instance.isNetworkConnected();
-    if (checkInternetConnection) {
-      DataManager().hitSurveyActiveApi(_survey.getSurveyToken(), false);
-    }
-    _getZfSurveyUrl();
-  }
+  // Future<void> _initializeZFData(String token) async {
+  //   DataManager().setApiCallbacks(this);
+  //   bool checkInternetConnection = await AppUtils.instance.isNetworkConnected();
+  //   if (checkInternetConnection) {
+  //     DataManager().hitSurveyActiveApi(token, false);
+  //   }
+  //   _getZfSurveyUrl();
+  // }
 
-  ZFSurvey userInfo(Map<String, dynamic> hashMap) {
+  Future<ZFSurvey> userInfo(Map<String, dynamic> hashMap, String token) async {
     if (hashMap.isNotEmpty) {
-      hashMap.forEach((key, value) {
+      hashMap.forEach((key, value) async {
         if (key.isNotEmpty && key == Constant.EMAIL_ID) {
           if (value.toString().isNotEmpty) {
-            DataManager().saveEmailId(value.toString());
+            await DataManager().saveEmailId(value.toString());
           }
         }
         if (key.isNotEmpty && key == Constant.MOBILE_NO) {
           if (value.toString().isNotEmpty) {
-            DataManager().saveMobileNo(value.toString());
+            await DataManager().saveMobileNo(value.toString());
           }
         }
         if (key.isNotEmpty && key == Constant.UNIQUE_ID) {
           if (value.toString().isNotEmpty) {
-            DataManager().saveUniqueId(value.toString());
+            await DataManager().saveUniqueId(value.toString());
           }
         }
         if (key.isNotEmpty && key == Constant.CONTACT_NAME) {
           if (value.toString().isNotEmpty) {
-            DataManager().saveContactName(value.toString());
+            await DataManager().saveContactName(value.toString());
           }
         }
       });
     }
-    DataManager().createContactForDynamicAttribute(
-      hashMap,
-      _survey.surveyToken,
-      true,
-    );
+
     return this;
   }
 
@@ -104,15 +107,15 @@ class ZFSurvey implements ApiResponseCallbacks {
     hashMap.forEach((key, value) {
       _customVariableString += '$key=$value&';
     });
-    userInfo(hashMap);
   }
 
   Future<void> _getZfSurveyUrl() async {
     _url = _survey.getZfSurveyUrl();
+
     _customVariableString = "";
-    if (_survey.getCustomAttributes() != null &&
-        _survey.getCustomAttributes()!.isNotEmpty) {
-      addCustomParam(_survey.getCustomAttributes());
+
+    if (customAttributehashMap != null && customAttributehashMap!.isNotEmpty) {
+      addCustomParam(customAttributehashMap);
       _url = _url + _customVariableString;
     }
 
@@ -132,7 +135,7 @@ class ZFSurvey implements ApiResponseCallbacks {
       _url = "${_url}contactId=${DataManager().getContactId()}&";
     }
 
-    if (_survey.getDeviceDetails()) {
+    if (_deviceDetailsValue) {
       _customVariableString = "";
       Map<String, dynamic> value =
           await AppUtils.instance.getHiddenVariables(_context);
@@ -143,13 +146,13 @@ class ZFSurvey implements ApiResponseCallbacks {
 
   ZFSurvey sendCustomAttributes(Map<String, dynamic> hashMap) {
     if (hashMap.isNotEmpty) {
-      _survey.sendCustomAttributes(hashMap);
+      customAttributehashMap = hashMap;
     }
     return this;
   }
 
   ZFSurvey sendDeviceDetails(bool deviceDetails) {
-    _survey.sendDeviceDetails(deviceDetails);
+    _deviceDetailsValue = deviceDetails;
     return this;
   }
 
@@ -180,7 +183,6 @@ class ZFSurvey implements ApiResponseCallbacks {
     }
 
     bool processEmbedSurvey = false;
-
     String inclueType = DataManager().getIncludeType();
 
     if (inclueType == 'all') {
@@ -215,46 +217,52 @@ class ZFSurvey implements ApiResponseCallbacks {
     return processEmbedSurvey;
   }
 
-  void startSurvey() async {
-    bool checkNetworkConnection = await AppUtils.instance.isNetworkConnected();
-    if (checkNetworkConnection) {
-      await _getZfSurveyUrl();
-      if (DataManager().getContactId().isEmpty) {
-        if (DataManager().getExternalVisitorId().isEmpty) {
-        } else {
-          DataManager().hitSurveyActiveApi(_survey.getSurveyToken(), true);
-        }
-      } else {
-        DataManager().hitSurveyActiveApi(_survey.getSurveyToken(), true);
-      }
-    } else {
-      return;
-    }
+  Future<bool> checkValidation(String token) async {
+    await DataManager().hitSurveyActiveApi(token);
     bool widgetActive = DataManager().isWidgetActive();
+    bool segmentAllowed = checkSegmenting();
+    return (widgetActive && segmentAllowed);
+  }
+
+  void startSurvey() async {
+    bool checkValidationValue = false;
+    for (int i = 0; i < _multipleTokens.length; i++) {
+      clear();
+      userInfo(customAttributehashMap ?? {}, _multipleTokens[i]);
+      await DataManager().createContactForDynamicAttribute(
+        customAttributehashMap ?? {},
+        _multipleTokens[i],
+        true,
+      );
+      checkValidationValue = await checkValidation(_multipleTokens[i]);
+      if (checkValidationValue) {
+        _survey = Survey(_multipleTokens[i], _regionValue);
+        await SessionService().syncSessionServer(_multipleTokens[i]);
+        SessionService().sessionStarted();
+        break;
+      }
+    }
+    await _getZfSurveyUrl();
     String openUrl = _url + Constant.EMBED_URL;
-    print("zonkafeedbackopnurl $openUrl");
-    if (widgetActive) {
-      bool segmentAllowed = checkSegmenting();
-      if (segmentAllowed) {
-        if (uiType == 'popup') {
-          await ZFSurveyDialog.show(
-            context: _context,
-            surveyUrl: openUrl,
-            autoClose: _autoClose ?? true,
-            fixedHeight: _fixedHeightValue ?? 100,
-            expandedHeight: _expandedHeightValue ?? 100,
-            crossIconPosition: _crossIconPosition ?? "left",
-          );
-        } else if (uiType == 'slide-up') {
-          await ZfBottomSheetDialog.show(
-            context: _context,
-            surveyUrl: openUrl,
-            autoClose: _autoClose ?? true,
-            fixedHeight: _fixedHeightValue ?? 100,
-            expandedHeight: _expandedHeightValue ?? 100,
-            crossIconPosition: _crossIconPosition ?? "left",
-          );
-        }
+    if (checkValidationValue) {
+      if (uiType == 'popup') {
+        await ZFSurveyDialog.show(
+          context: _context,
+          surveyUrl: openUrl,
+          autoClose: _autoClose ?? true,
+          fixedHeight: _fixedHeightValue ?? 100,
+          expandedHeight: _expandedHeightValue ?? 100,
+          crossIconPosition: _crossIconPosition ?? "left",
+        );
+      } else if (uiType == 'slide-up') {
+        await ZfBottomSheetDialog.show(
+          context: _context,
+          surveyUrl: openUrl,
+          autoClose: _autoClose ?? true,
+          fixedHeight: _fixedHeightValue ?? 100,
+          expandedHeight: _expandedHeightValue ?? 100,
+          crossIconPosition: _crossIconPosition ?? "left",
+        );
       }
     }
   }

@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -113,7 +115,14 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
         children: [
           Stack(
             children: [
-              WebViewWidget(controller: _webViewController),
+              WebViewWidget(
+                controller: _webViewController,
+                gestureRecognizers: {
+                  Factory<OneSequenceGestureRecognizer>(
+                    () => EagerGestureRecognizer(),
+                  ),
+                },
+              ),
               if (_isLoading)
                 const Center(
                   child: CircularProgressIndicator(

@@ -13,12 +13,12 @@ class PreferenceManager {
   late SharedPreferences _sharedPref;
 
   // Initialize the PreferenceManager instance with context and token
-  Future<void> init(String token) async {
-    await _initializeSharedPreferences(token);
+  Future<void> init() async {
+    await _initializeSharedPreferences();
   }
 
   // Initialize SharedPreferences with a token
-  Future<void> _initializeSharedPreferences(String token) async {
+  Future<void> _initializeSharedPreferences() async {
     _sharedPref = await SharedPreferences.getInstance();
   }
 

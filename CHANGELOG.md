@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.6
+- Multiple Token Add
+
 ## 1.1.5
 - UI Updates
 

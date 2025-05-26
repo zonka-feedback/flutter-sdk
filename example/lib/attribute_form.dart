@@ -12,7 +12,7 @@ class _AttributeFormState extends State<AttributeForm>
   List<Map<String, String>> attributes = [
     {"key": "", "value": ""},
   ];
-  String sdkToken = "Sgt8J2";
+  List<String> sdkToken = ["Sgt8J2"];
   String regionValue = "US";
   double? fixedHeight;
   double? expandedHeight;
@@ -41,14 +41,6 @@ class _AttributeFormState extends State<AttributeForm>
   }
 
   void runSurvey(String displayType) async {
-    await ZFSurvey().init(
-        token: sdkToken,
-        zfRegion: regionValue,
-        context: context,
-        displayType: displayType,
-        minimumHeight: fixedHeight,
-        closeIconPosition: "left",
-        expandedHeight: expandedHeight);
     final Map<String, String> customAttributes = {
       for (var attribute in attributes)
         if (attribute['key'] != null &&
@@ -56,10 +48,20 @@ class _AttributeFormState extends State<AttributeForm>
             attribute['value']!.isNotEmpty)
           attribute['key']!: attribute['value']!
     };
-    ZFSurvey()
-        .sendDeviceDetails(true)
-        .sendCustomAttributes(customAttributes)
-        .startSurvey();
+
+    ZFSurvey().sendCustomAttributes(customAttributes);
+    ZFSurvey().sendDeviceDetails(true);
+    await ZFSurvey().init(
+        token: sdkToken,
+        zfRegion: 'IN',
+        context: context,
+        displayType: 'slide-up',
+        minimumHeight: 410,
+        closeIconPosition: "right",
+        autoClose: true,
+        expandedHeight: 580);
+
+    ZFSurvey().startSurvey();
   }
 
   void clearFunctionValue() {
@@ -102,8 +104,10 @@ class _AttributeFormState extends State<AttributeForm>
             TextFormField(
               onChanged: (value) {
                 setState(() {
-                  sdkToken = value;
+                  sdkToken =
+                      value.split(',').map((item) => item.trim()).toList();
                 });
+                print("sdktokens $sdkToken");
               },
               decoration: const InputDecoration(
                 labelText: 'SDK Token',

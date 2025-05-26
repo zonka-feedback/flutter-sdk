@@ -4,7 +4,7 @@ class Survey {
   String? baseUrl;
   String surveyToken;
   bool deviceDetails = true;
-  Map<String, dynamic>? hashMap;
+  // Map<String, dynamic>? hashMap;
 
   Survey(this.surveyToken, String zfRegion) {
     if (surveyToken.isEmpty) {
@@ -33,16 +33,6 @@ class Survey {
   /// Method to get the survey token
   String getSurveyToken() {
     return surveyToken;
-  }
-
-  /// Method to send custom attributes
-  void sendCustomAttributes(Map<String, dynamic> hashMap) {
-    this.hashMap = hashMap;
-  }
-
-  /// Method to get custom attributes
-  Map<String, dynamic>? getCustomAttributes() {
-    return hashMap;
   }
 
   /// Private method to generate the base URL
