@@ -227,7 +227,6 @@ class ZFSurvey implements ApiResponseCallbacks {
   void startSurvey() async {
     bool checkValidationValue = false;
     for (int i = 0; i < _multipleTokens.length; i++) {
-      clear();
       userInfo(customAttributehashMap ?? {}, _multipleTokens[i]);
       await DataManager().createContactForDynamicAttribute(
         customAttributehashMap ?? {},

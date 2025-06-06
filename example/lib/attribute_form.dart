@@ -53,7 +53,7 @@ class _AttributeFormState extends State<AttributeForm>
     ZFSurvey().sendDeviceDetails(true);
     await ZFSurvey().init(
         token: sdkToken,
-        zfRegion: 'IN',
+        zfRegion: regionValue,
         context: context,
         displayType: 'slide-up',
         minimumHeight: 410,
