@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.9
+- Multiple Token Add
+
 ## 1.1.8
 - Multiple Token Add
 

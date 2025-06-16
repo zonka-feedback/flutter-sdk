@@ -241,9 +241,10 @@ class ZFSurvey implements ApiResponseCallbacks {
         break;
       }
     }
-    await _getZfSurveyUrl();
-    String openUrl = _url + Constant.EMBED_URL;
+
     if (checkValidationValue) {
+      await _getZfSurveyUrl();
+      String openUrl = _url + Constant.EMBED_URL;
       if (uiType == 'popup') {
         await ZFSurveyDialog.show(
           context: _context,

@@ -36,14 +36,15 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
   @override
   void initState() {
     ZFSurvey().init(
-        token: ['F91hYr'],
-        zfRegion: 'US',
+        token: ['w6IkW9', '8xD7eH'],
+        zfRegion: 'IN',
         context: context,
         displayType: 'slide-up',
         minimumHeight: 410,
         closeIconPosition: "right",
         autoClose: true,
         expandedHeight: 580);
+
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
@@ -75,7 +76,6 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
                   'contact_email': 'manavgarg@example.com',
                   'contact_uniqueId': 'fhebfkebd',
                 };
-
                 ZFSurvey()
                     .sendDeviceDetails(true)
                     .sendCustomAttributes(properties)
