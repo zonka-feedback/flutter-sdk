@@ -132,10 +132,11 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
             ],
           ),
           Container(
+
             alignment: widget.crossIconPosition == "right"
                 ? Alignment.topRight
                 : Alignment.topLeft,
-            color: Colors.transparent,
+            color: Colors.red,
             // margin: const EdgeInsets.only(left: 10, top: 21),
             child: IconButton(
               icon: const Icon(Icons.close, color: Colors.black),
