@@ -132,7 +132,7 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
             ],
           ),
           Container(
-            width: 360,
+            // width: 360,
             color: Colors.transparent,
             margin: const EdgeInsets.only(left: 10, top: 21),
             child: IconButton(
