@@ -107,7 +107,7 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
         color: Colors.white,
       ),
       alignment: Alignment.center,
-      width: size.width / 1.09,
+      width: size.width / 3,
       height: height,
       child: Stack(
         alignment: Alignment.topCenter,
@@ -136,7 +136,7 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
             alignment: widget.crossIconPosition == "right"
                 ? Alignment.topRight
                 : Alignment.topLeft,
-            color: Colors.red,
+            height: 30,
             // margin: const EdgeInsets.only(left: 10, top: 21),
             child: IconButton(
               icon: const Icon(Icons.close, color: Colors.black),

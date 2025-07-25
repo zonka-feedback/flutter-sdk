@@ -111,7 +111,6 @@ class ZFSurvey implements ApiResponseCallbacks {
 
   Future<void> _getZfSurveyUrl() async {
     _url = _survey.getZfSurveyUrl();
-
     _customVariableString = "";
 
     if (customAttributehashMap != null && customAttributehashMap!.isNotEmpty) {
@@ -245,6 +244,7 @@ class ZFSurvey implements ApiResponseCallbacks {
     if (checkValidationValue) {
       await _getZfSurveyUrl();
       String openUrl = _url + Constant.EMBED_URL;
+      print("openurlvalue $openUrl");
       if (uiType == 'popup') {
         await ZFSurveyDialog.show(
           context: _context,
