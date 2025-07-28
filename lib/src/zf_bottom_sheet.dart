@@ -102,7 +102,23 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
         ),
       )
       ..enableZoom(false)
-      ..loadRequest(Uri.parse(widget.surveyUrl));
+      // Clear cache and cookies to prevent caching issues
+      ..clearCache()
+      ..clearLocalStorage()
+      // Add cache-busting parameter to URL
+      ..loadRequest(Uri.parse(_addCacheBuster(widget.surveyUrl)));
+  }
+
+  // Add cache-busting parameter to URL
+  String _addCacheBuster(String url) {
+    final uri = Uri.parse(url);
+    final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    
+    // Add or update the cache-busting parameter
+    final newQueryParameters = Map<String, String>.from(uri.queryParameters);
+    newQueryParameters['_t'] = timestamp;
+    
+    return uri.replace(queryParameters: newQueryParameters).toString();
   }
 
   void _handleJavaScriptMessage(String message) {
