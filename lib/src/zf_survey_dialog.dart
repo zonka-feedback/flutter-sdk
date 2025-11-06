@@ -154,12 +154,16 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
             color: Colors.transparent,
             margin: const EdgeInsets.only(left: 10, top: 21),
             child: IconButton(
-              icon: widget.closeIconType == 'icon1' ?  const Icon(Icons.close, color: Colors.black) :  widget.closeIconType == 'icon2'? SvgPicture.asset(
-                'assets/icons/close.svg',
-                package: 'zonkafeedback_sdk',
-                width: 26,
-                height: 26,
-              ):Container(),
+              icon: widget.closeIconType == 'icon1'
+                  ? const Icon(Icons.close, color: Colors.black)
+                  : widget.closeIconType == 'icon2'
+                      ? SvgPicture.asset(
+                          'assets/icons/close.svg',
+                          package: 'zonkafeedback_sdk',
+                          width: 26,
+                          height: 26,
+                        )
+                      : Container(),
               alignment: widget.crossIconPosition == "right"
                   ? Alignment.topRight
                   : Alignment.topLeft,
@@ -170,8 +174,6 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
               },
             ),
           ),
-          
-
         ],
       ),
     );

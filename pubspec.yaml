@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.3.5 # Covers versions within 2.x.x
-  connectivity_plus: ^6.1.1 # Safe for updates in 6.x.x
+  connectivity_plus: ^7.0.0 # Safe for updates in 6.x.x
   intl: ^0.20.1 # Supports 0.x.x but restricts breaking changes in 1.x
   dio: ^5.7.0 # Compatible with 5.x.x
   freezed_annotation: ^3.0.0 # Allows updates within 2.x.x

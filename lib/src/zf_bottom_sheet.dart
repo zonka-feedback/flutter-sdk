@@ -118,11 +118,11 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
   String _addCacheBuster(String url) {
     final uri = Uri.parse(url);
     final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-    
+
     // Add or update the cache-busting parameter
     final newQueryParameters = Map<String, String>.from(uri.queryParameters);
     newQueryParameters['_t'] = timestamp;
-    
+
     return uri.replace(queryParameters: newQueryParameters).toString();
   }
 
@@ -165,12 +165,16 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
             color: Colors.transparent,
             margin: const EdgeInsets.only(left: 10, top: 21),
             child: IconButton(
-              icon: widget.closeIconType == 'icon1' ? const Icon(Icons.close, color: Colors.black) :  widget.closeIconType == 'icon2'? SvgPicture.asset(
-                'assets/icons/close.svg',
-                package: 'zonkafeedback_sdk',
-                width: 24,
-                height: 24,
-              ):Container(),
+              icon: widget.closeIconType == 'icon1'
+                  ? const Icon(Icons.close, color: Colors.black)
+                  : widget.closeIconType == 'icon2'
+                      ? SvgPicture.asset(
+                          'assets/icons/close.svg',
+                          package: 'zonkafeedback_sdk',
+                          width: 24,
+                          height: 24,
+                        )
+                      : Container(),
               alignment: widget.crossIcon == "right"
                   ? Alignment.topRight
                   : Alignment.topLeft,
