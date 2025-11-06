@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
@@ -11,6 +12,7 @@ class ZfBottomSheetDialog {
       required bool autoClose,
       required double expandedHeight,
       required double fixedHeight,
+      required String closeIconType,
       required String crossIconPosition}) async {
     return showModalBottomSheet(
         context: context,
@@ -38,6 +40,7 @@ class ZfBottomSheetDialog {
                   fixedHeight: fixedHeight,
                   autoClose: autoClose,
                   crossIcon: crossIconPosition,
+                  closeIconType: closeIconType,
                 ),
               ),
             ),
@@ -50,11 +53,13 @@ class WebViewWithLoader extends StatefulWidget {
   final String surveyUrl;
   final double fixedHeight;
   final double expandedHeight;
+  final String closeIconType;
   final bool autoClose;
   final String crossIcon;
   const WebViewWithLoader(
       {Key? key,
       required this.surveyUrl,
+      required this.closeIconType,
       required this.expandedHeight,
       required this.autoClose,
       required this.fixedHeight,
@@ -160,7 +165,12 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
             color: Colors.transparent,
             margin: const EdgeInsets.only(left: 10, top: 21),
             child: IconButton(
-              icon: const Icon(Icons.close, color: Colors.black),
+              icon: widget.closeIconType == 'icon1' ? const Icon(Icons.close, color: Colors.black) :  widget.closeIconType == 'icon2'? SvgPicture.asset(
+                'assets/icons/close.svg',
+                package: 'zonkafeedback_sdk',
+                width: 24,
+                height: 24,
+              ):Container(),
               alignment: widget.crossIcon == "right"
                   ? Alignment.topRight
                   : Alignment.topLeft,

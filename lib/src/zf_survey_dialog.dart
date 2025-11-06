@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ZFSurveyDialog {
@@ -8,6 +9,7 @@ class ZFSurveyDialog {
       {required BuildContext context,
       required String surveyUrl,
       required bool autoClose,
+      required String closeIconType,
       required double expandedHeight,
       required double fixedHeight,
       required String crossIconPosition}) async {
@@ -23,6 +25,7 @@ class ZFSurveyDialog {
             expandedHeight: expandedHeight,
             crossIconPosition: crossIconPosition,
             autoClose: autoClose,
+            closeIconType: closeIconType,
           ),
         ),
       ),
@@ -35,6 +38,7 @@ class WebViewWithLoader extends StatefulWidget {
   final double fixedHeight;
   final double expandedHeight;
   final String crossIconPosition;
+  final String closeIconType;
   final bool autoClose;
   const WebViewWithLoader(
       {Key? key,
@@ -42,6 +46,7 @@ class WebViewWithLoader extends StatefulWidget {
       required this.fixedHeight,
       required this.expandedHeight,
       required this.autoClose,
+      required this.closeIconType,
       required this.crossIconPosition})
       : super(key: key);
 
@@ -149,7 +154,12 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
             color: Colors.transparent,
             margin: const EdgeInsets.only(left: 10, top: 21),
             child: IconButton(
-              icon: const Icon(Icons.close, color: Colors.black),
+              icon: widget.closeIconType == 'icon1' ?  const Icon(Icons.close, color: Colors.black) :  widget.closeIconType == 'icon2'? SvgPicture.asset(
+                'assets/icons/close.svg',
+                package: 'zonkafeedback_sdk',
+                width: 26,
+                height: 26,
+              ):Container(),
               alignment: widget.crossIconPosition == "right"
                   ? Alignment.topRight
                   : Alignment.topLeft,
@@ -160,11 +170,8 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
               },
             ),
           ),
+          
 
-          // if (_isLoading)
-          //   const Center(
-          //     child: CircularProgressIndicator(color: Colors.lightBlue),
-          //   ),
         ],
       ),
     );

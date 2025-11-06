@@ -63,6 +63,7 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey> with WidgetsB
       token: ['{{SDK_TOKEN}}'], // Replace with your SDK token
       zfRegion: '{{REGION}}', // Options: US, EU, IN
       context: context,
+      closeIconType: 'icon2',
       minimumHeight: 410,
       closeIconPosition: "right",
       expandedHeight: 580,
@@ -118,8 +119,21 @@ To configure the close icon for the survey, use one of the following options wit
 
 2. **right**  
    -  You can give position to close icon to right by using value `right`.
+   
 
-  
+# Close Icon Type
+
+Two built-in close icon styles are bundled with the SDK:
+
+- **icon1**  
+  - Minimal “X” without the circular background
+
+- **icon2**  
+  - Circle background with an “X” (the current default across Popup and Slide-up)
+
+
+Note: The current release uses **icon1** by default. The ability to switch types will be introduced in an upcoming update.
+
  
 ---
 

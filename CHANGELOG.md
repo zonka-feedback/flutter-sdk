@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0
+- Added SVG close icon for Popup and Slide-up UIs
+- Bundled asset at `assets/icons/close.svg` and wired loading via package assets
+- Added documentation for `closeIconPosition` and rebuild note in README
+
 ## 1.1.9
 - Multiple Token Add
 

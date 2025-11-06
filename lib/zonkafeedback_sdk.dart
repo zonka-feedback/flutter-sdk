@@ -27,6 +27,7 @@ class ZFSurvey implements ApiResponseCallbacks {
   bool? _autoClose = true;
   String _regionValue = "";
   bool _deviceDetailsValue = false;
+  String _closeIconType = 'icon1';
 
   List<String> _multipleTokens = [];
 
@@ -38,6 +39,7 @@ class ZFSurvey implements ApiResponseCallbacks {
       required BuildContext context,
       bool? autoClose,
       String? displayType,
+      String? closeIconType,
       double? expandedHeight,
       double? minimumHeight,
       String? closeIconPosition}) async {
@@ -52,6 +54,7 @@ class ZFSurvey implements ApiResponseCallbacks {
     _expandedHeightValue = expandedHeight ?? 580;
     _fixedHeightValue = minimumHeight ?? 410;
     _crossIconPosition = closeIconPosition;
+    _closeIconType = closeIconType ?? 'icon1';
     _autoClose = autoClose;
     _multipleTokens = token;
     _regionValue = zfRegion;
@@ -249,6 +252,7 @@ class ZFSurvey implements ApiResponseCallbacks {
         await ZFSurveyDialog.show(
           context: _context,
           surveyUrl: openUrl,
+          closeIconType: _closeIconType,
           autoClose: _autoClose ?? true,
           fixedHeight: _fixedHeightValue ?? 100,
           expandedHeight: _expandedHeightValue ?? 100,
@@ -258,6 +262,7 @@ class ZFSurvey implements ApiResponseCallbacks {
         await ZfBottomSheetDialog.show(
           context: _context,
           surveyUrl: openUrl,
+          closeIconType: _closeIconType,
           autoClose: _autoClose ?? true,
           fixedHeight: _fixedHeightValue ?? 100,
           expandedHeight: _expandedHeightValue ?? 100,
