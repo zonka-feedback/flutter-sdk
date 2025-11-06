@@ -39,7 +39,7 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
         token: ['w6IkW9', '8xD7eH'],
         zfRegion: 'IN',
         context: context,
-        displayType: 'popup',
+        displayType: 'slide-up',
         minimumHeight: 410,
         closeIconPosition: "left",
         autoClose: true,
