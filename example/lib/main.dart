@@ -39,10 +39,11 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
         token: ['w6IkW9', '8xD7eH'],
         zfRegion: 'IN',
         context: context,
-        displayType: 'slide-up',
+        displayType: 'popup',
         minimumHeight: 410,
-        closeIconPosition: "right",
+        closeIconPosition: "left",
         autoClose: true,
+        closeIconType: 'icon2',
         expandedHeight: 580);
 
     WidgetsBinding.instance.addObserver(this);
