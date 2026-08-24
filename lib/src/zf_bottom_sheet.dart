@@ -74,6 +74,25 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
   bool _isLoading = true;
   bool isExpanded = false;
   late final WebViewController _webViewController;
+  Timer? _revealTimer;
+
+  // The embed page finalises its layout ~350ms after document ready, which is
+  // after onPageFinished: revealing there shows the pre-settle layout and the
+  // content then visibly jumps. Hold the loader until it has settled.
+  static const Duration _settleAfterExpand = Duration(milliseconds: 350);
+  static const Duration _revealFallback = Duration(milliseconds: 1200);
+
+  void _scheduleReveal(Duration delay) {
+    if (!_isLoading) return;
+    _revealTimer?.cancel();
+    _revealTimer = Timer(delay, () {
+      if (mounted && _isLoading) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -90,9 +109,7 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageFinished: (url) {
-            setState(() {
-              _isLoading = false;
-            });
+            _scheduleReveal(_revealFallback);
           },
           onWebResourceError: (error) {
             setState(() {
@@ -114,6 +131,12 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       ..loadRequest(Uri.parse(_addCacheBuster(widget.surveyUrl)));
   }
 
+  @override
+  void dispose() {
+    _revealTimer?.cancel();
+    super.dispose();
+  }
+
   // Add cache-busting parameter to URL
   String _addCacheBuster(String url) {
     final uri = Uri.parse(url);
@@ -131,6 +154,7 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
       setState(() {
         isExpanded = true;
       });
+      _scheduleReveal(_settleAfterExpand);
     } else if (message == 'zf-embed-submit-close' && widget.autoClose) {
       Navigator.of(context).pop();
     }
@@ -154,10 +178,18 @@ class _WebViewWithLoaderState extends State<WebViewWithLoader> {
               ),
             },
           ),
+          // Opaque, not just a spinner: the WebView is a platform view
+          // underneath, so a transparent overlay would still show the
+          // unsettled page.
           if (_isLoading)
-            const Center(
-              child: CircularProgressIndicator(
-                color: Colors.lightBlue,
+            const Positioned.fill(
+              child: ColoredBox(
+                color: Colors.white,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.lightBlue,
+                  ),
+                ),
               ),
             ),
           Container(
