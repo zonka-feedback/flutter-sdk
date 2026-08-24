@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.2
+- Removed deprecated `@required` annotations from `ApiResult`; use of the
+  built-in `required` keyword has superseded them since Dart 2.12
+- Resolves the two remaining `dart analyze` infos, restoring a full score in
+  pana's static analysis section
+
 ## 1.2.1
 - Fixed survey content visibly jumping when Popup and Slide-up surveys first open
 - Loader now stays visible until the survey layout has settled, and fully covers the WebView while loading
