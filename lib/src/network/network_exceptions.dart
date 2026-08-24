@@ -112,6 +112,10 @@ abstract class NetworkExceptions with _$NetworkExceptions {
               networkExceptions = const NetworkExceptions.unexpectedError();
             case DioExceptionType.unknown:
               networkExceptions = const NetworkExceptions.unexpectedError();
+            // Covers DioExceptionType values added in newer dio releases;
+            // naming them directly would break the `^5.7.0` lower bound.
+            default:
+              networkExceptions = const NetworkExceptions.unexpectedError();
           }
         } else if (error is SocketException) {
           networkExceptions = const NetworkExceptions.noInternetConnection();

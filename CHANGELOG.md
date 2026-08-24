@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+- Fixed content jump in Popup and Slide-up surveys: the loader now stays up until the embed layout has settled
+- Loader overlay is opaque so the unsettled page is no longer visible behind the spinner
+
 ## 1.2.0
 - Added SVG close icon for Popup and Slide-up UIs
 - Bundled asset at `assets/icons/close.svg` and wired loading via package assets
