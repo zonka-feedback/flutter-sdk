@@ -1,8 +1,9 @@
 # Changelog
 
 ## 1.2.1
-- Fixed content jump in Popup and Slide-up surveys: the loader now stays up until the embed layout has settled
-- Loader overlay is opaque so the unsettled page is no longer visible behind the spinner
+- Fixed survey content visibly jumping when Popup and Slide-up surveys first open
+- Loader now stays visible until the survey layout has settled, and fully covers the WebView while loading
+- Made the `DioExceptionType` switch exhaustive so `dart analyze` reports no errors
 
 ## 1.2.0
 - Added SVG close icon for Popup and Slide-up UIs
