@@ -65,9 +65,8 @@ class DataManager {
         await saveExcludeType(excludeSegment?.type ?? "");
         await saveIncludeType(includeSegment?.type ?? "");
 
-        await savePageDelay(widget
-                ?.data?.distributionInfo?.embedSettings?.trigger?.after ??
-            0);
+        await savePageDelay(
+            widget?.data?.distributionInfo?.embedSettings?.trigger?.after ?? 0);
 
         if (excludeSegment?.list?.isNotEmpty ?? false) {
           saveExcludedList(excludeSegment!.list!);

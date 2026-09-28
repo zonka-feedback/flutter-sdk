@@ -1,5 +1,7 @@
 library zonka_feedback;
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:zonkafeedback_sdk/src/constant.dart';
 import 'package:zonkafeedback_sdk/src/data_manager.dart';
@@ -30,6 +32,14 @@ class ZFSurvey implements ApiResponseCallbacks {
   String _closeIconType = 'icon1';
 
   List<String> _multipleTokens = [];
+
+  /// Guards against overlapping [startSurvey] runs. Stays set for the whole
+  /// lifetime of a run, including the on-page delay and the time the survey is
+  /// on screen, so repeated calls cannot stack dialogs.
+  bool _surveyPending = false;
+
+  Timer? _pageDelayTimer;
+  Completer<bool>? _pageDelayCompleter;
 
   /// Initialize SDK with necessary details
 
@@ -228,6 +238,16 @@ class ZFSurvey implements ApiResponseCallbacks {
   }
 
   void startSurvey() async {
+    if (_surveyPending) return;
+    _surveyPending = true;
+    try {
+      await _startSurvey();
+    } finally {
+      _surveyPending = false;
+    }
+  }
+
+  Future<void> _startSurvey() async {
     bool checkValidationValue = false;
     for (int i = 0; i < _multipleTokens.length; i++) {
       userInfo(customAttributehashMap ?? {}, _multipleTokens[i]);
@@ -246,7 +266,20 @@ class ZFSurvey implements ApiResponseCallbacks {
     }
 
     if (checkValidationValue) {
+      final int pageDelay = DataManager().getPageDelay();
+      if (pageDelay > 0) {
+        final bool elapsed = await _awaitPageDelay(pageDelay);
+        // Cancelled because the app was backgrounded -- the user is no longer
+        // on the page, so the survey is dropped for this run.
+        if (!elapsed) return;
+      }
+
+      // The delay widens the gap between validation and display to as much as
+      // a minute, during which the host screen can be popped or disposed.
+      if (!_context.mounted) return;
       await _getZfSurveyUrl();
+      if (!_context.mounted) return;
+
       String openUrl = _url + Constant.EMBED_URL;
       if (uiType == 'popup') {
         await ZFSurveyDialog.show(
@@ -272,6 +305,32 @@ class ZFSurvey implements ApiResponseCallbacks {
     }
   }
 
+  /// Waits [seconds] before the survey is shown, resolving to `true` when the
+  /// delay ran to completion and `false` when it was cancelled.
+  ///
+  /// Uses a cancellable [Timer] rather than `Future.delayed` so that
+  /// backgrounding the app can abandon the pending survey. Left uncancelled,
+  /// the platforms disagree: Android keeps the isolate running and would open
+  /// the survey while the app is not visible, while iOS suspends the process
+  /// and fires the moment the user returns.
+  Future<bool> _awaitPageDelay(int seconds) {
+    _cancelPageDelay();
+    final completer = Completer<bool>();
+    _pageDelayCompleter = completer;
+    _pageDelayTimer = Timer(Duration(seconds: seconds), () {
+      if (!completer.isCompleted) completer.complete(true);
+    });
+    return completer.future;
+  }
+
+  void _cancelPageDelay() {
+    _pageDelayTimer?.cancel();
+    _pageDelayTimer = null;
+    final completer = _pageDelayCompleter;
+    _pageDelayCompleter = null;
+    if (completer != null && !completer.isCompleted) completer.complete(false);
+  }
+
 // session update value
   void sendAppLifecycleState(AppLifecycleState state) {
     // Handle specific states
@@ -289,11 +348,13 @@ class ZFSurvey implements ApiResponseCallbacks {
         break;
 
       case AppLifecycleState.paused:
+        _cancelPageDelay();
         SessionService().sessionEnded();
         SessionService().sessionListPrint();
         break;
 
       case AppLifecycleState.detached:
+        _cancelPageDelay();
         SessionService().sessionEnded();
         SessionService().sessionListPrint();
         // Perform cleanup actions like closing database connections or saving state

@@ -7,7 +7,7 @@ documentation: https://developers.zonkafeedback.com/docs/in-app-sdk/flutter-sdk
 
 environment:
   sdk: ^3.5.4
-  flutter: '>=3.3.0'
+  flutter: '>=3.7.0' # BuildContext.mounted
 
 dependencies:
   flutter:
