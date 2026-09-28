@@ -17,7 +17,7 @@ Follow the steps below to integrate the SDK into your app.
 ---
 
 ## Minimum Requirements
-- **Flutter:** Version 3.0.0 or higher.
+- **Flutter:** Version 3.7.0 or higher.
 - **Android:**
     - CompileSdk version: 34 or higher.
     - Android Gradle Plugin: 8.1.0 or higher.
@@ -144,6 +144,33 @@ To configure and start the survey in your app:
 import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
 
 ZFSurvey().startSurvey();
+```
+
+---
+
+## On-Page Delay
+
+The survey can wait a number of seconds before appearing. This is configured
+per distribution in the Zonka Feedback dashboard under **In-App SDK →
+Configuration → On page delay**, and is delivered to the SDK as
+`embedSettings.trigger.after`. There is no code parameter — the SDK reads
+whatever the dashboard is set to.
+
+A distribution saved before this setting existed has no delay and shows the
+survey immediately, as before.
+
+**Backgrounding cancels a pending delay.** If the app is sent to the
+background while the survey is waiting to appear, the survey is dropped for
+that run rather than being shown later, since the user is no longer on the
+page. It will be reconsidered the next time `startSurvey()` is called. For
+this to work, the host app must forward lifecycle events:
+
+```dart
+@override
+void didChangeAppLifecycleState(AppLifecycleState state) {
+  ZFSurvey().sendAppLifecycleState(state);
+  super.didChangeAppLifecycleState(state);
+}
 ```
 
 ---
