@@ -66,4 +66,5 @@ class Constant {
   static const String EXCLUDE_TYPE = "exclude_type";
   static const String INCLUDE_TYPE = "include_type";
   static const String EVD_LIST = "evd_list";
+  static const String PAGE_DELAY_SECONDS = "page_delay_seconds";
 }

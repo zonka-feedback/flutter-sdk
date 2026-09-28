@@ -51,6 +51,7 @@ class DataManager {
     await clearIncludeList();
     await clearIncludeType();
     await clearExcludeType();
+    await clearPageDelay();
 
     try {
       final widget = await _apiManager.hitSurveyActiveApi(token);
@@ -63,6 +64,10 @@ class DataManager {
 
         await saveExcludeType(excludeSegment?.type ?? "");
         await saveIncludeType(includeSegment?.type ?? "");
+
+        await savePageDelay(widget
+                ?.data?.distributionInfo?.embedSettings?.trigger?.after ??
+            0);
 
         if (excludeSegment?.list?.isNotEmpty ?? false) {
           saveExcludedList(excludeSegment!.list!);
@@ -348,6 +353,22 @@ class DataManager {
 
   String getIncludeType() {
     return PreferenceManager().getString(Constant.INCLUDE_TYPE, "");
+  }
+
+  /// Seconds to wait before showing the survey, from
+  /// `embedSettings.trigger.after`. Negative values are stored as 0; no upper
+  /// bound is applied, because the server does not cap the field either.
+  Future<void> savePageDelay(int seconds) async {
+    await PreferenceManager()
+        .putLong(Constant.PAGE_DELAY_SECONDS, seconds < 0 ? 0 : seconds);
+  }
+
+  int getPageDelay() {
+    return PreferenceManager().getLong(Constant.PAGE_DELAY_SECONDS);
+  }
+
+  Future<void> clearPageDelay() async {
+    await PreferenceManager().putLong(Constant.PAGE_DELAY_SECONDS, 0);
   }
 
   void saveEvdList(List<String> lists) {
