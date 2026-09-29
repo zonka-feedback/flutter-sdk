@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.2.3
+- Added support for the **On page delay** setting configured in the dashboard;
+  the survey now waits `embedSettings.trigger.after` seconds before appearing
+- A pending delay is cancelled if the app is backgrounded, so the survey no
+  longer appears unprompted when the user returns
+- Fixed a crash in `Trigger.fromJson` where a non-integer `after` or `scroll`
+  value silently suppressed the survey for every token
+- Repeated `startSurvey()` calls can no longer stack multiple surveys
+- Fixed segmenting rejecting every contact when a distribution's include
+  segment had `type: "all"` alongside a non-empty `list`
+- Raised the minimum Flutter version to 3.7.0
+
 ## 1.2.2
 - Removed deprecated `@required` annotations from `ApiResult`; use of the
   built-in `required` keyword has superseded them since Dart 2.12

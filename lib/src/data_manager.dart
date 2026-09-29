@@ -2,6 +2,7 @@ import 'dart:core';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:zonkafeedback_sdk/src/session_database/sessions.dart';
 import 'package:zonkafeedback_sdk/src/sharedpreference/preference_manager.dart';
 import 'package:zonkafeedback_sdk/src/utils/app_util.dart';
@@ -51,6 +52,7 @@ class DataManager {
     await clearIncludeList();
     await clearIncludeType();
     await clearExcludeType();
+    await clearPageDelay();
 
     try {
       final widget = await _apiManager.hitSurveyActiveApi(token);
@@ -63,6 +65,9 @@ class DataManager {
 
         await saveExcludeType(excludeSegment?.type ?? "");
         await saveIncludeType(includeSegment?.type ?? "");
+
+        await savePageDelay(
+            widget?.data?.distributionInfo?.embedSettings?.trigger?.after ?? 0);
 
         if (excludeSegment?.list?.isNotEmpty ?? false) {
           saveExcludedList(excludeSegment!.list!);
@@ -145,6 +150,12 @@ class DataManager {
 
     ContactResponse contactResponse =
         await ApiManager().hitCreateContactApiDynamic(hashMapData);
+
+    if (kDebugMode) {
+      debugPrint('[ZF-SEG] contact token=$token'
+          ' id=${contactResponse.data?.contactInfo?.id}'
+          ' lists=${contactResponse.data?.contactInfo?.lists}');
+    }
 
     if (contactResponse.data != null) {
       if (contactResponse.data?.contactInfo != null) {
@@ -348,6 +359,22 @@ class DataManager {
 
   String getIncludeType() {
     return PreferenceManager().getString(Constant.INCLUDE_TYPE, "");
+  }
+
+  /// Seconds to wait before showing the survey, from
+  /// `embedSettings.trigger.after`. Negative values are stored as 0; no upper
+  /// bound is applied, because the server does not cap the field either.
+  Future<void> savePageDelay(int seconds) async {
+    await PreferenceManager()
+        .putLong(Constant.PAGE_DELAY_SECONDS, seconds < 0 ? 0 : seconds);
+  }
+
+  int getPageDelay() {
+    return PreferenceManager().getLong(Constant.PAGE_DELAY_SECONDS);
+  }
+
+  Future<void> clearPageDelay() async {
+    await PreferenceManager().putLong(Constant.PAGE_DELAY_SECONDS, 0);
   }
 
   void saveEvdList(List<String> lists) {
