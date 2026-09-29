@@ -2,6 +2,7 @@ import 'dart:core';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:zonkafeedback_sdk/src/session_database/sessions.dart';
 import 'package:zonkafeedback_sdk/src/sharedpreference/preference_manager.dart';
 import 'package:zonkafeedback_sdk/src/utils/app_util.dart';
@@ -149,6 +150,12 @@ class DataManager {
 
     ContactResponse contactResponse =
         await ApiManager().hitCreateContactApiDynamic(hashMapData);
+
+    if (kDebugMode) {
+      debugPrint('[ZF-SEG] contact token=$token'
+          ' id=${contactResponse.data?.contactInfo?.id}'
+          ' lists=${contactResponse.data?.contactInfo?.lists}');
+    }
 
     if (contactResponse.data != null) {
       if (contactResponse.data?.contactInfo != null) {

@@ -3,6 +3,7 @@ library zonka_feedback;
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:zonkafeedback_sdk/src/constant.dart';
 import 'package:zonkafeedback_sdk/src/data_manager.dart';
 import 'package:zonkafeedback_sdk/src/network/api_response_callback.dart';
@@ -233,6 +234,11 @@ class ZFSurvey implements ApiResponseCallbacks {
     await DataManager().hitSurveyActiveApi(token);
     bool widgetActive = DataManager().isWidgetActive();
     bool segmentAllowed = checkSegmenting();
+    if (kDebugMode) {
+      debugPrint('[ZF-SEG] token=$token -> widgetActive=$widgetActive'
+          ' segmentAllowed=$segmentAllowed'
+          ' valid=${widgetActive && segmentAllowed}');
+    }
     return (widgetActive && segmentAllowed);
   }
 
