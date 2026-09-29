@@ -201,9 +201,8 @@ class ZFSurvey implements ApiResponseCallbacks {
     if (inclueType == 'all') {
       processEmbedSurvey = true;
     }
-
     // Check included segments
-    if (includedList.isNotEmpty) {
+    else if (includedList.isNotEmpty) {
       processEmbedSurvey = false;
       if (contactResponseList.isNotEmpty) {
         for (String segmentInContact in contactResponseList) {

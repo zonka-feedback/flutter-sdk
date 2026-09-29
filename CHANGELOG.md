@@ -8,6 +8,8 @@
 - Fixed a crash in `Trigger.fromJson` where a non-integer `after` or `scroll`
   value silently suppressed the survey for every token
 - Repeated `startSurvey()` calls can no longer stack multiple surveys
+- Fixed segmenting rejecting every contact when a distribution's include
+  segment had `type: "all"` alongside a non-empty `list`
 - Raised the minimum Flutter version to 3.7.0
 
 ## 1.2.2
