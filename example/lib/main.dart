@@ -18,7 +18,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: ZonkaFeedBackSurvey(),
     );
   }
@@ -36,8 +36,8 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
   @override
   void initState() {
     ZFSurvey().init(
-        token: ['w6IkW9', '8xD7eH'],
-        zfRegion: 'IN',
+        token: ['vMo8E1', '8xD7eH'],
+        zfRegion: 'US',
         context: context,
         displayType: 'slide-up',
         minimumHeight: 410,

@@ -140,20 +140,23 @@ class AppUtils {
 
   /// Get Device Info HashMap Equivalent
   Future<Map<String, dynamic>> getHiddenVariables(BuildContext context) async {
+    // Read everything that needs the context before the first await.
+    final deviceResolution = getDeviceResolution(context);
+    final deviceType = isTablet(context) ? "Tablet" : "Mobile";
     return {
-      Constant.APP_VERSION_CODE: await getAppVersionCode(),
-      Constant.DEVICE_RESOLUTION: getDeviceResolution(context),
-      Constant.DEVICE_SERIAL: await getDeviceSerial(),
-      Constant.GET_NETWORK: await getNetworkType(),
-      Constant.DEVICE_NAME: await _zonkaSdkPlugin.getDeviceName(),
-      Constant.DEVICE_MODEL: await _zonkaSdkPlugin.getModelName(),
-      Constant.DEVICE_BRAND: await _zonkaSdkPlugin.getBrandName(),
-      Constant.TIME_ZONE: DateTime.now().timeZoneName,
-      Constant.DEVICE_TYPE: isTablet(context) ? "Tablet" : "Mobile",
-      Constant.DEVICE_OS: Platform.isIOS ? Constant.IOS : Constant.ANDROID,
-      Constant.DEVICE_OS_VERSION: Platform.operatingSystemVersion,
-      Constant.SCREEN_NAME: await getScreenName(),
-      Constant.APP_VERSION_NAME: "1.0"
+      Constant.appVersionCode: await getAppVersionCode(),
+      Constant.deviceResolution: deviceResolution,
+      Constant.deviceSerial: await getDeviceSerial(),
+      Constant.getNetwork: await getNetworkType(),
+      Constant.deviceName: await _zonkaSdkPlugin.getDeviceName(),
+      Constant.deviceModel: await _zonkaSdkPlugin.getModelName(),
+      Constant.deviceBrand: await _zonkaSdkPlugin.getBrandName(),
+      Constant.timeZone: DateTime.now().timeZoneName,
+      Constant.deviceType: deviceType,
+      Constant.deviceOs: Platform.isIOS ? Constant.ios : Constant.android,
+      Constant.deviceOsVersion: Platform.operatingSystemVersion,
+      Constant.screenName: await getScreenName(),
+      Constant.appVersionName: "1.0"
     };
   }
 }

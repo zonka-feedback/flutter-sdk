@@ -38,12 +38,12 @@ class Survey {
   /// Private method to generate the base URL
   String _generateBaseUrl(String surveyToken, String zfRegion) {
     if (zfRegion.isNotEmpty && zfRegion.toUpperCase() == "EU") {
-      return '${Constant.HTTPS}e${Constant.URL}$surveyToken';
+      return '${Constant.https}e${Constant.url}$surveyToken';
     }
     if (zfRegion.isNotEmpty && zfRegion.toUpperCase() == "IN") {
-      return '${Constant.HTTPS}in${Constant.URL}$surveyToken';
+      return '${Constant.https}in${Constant.url}$surveyToken';
     }
-    return '${Constant.HTTPS}us1${Constant.URL}$surveyToken';
+    return '${Constant.https}us1${Constant.url}$surveyToken';
 
     //  return 'https://s.zf2.zonkaplatform.com/$surveyToken';
   }

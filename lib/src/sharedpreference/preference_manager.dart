@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferenceManager {
-  static const String SHARED_PREF_FILE = "com.zf_sdk.ZFSurveyPref";
+  static const String sharedPrefFile = "com.zf_sdk.ZFSurveyPref";
 
   static final PreferenceManager _sharedPrefSingleton =
       PreferenceManager._internal();

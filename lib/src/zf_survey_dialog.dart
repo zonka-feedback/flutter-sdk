@@ -41,17 +41,16 @@ class WebViewWithLoader extends StatefulWidget {
   final String closeIconType;
   final bool autoClose;
   const WebViewWithLoader(
-      {Key? key,
+      {super.key,
       required this.surveyUrl,
       required this.fixedHeight,
       required this.expandedHeight,
       required this.autoClose,
       required this.closeIconType,
-      required this.crossIconPosition})
-      : super(key: key);
+      required this.crossIconPosition});
 
   @override
-  _WebViewWithLoaderState createState() => _WebViewWithLoaderState();
+  State<WebViewWithLoader> createState() => _WebViewWithLoaderState();
 }
 
 class _WebViewWithLoaderState extends State<WebViewWithLoader> {

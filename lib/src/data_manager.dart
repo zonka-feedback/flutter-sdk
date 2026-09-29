@@ -86,10 +86,10 @@ class DataManager {
           .setCompanyId(widget?.data?.distributionInfo?.companyId ?? "");
     } on DioException catch (error) {
       // Handle Dio errors
-      print("DioException: $error");
+      debugPrint("DioException: $error");
     } catch (e) {
       // Handle other types of errors
-      print("Unexpected error: $e");
+      debugPrint("Unexpected error: $e");
     }
   }
 
@@ -99,51 +99,51 @@ class DataManager {
     bool isContactCreated,
   ) async {
     Map<String, String> hashMap = {
-      Constant.COOKIE_ID: getCookieId(),
-      Constant.FIRST_SEEN: getFirstSeen(),
-      Constant.REQUEST_TYPE: 'ANDROID',
-      Constant.LAST_SEEN: AppUtils.instance.getCurrentTime(
+      Constant.cookieId: getCookieId(),
+      Constant.firstSeen: getFirstSeen(),
+      Constant.requestType: 'ANDROID',
+      Constant.lastSeen: AppUtils.instance.getCurrentTime(
         DateTime.now().millisecondsSinceEpoch,
         'yyyy-MM-dd HH:mm:ss',
       ),
-      Constant.IP_ADDRESS: await AppUtils.instance.getLocalIpAddress(),
+      Constant.ipAddress: await AppUtils.instance.getLocalIpAddress(),
     };
 
     if (getContactId().isNotEmpty) {
-      hashMap[Constant.CONTACT_ID] = getContactId();
+      hashMap[Constant.contactId] = getContactId();
     } else {
       if (getExternalVisitorId().isNotEmpty) {
-        hashMap[Constant.EXTERNAL_VISITOR_ID] = getExternalVisitorId();
+        hashMap[Constant.externalVisitorId] = getExternalVisitorId();
       }
     }
 
     if (getEmailId().isNotEmpty) {
-      hashMap[Constant.EMAIL_ID] = getEmailId();
+      hashMap[Constant.emailId] = getEmailId();
     }
 
     if (getContactName().isNotEmpty) {
-      hashMap[Constant.CONTACT_NAME] = getContactName();
+      hashMap[Constant.contactName] = getContactName();
     }
 
     if (getMobileNo().isNotEmpty) {
-      hashMap[Constant.MOBILE_NO] = getMobileNo();
+      hashMap[Constant.mobileNo] = getMobileNo();
     }
 
     if (getUniqueId().isNotEmpty) {
-      hashMap[Constant.UNIQUE_ID] = getUniqueId();
+      hashMap[Constant.uniqueId] = getUniqueId();
     }
 
     hashMap.addAll({
-      Constant.UNIQUE_REF_CODE: token,
-      Constant.JOB_TYPE: 'sdktd',
-      Constant.COMPANY_ID: DataManager().getCompanyID(),
-      Constant.CONTACT_DEVICE_OS: Constant.ANDROID,
-      Constant.CONTACT_DEVICE_NAME: await _zonkaSdkPlugin.getModelName() ?? "",
-      Constant.CONTACT_DEVICE_MODEL: await _zonkaSdkPlugin.getModelName() ?? "",
-      Constant.CONTACT_DEVICE_BRAND: await _zonkaSdkPlugin.getBrandName() ?? "",
-      Constant.CONTACT_DEVICE_OS_VERSION:
+      Constant.uniqueRefCode: token,
+      Constant.jobType: 'sdktd',
+      Constant.companyId: DataManager().getCompanyID(),
+      Constant.contactDeviceOs: Constant.android,
+      Constant.contactDeviceName: await _zonkaSdkPlugin.getModelName() ?? "",
+      Constant.contactDeviceModel: await _zonkaSdkPlugin.getModelName() ?? "",
+      Constant.contactDeviceBrand: await _zonkaSdkPlugin.getBrandName() ?? "",
+      Constant.contactDeviceOsVersion:
           await _zonkaSdkPlugin.getPlatformVersion() ?? "",
-      Constant.CONTACT_DEVICE: (await _zonkaSdkPlugin.getIsTablet()).toString(),
+      Constant.contactDevice: (await _zonkaSdkPlugin.getIsTablet()).toString(),
     });
 
     hashMapData.addAll(hashMap);
@@ -173,7 +173,7 @@ class DataManager {
   Future<void> updateSessionToServer(
       String token, List<Sessions> sessionList) async {
     UpdateSessionRequest sessionRequest = UpdateSessionRequest(
-      deviceType: Platform.isIOS ? Constant.IOS : Constant.ANDROID,
+      deviceType: Platform.isIOS ? Constant.ios : Constant.android,
     );
 
     String contactIdValue = getContactId();
@@ -182,9 +182,9 @@ class DataManager {
       if (sessionList[i].endTime != 0 && sessionList[i].startTime != 0) {
         SessionLog sessionLog = SessionLog(
           sessionStartedAt: AppUtils.instance
-              .getCurrentTime(sessionList[i].startTime, Constant.DATE_FORMAT),
+              .getCurrentTime(sessionList[i].startTime, Constant.dateFormat),
           sessionClosedAt: AppUtils.instance
-              .getCurrentTime(sessionList[i].endTime, Constant.DATE_FORMAT),
+              .getCurrentTime(sessionList[i].endTime, Constant.dateFormat),
           uniqueSessId: sessionList[i].id,
           cookieId: getCookieId(),
           ipAddress: await AppUtils.instance.getLocalIpAddress(),
@@ -199,15 +199,15 @@ class DataManager {
   }
 
   void setSessionEndTime(int sessionEndTime) {
-    PreferenceManager().putLong(Constant.SESSION_END_TIME, sessionEndTime);
+    PreferenceManager().putLong(Constant.sessionEndTime, sessionEndTime);
   }
 
   void setWidgetActivity(bool isWidgetActive) {
-    PreferenceManager().putBoolean(Constant.IS_WIDGET_ACTIVE, isWidgetActive);
+    PreferenceManager().putBoolean(Constant.isWidgetActive, isWidgetActive);
   }
 
   void setCompanyId(String companyId) {
-    PreferenceManager().putString(Constant.COMPANY_ID, companyId);
+    PreferenceManager().putString(Constant.companyId, companyId);
   }
 
   void saveFirstSeen() {
@@ -215,150 +215,150 @@ class DataManager {
       int firstSeenTimeStamp = DateTime.now().millisecond;
       String firstSeen = AppUtils.instance
           .getCurrentTime(firstSeenTimeStamp, "yyyy-MM-dd HH:mm:ss");
-      PreferenceManager().putString(Constant.USER_FIRST_SEEN, firstSeen);
+      PreferenceManager().putString(Constant.userFirstSeen, firstSeen);
     }
   }
 
   void saveCookieId() {
     if (getCookieId().isNotEmpty) {
       String cookieId = AppUtils.instance.getCookieId(24);
-      PreferenceManager().putString(Constant.COOKIE_ID, "ad-$cookieId");
+      PreferenceManager().putString(Constant.cookieId, "ad-$cookieId");
     }
   }
 
   Future<void> saveContactId(String contactId) async {
-    await PreferenceManager().putString(Constant.CONTACT_ID, contactId);
+    await PreferenceManager().putString(Constant.contactId, contactId);
   }
 
   Future<void> saveExternalVisitorId(String evd) async {
-    await PreferenceManager().putString(Constant.EXTERNAL_VISITOR_ID, evd);
+    await PreferenceManager().putString(Constant.externalVisitorId, evd);
   }
 
   Future<void> saveEmailId(String emailId) async {
-    await PreferenceManager().putString(Constant.EMAIL_ID, emailId);
+    await PreferenceManager().putString(Constant.emailId, emailId);
   }
 
   Future<void> saveMobileNo(String mobileNo) async {
-    await PreferenceManager().putString(Constant.MOBILE_NO, mobileNo);
+    await PreferenceManager().putString(Constant.mobileNo, mobileNo);
   }
 
   Future<void> saveUniqueId(String uniqueId) async {
-    await PreferenceManager().putString(Constant.UNIQUE_ID, uniqueId);
+    await PreferenceManager().putString(Constant.uniqueId, uniqueId);
   }
 
   Future<void> saveRegion(String zfRegion) async {
-    await PreferenceManager().putString(Constant.ZF_REGION, zfRegion);
+    await PreferenceManager().putString(Constant.zfRegion, zfRegion);
   }
 
   Future<void> saveContactName(String contactName) async {
-    await PreferenceManager().putString(Constant.CONTACT_NAME, contactName);
+    await PreferenceManager().putString(Constant.contactName, contactName);
   }
 
   bool isWidgetActive() {
-    return PreferenceManager().getBoolean(Constant.IS_WIDGET_ACTIVE, false);
+    return PreferenceManager().getBoolean(Constant.isWidgetActive, false);
   }
 
   String getCompanyID() {
-    return PreferenceManager().getString(Constant.COMPANY_ID, "");
+    return PreferenceManager().getString(Constant.companyId, "");
   }
 
   int getSessionEndTime() {
-    return PreferenceManager().getLong(Constant.SESSION_END_TIME);
+    return PreferenceManager().getLong(Constant.sessionEndTime);
   }
 
   String getFirstSeen() {
-    return PreferenceManager().getString(Constant.USER_FIRST_SEEN, "");
+    return PreferenceManager().getString(Constant.userFirstSeen, "");
   }
 
   String getCookieId() {
-    return PreferenceManager().getString(Constant.COOKIE_ID, "");
+    return PreferenceManager().getString(Constant.cookieId, "");
   }
 
   String getContactId() {
-    return PreferenceManager().getString(Constant.CONTACT_ID, "");
+    return PreferenceManager().getString(Constant.contactId, "");
   }
 
   String getExternalVisitorId() {
-    return PreferenceManager().getString(Constant.EXTERNAL_VISITOR_ID, "");
+    return PreferenceManager().getString(Constant.externalVisitorId, "");
   }
 
   String getEmailId() {
-    return PreferenceManager().getString(Constant.EMAIL_ID, "");
+    return PreferenceManager().getString(Constant.emailId, "");
   }
 
   String getMobileNo() {
-    // String encryptValue = EncryptionService().encryptData(PreferenceManager().getString(Constant.MOBILE_NO, ""));
+    // String encryptValue = EncryptionService().encryptData(PreferenceManager().getString(Constant.mobileNo, ""));
     // return encryptValue;
 
-    return PreferenceManager().getString(Constant.MOBILE_NO, "");
+    return PreferenceManager().getString(Constant.mobileNo, "");
   }
 
   String getUniqueId() {
-    return PreferenceManager().getString(Constant.UNIQUE_ID, "");
+    return PreferenceManager().getString(Constant.uniqueId, "");
   }
 
   String getRegion() {
-    return PreferenceManager().getString(Constant.ZF_REGION, "");
+    return PreferenceManager().getString(Constant.zfRegion, "");
   }
 
   String getContactName() {
-    return PreferenceManager().getString(Constant.CONTACT_NAME, "");
+    return PreferenceManager().getString(Constant.contactName, "");
   }
 
   Future<void> saveContactList(List<String> lists) async {
-    PreferenceManager().putStringList(Constant.CONTACT_LIST, lists);
+    PreferenceManager().putStringList(Constant.contactList, lists);
   }
 
   List<String>? getContactList() {
-    return PreferenceManager().getStringList(Constant.CONTACT_LIST, null);
+    return PreferenceManager().getStringList(Constant.contactList, null);
   }
 
   void saveExcludedList(List<String> lists) {
-    PreferenceManager().putStringList(Constant.EXCLUDED_LIST, lists);
+    PreferenceManager().putStringList(Constant.excludedList, lists);
   }
 
   Future<void> clearExcludedList() async {
-    await PreferenceManager().putStringList(Constant.EXCLUDED_LIST, []);
+    await PreferenceManager().putStringList(Constant.excludedList, []);
   }
 
   List<String>? getExcludedList() {
-    return PreferenceManager().getStringList(Constant.EXCLUDED_LIST, null);
+    return PreferenceManager().getStringList(Constant.excludedList, null);
   }
 
   void saveIncludedList(List<String> lists) {
-    PreferenceManager().putStringList(Constant.INCLUDED_LIST, lists);
+    PreferenceManager().putStringList(Constant.includedList, lists);
   }
 
   List<String>? getIncludedList() {
-    return PreferenceManager().getStringList(Constant.INCLUDED_LIST, null);
+    return PreferenceManager().getStringList(Constant.includedList, null);
   }
 
   Future<void> clearIncludeList() async {
-    await PreferenceManager().putStringList(Constant.INCLUDED_LIST, []);
+    await PreferenceManager().putStringList(Constant.includedList, []);
   }
 
   Future<void> clearIncludeType() async {
-    await PreferenceManager().putString(Constant.INCLUDE_TYPE, "");
+    await PreferenceManager().putString(Constant.includeType, "");
   }
 
   Future<void> clearExcludeType() async {
-    await PreferenceManager().putString(Constant.EXCLUDE_TYPE, "");
+    await PreferenceManager().putString(Constant.excludeType, "");
   }
 
   Future<void> saveExcludeType(String type) async {
-    await PreferenceManager().putString(Constant.EXCLUDE_TYPE, type);
+    await PreferenceManager().putString(Constant.excludeType, type);
   }
 
   Future<void> saveIncludeType(String type) async {
-    await PreferenceManager().putString(Constant.INCLUDE_TYPE, type);
+    await PreferenceManager().putString(Constant.includeType, type);
   }
 
   String getExcludeType() {
-    return PreferenceManager().getString(Constant.EXCLUDE_TYPE, "");
+    return PreferenceManager().getString(Constant.excludeType, "");
   }
 
   String getIncludeType() {
-    return PreferenceManager().getString(Constant.INCLUDE_TYPE, "");
+    return PreferenceManager().getString(Constant.includeType, "");
   }
 
   /// Seconds to wait before showing the survey, from
@@ -366,23 +366,23 @@ class DataManager {
   /// bound is applied, because the server does not cap the field either.
   Future<void> savePageDelay(int seconds) async {
     await PreferenceManager()
-        .putLong(Constant.PAGE_DELAY_SECONDS, seconds < 0 ? 0 : seconds);
+        .putLong(Constant.pageDelaySeconds, seconds < 0 ? 0 : seconds);
   }
 
   int getPageDelay() {
-    return PreferenceManager().getLong(Constant.PAGE_DELAY_SECONDS);
+    return PreferenceManager().getLong(Constant.pageDelaySeconds);
   }
 
   Future<void> clearPageDelay() async {
-    await PreferenceManager().putLong(Constant.PAGE_DELAY_SECONDS, 0);
+    await PreferenceManager().putLong(Constant.pageDelaySeconds, 0);
   }
 
   void saveEvdList(List<String> lists) {
-    PreferenceManager().putStringList(Constant.EVD_LIST, lists);
+    PreferenceManager().putStringList(Constant.evdList, lists);
   }
 
   List<String>? getEvdList() {
-    return PreferenceManager().getStringList(Constant.EVD_LIST, null);
+    return PreferenceManager().getStringList(Constant.evdList, null);
   }
 
   void clearPreference() {

@@ -1,10 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
 
 class AttributeForm extends StatefulWidget {
+  const AttributeForm({super.key});
+
   @override
-  _AttributeFormState createState() => _AttributeFormState();
+  State<AttributeForm> createState() => _AttributeFormState();
 }
 
 class _AttributeFormState extends State<AttributeForm>
@@ -107,7 +108,7 @@ class _AttributeFormState extends State<AttributeForm>
                   sdkToken =
                       value.split(',').map((item) => item.trim()).toList();
                 });
-                print("sdktokens $sdkToken");
+                debugPrint("sdktokens $sdkToken");
               },
               decoration: const InputDecoration(
                 labelText: 'SDK Token',
@@ -173,21 +174,21 @@ class _AttributeFormState extends State<AttributeForm>
                             hintStyle: TextStyle(
                                 fontSize: size.height / 50,
                                 color: Colors.grey.shade500),
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                           ),
                           onChanged: (value) {
                             attributes[index]["key"] = value;
                           },
                         ),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       // Value Field
                       Expanded(
                         child: TextFormField(
                           initialValue: attributes[index]["value"],
                           decoration: InputDecoration(
                             hintText: index == 0 ? 'email@gmail.com' : 'Value',
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             contentPadding: const EdgeInsets.all(5),
                             hintStyle: TextStyle(
                                 fontSize: size.height / 50,
@@ -198,10 +199,10 @@ class _AttributeFormState extends State<AttributeForm>
                           },
                         ),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       // Remove Button
                       IconButton(
-                        icon: Icon(Icons.close, color: Colors.red),
+                        icon: const Icon(Icons.close, color: Colors.red),
                         onPressed: () => removeAttribute(index),
                       ),
                     ],
@@ -221,7 +222,7 @@ class _AttributeFormState extends State<AttributeForm>
                           8), // Adjust the value as needed
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Add More',
                     style: TextStyle(color: Colors.white),
                   ),
@@ -231,18 +232,18 @@ class _AttributeFormState extends State<AttributeForm>
                   children: [
                     TextButton(
                       onPressed: clearAllAttributes,
-                      child: Text('Clear All'),
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.blue,
                       ),
+                      child: const Text('Clear All'),
                     ),
                     // Clear All Button
                     TextButton(
                       onPressed: clearFunctionValue,
-                      child: Text('Clear Local Storage'),
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.blue,
                       ),
+                      child: const Text('Clear Local Storage'),
                     ),
                   ],
                 ),
@@ -261,7 +262,7 @@ class _AttributeFormState extends State<AttributeForm>
                         onPressed: () {
                           runSurvey('popup');
                         },
-                        child: Text(
+                        child: const Text(
                           'popup',
                           style: TextStyle(color: Colors.white),
                         ),
@@ -281,7 +282,7 @@ class _AttributeFormState extends State<AttributeForm>
                               8), // Adjust the value as needed
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         'slide-up',
                         style: TextStyle(color: Colors.white),
                       ),

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../constant.dart';
@@ -36,11 +37,11 @@ class ApiManager {
           return handler.next(options);
         },
         onResponse: (response, handler) {
-          print("Response: ${response.statusCode} ${response.data}");
+          debugPrint("Response: ${response.statusCode} ${response.data}");
           return handler.next(response);
         },
         onError: (DioException error, handler) {
-          print("Error: ${error.message}");
+          debugPrint("Error: ${error.message}");
           return handler.next(error);
         },
       ),
@@ -69,15 +70,15 @@ class ApiManager {
     if (zfRegion.toUpperCase() == 'EU') {
       return forContactTracking
           ? 'https://e.zonkafeedback.com/api/v1/'
-          : "${Constant.HTTPS}e${Constant.RETROFIT_URL}";
+          : "${Constant.https}e${Constant.retrofitUrl}";
     } else if (zfRegion.toUpperCase() == 'IN') {
       return forContactTracking
           ? 'https://in.apis.zonkafeedback.com/'
-          : "${Constant.HTTPS}in${Constant.RETROFIT_URL}";
+          : "${Constant.https}in${Constant.retrofitUrl}";
     } else {
       return forContactTracking
           ? 'https://us1.apis.zonkafeedback.com/'
-          : "${Constant.HTTPS}us1${Constant.RETROFIT_URL}";
+          : "${Constant.https}us1${Constant.retrofitUrl}";
     }
 
     // return "https://us1.zonkasurvey.com/api/v1/";

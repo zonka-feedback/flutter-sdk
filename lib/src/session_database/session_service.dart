@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:zonkafeedback_sdk/src/session_database/sessions.dart';
 import '../data_manager.dart';
 import '../utils/app_util.dart';
@@ -39,7 +40,7 @@ class SessionService {
       // Update the last session
       sessions[sessions.length - 1] = jsonEncode(lastSession.toJson());
       await prefs.setStringList(_sessionKey, sessions);
-      print("sessionEnded ${lastSession.id}, ${lastSession.endTime}");
+      debugPrint("sessionEnded ${lastSession.id}, ${lastSession.endTime}");
     }
   }
 
@@ -48,14 +49,14 @@ class SessionService {
     List<String> sessions = prefs.getStringList(_sessionKey) ?? [];
 
     if (sessions.isNotEmpty) {
-      print("Session List:");
+      debugPrint("Session List:");
       for (var sessionJson in sessions) {
         Sessions session = Sessions.fromJson(jsonDecode(sessionJson));
-        print(
+        debugPrint(
             "Session ID: ${session.id}, Start Time: ${session.startTime}, End Time: ${session.endTime}");
       }
     } else {
-      print("No sessions available.");
+      debugPrint("No sessions available.");
     }
   }
 

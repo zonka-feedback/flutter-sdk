@@ -90,22 +90,22 @@ class ZFSurvey implements ApiResponseCallbacks {
   Future<ZFSurvey> userInfo(Map<String, dynamic> hashMap, String token) async {
     if (hashMap.isNotEmpty) {
       hashMap.forEach((key, value) async {
-        if (key.isNotEmpty && key == Constant.EMAIL_ID) {
+        if (key.isNotEmpty && key == Constant.emailId) {
           if (value.toString().isNotEmpty) {
             await DataManager().saveEmailId(value.toString());
           }
         }
-        if (key.isNotEmpty && key == Constant.MOBILE_NO) {
+        if (key.isNotEmpty && key == Constant.mobileNo) {
           if (value.toString().isNotEmpty) {
             await DataManager().saveMobileNo(value.toString());
           }
         }
-        if (key.isNotEmpty && key == Constant.UNIQUE_ID) {
+        if (key.isNotEmpty && key == Constant.uniqueId) {
           if (value.toString().isNotEmpty) {
             await DataManager().saveUniqueId(value.toString());
           }
         }
-        if (key.isNotEmpty && key == Constant.CONTACT_NAME) {
+        if (key.isNotEmpty && key == Constant.contactName) {
           if (value.toString().isNotEmpty) {
             await DataManager().saveContactName(value.toString());
           }
@@ -285,7 +285,7 @@ class ZFSurvey implements ApiResponseCallbacks {
       await _getZfSurveyUrl();
       if (!_context.mounted) return;
 
-      String openUrl = _url + Constant.EMBED_URL;
+      String openUrl = _url + Constant.embedUrl;
       if (uiType == 'popup') {
         await ZFSurveyDialog.show(
           context: _context,
