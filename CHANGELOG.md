@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.3.0
 - The on-page delay is now a saved deadline rather than an in-memory timer.
   Backgrounding the app, locking the phone, or the app being killed no longer
   drops the survey; it is shown once the delay has passed, as soon as the app
@@ -9,6 +9,11 @@
 - Added an optional `navigatorKey` to `init` so a delayed survey can be shown
   after the screen that called `init` has closed
 - `startSurvey()` calls while a survey is waiting no longer restart its delay
+- A survey that was waiting when the app was killed is shown after `init()`
+  on the next launch
+- Lifecycle events and `startSurvey()` calls made before `init()` are ignored
+  instead of throwing
+- `contacts/tracking` is called at most once per `startSurvey()` run
 
 ## 1.2.3
 - Added support for the **On page delay** setting configured in the dashboard;
