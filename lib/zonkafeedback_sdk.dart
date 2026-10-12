@@ -42,6 +42,10 @@ class ZFSurvey implements ApiResponseCallbacks {
   /// persisted pending survey instead.
   bool _surveyPending = false;
 
+  /// Set once [init] has loaded preferences. Lifecycle events and
+  /// [startSurvey] calls that arrive earlier are ignored.
+  bool _initialized = false;
+
   late final PendingSurveyScheduler _pendingSurvey = PendingSurveyScheduler(
     onDue: startSurvey,
     isEligible: () => DataManager().isWidgetActive() && checkSegmenting(),
@@ -85,6 +89,11 @@ class ZFSurvey implements ApiResponseCallbacks {
     _autoClose = autoClose;
     _multipleTokens = token;
     _regionValue = zfRegion;
+    _initialized = true;
+
+    // A survey that qualified before the app was killed is picked up here,
+    // so it does not wait for the host to call startSurvey() again.
+    if (_pendingSurvey.hasPending) startSurvey();
   }
 
   Future<bool> checkTokenIsValid(String token) async {
@@ -259,7 +268,7 @@ class ZFSurvey implements ApiResponseCallbacks {
   }
 
   void startSurvey() async {
-    if (_surveyPending) return;
+    if (!_initialized || _surveyPending) return;
     _surveyPending = true;
     try {
       // A survey already waiting out its on-page delay is resumed rather than
@@ -378,7 +387,7 @@ class ZFSurvey implements ApiResponseCallbacks {
     switch (state) {
       case AppLifecycleState.resumed:
         // Re-arm, or show if it fell due while the app was in the background.
-        if (_pendingSurvey.hasPending) startSurvey();
+        if (_initialized && _pendingSurvey.hasPending) startSurvey();
         SessionService().sessionStarted();
         SessionService().sessionListPrint();
         // App is visible and in the foreground

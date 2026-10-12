@@ -163,8 +163,8 @@ survey immediately, as before.
 SDK saves the time it is due. Locking the phone, switching apps, taking a call,
 or even the app being killed does not reset or cancel it. Time spent in the
 background counts toward the delay. If the survey falls due while the app is
-in the background, it is shown as soon as the user returns, or on the next
-`startSurvey()` after a restart. Calling `startSurvey()` again while a survey is
+in the background, it is shown as soon as the user returns. After a restart
+it is picked up by `init()`, so call `init()` when the app launches. Calling `startSurvey()` again while a survey is
 waiting does not restart its delay.
 
 Just before showing, the SDK checks again that the widget is still active and
