@@ -36,8 +36,8 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
   @override
   void initState() {
     ZFSurvey().init(
-        token: ['w6IkW9', '8xD7eH'],
-        zfRegion: 'IN',
+        token: ['V13Flt', '8xD7eH'],
+        zfRegion: 'US',
         context: context,
         displayType: 'slide-up',
         minimumHeight: 410,
