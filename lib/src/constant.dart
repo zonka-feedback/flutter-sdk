@@ -67,4 +67,6 @@ class Constant {
   static const String INCLUDE_TYPE = "include_type";
   static const String EVD_LIST = "evd_list";
   static const String PAGE_DELAY_SECONDS = "page_delay_seconds";
+  static const String PENDING_SURVEY_TOKEN = "pending_survey_token";
+  static const String PENDING_SURVEY_SHOW_AT = "pending_survey_show_at";
 }

@@ -47,7 +47,10 @@ class DataManager {
     _callbacks = callbacks;
   }
 
-  Future<void> hitSurveyActiveApi(String token) async {
+  /// Fetches the widget settings for [token]. Resolves to `false` when the
+  /// request failed, in which case the cached segment settings have already
+  /// been cleared and must not be treated as the server's answer.
+  Future<bool> hitSurveyActiveApi(String token) async {
     await clearExcludedList();
     await clearIncludeList();
     await clearIncludeType();
@@ -84,6 +87,7 @@ class DataManager {
           widget?.data?.distributionInfo?.isWidgetActive ?? false);
       DataManager()
           .setCompanyId(widget?.data?.distributionInfo?.companyId ?? "");
+      return true;
     } on DioException catch (error) {
       // Handle Dio errors
       print("DioException: $error");
@@ -91,6 +95,7 @@ class DataManager {
       // Handle other types of errors
       print("Unexpected error: $e");
     }
+    return false;
   }
 
   Future<void> createContactForDynamicAttribute(
@@ -377,6 +382,31 @@ class DataManager {
     await PreferenceManager().putLong(Constant.PAGE_DELAY_SECONDS, 0);
   }
 
+  /// Records that the survey for [token] qualified and is due at [showAt].
+  /// Persisted so the deadline survives backgrounding and process death.
+  Future<void> savePendingSurvey(String token, DateTime showAt) async {
+    await PreferenceManager().putString(Constant.PENDING_SURVEY_TOKEN, token);
+    await PreferenceManager().putLong(
+        Constant.PENDING_SURVEY_SHOW_AT, showAt.millisecondsSinceEpoch);
+  }
+
+  /// The survey waiting out its on-page delay, or `null` when there is none.
+  PendingSurvey? getPendingSurvey() {
+    final String token =
+        PreferenceManager().getString(Constant.PENDING_SURVEY_TOKEN, "");
+    if (token.isEmpty) return null;
+    return PendingSurvey(
+      token,
+      DateTime.fromMillisecondsSinceEpoch(
+          PreferenceManager().getLong(Constant.PENDING_SURVEY_SHOW_AT)),
+    );
+  }
+
+  Future<void> clearPendingSurvey() async {
+    await PreferenceManager().putString(Constant.PENDING_SURVEY_TOKEN, "");
+    await PreferenceManager().putLong(Constant.PENDING_SURVEY_SHOW_AT, 0);
+  }
+
   void saveEvdList(List<String> lists) {
     PreferenceManager().putStringList(Constant.EVD_LIST, lists);
   }
@@ -392,4 +422,11 @@ class DataManager {
     PreferenceManager().clearAllPrefs();
     saveRegion(zfRegion);
   }
+}
+
+class PendingSurvey {
+  final String token;
+  final DateTime showAt;
+
+  const PendingSurvey(this.token, this.showAt);
 }

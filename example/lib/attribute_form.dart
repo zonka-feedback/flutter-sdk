@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
 
 class AttributeForm extends StatefulWidget {
+  const AttributeForm({super.key, this.navigatorKey});
+
+  final GlobalKey<NavigatorState>? navigatorKey;
+
   @override
   _AttributeFormState createState() => _AttributeFormState();
 }
@@ -55,11 +59,12 @@ class _AttributeFormState extends State<AttributeForm>
         token: sdkToken,
         zfRegion: regionValue,
         context: context,
-        displayType: 'slide-up',
-        minimumHeight: 410,
+        navigatorKey: widget.navigatorKey,
+        displayType: displayType,
+        minimumHeight: fixedHeight ?? 410,
         closeIconPosition: "right",
         autoClose: true,
-        expandedHeight: 580);
+        expandedHeight: expandedHeight ?? 580);
 
     ZFSurvey().startSurvey();
   }
@@ -130,7 +135,7 @@ class _AttributeFormState extends State<AttributeForm>
             TextFormField(
               onChanged: (value) {
                 setState(() {
-                  fixedHeight = double.parse(value);
+                  fixedHeight = double.tryParse(value);
                 });
               },
               decoration: const InputDecoration(
@@ -143,7 +148,7 @@ class _AttributeFormState extends State<AttributeForm>
             TextFormField(
               onChanged: (value) {
                 setState(() {
-                  expandedHeight = double.parse(value);
+                  expandedHeight = double.tryParse(value);
                 });
               },
               decoration: const InputDecoration(

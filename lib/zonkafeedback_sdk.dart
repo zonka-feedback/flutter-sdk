@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:zonkafeedback_sdk/src/constant.dart';
 import 'package:zonkafeedback_sdk/src/data_manager.dart';
 import 'package:zonkafeedback_sdk/src/network/api_response_callback.dart';
+import 'package:zonkafeedback_sdk/src/pending_survey_scheduler.dart';
 import 'package:zonkafeedback_sdk/src/session_database/session_service.dart';
 import 'package:zonkafeedback_sdk/src/survey.dart';
 import 'package:zonkafeedback_sdk/src/utils/app_util.dart';
@@ -23,6 +24,7 @@ class ZFSurvey implements ApiResponseCallbacks {
   static String _customVariableString = "";
   late ZFSurveyDialog zfSurveyDialog;
   late BuildContext _context;
+  GlobalKey<NavigatorState>? _navigatorKey;
   String? uiType = 'popup';
   double? _expandedHeightValue = 580;
   double? _fixedHeightValue = 410;
@@ -34,20 +36,33 @@ class ZFSurvey implements ApiResponseCallbacks {
 
   List<String> _multipleTokens = [];
 
-  /// Guards against overlapping [startSurvey] runs. Stays set for the whole
-  /// lifetime of a run, including the on-page delay and the time the survey is
-  /// on screen, so repeated calls cannot stack dialogs.
+  /// Guards against overlapping [startSurvey] runs. Stays set while a run is
+  /// validating or the survey is on screen, so repeated calls cannot stack
+  /// dialogs. It is not held during the on-page delay: that is tracked by the
+  /// persisted pending survey instead.
   bool _surveyPending = false;
 
-  Timer? _pageDelayTimer;
-  Completer<bool>? _pageDelayCompleter;
+  late final PendingSurveyScheduler _pendingSurvey = PendingSurveyScheduler(
+    onDue: startSurvey,
+    isEligible: () => DataManager().isWidgetActive() && checkSegmenting(),
+    displayContext: _activeContext,
+    show: (context, token) {
+      _survey = Survey(token, _regionValue);
+      return _showSurvey(context);
+    },
+  );
 
   /// Initialize SDK with necessary details
-
+  ///
+  /// [navigatorKey] is the key given to the app's `MaterialApp` /
+  /// `CupertinoApp`. When set, a survey whose on-page delay runs out after
+  /// [context]'s screen was closed is shown on the current route instead of
+  /// waiting for a screen that is gone.
   Future<void> init(
       {required List<String> token,
       required String zfRegion,
       required BuildContext context,
+      GlobalKey<NavigatorState>? navigatorKey,
       bool? autoClose,
       String? displayType,
       String? closeIconType,
@@ -55,6 +70,7 @@ class ZFSurvey implements ApiResponseCallbacks {
       double? minimumHeight,
       String? closeIconPosition}) async {
     _context = context;
+    _navigatorKey = navigatorKey;
     await DataManager().init();
     DataManager().saveRegion(zfRegion);
     DataManager().saveFirstSeen();
@@ -123,7 +139,7 @@ class ZFSurvey implements ApiResponseCallbacks {
     });
   }
 
-  Future<void> _getZfSurveyUrl() async {
+  Future<void> _getZfSurveyUrl(BuildContext context) async {
     _url = _survey.getZfSurveyUrl();
 
     _customVariableString = "";
@@ -152,7 +168,7 @@ class ZFSurvey implements ApiResponseCallbacks {
     if (_deviceDetailsValue) {
       _customVariableString = "";
       Map<String, dynamic> value =
-          await AppUtils.instance.getHiddenVariables(_context);
+          await AppUtils.instance.getHiddenVariables(context);
       addCustomParam(value);
       _url = _url + _customVariableString;
     }
@@ -246,94 +262,114 @@ class ZFSurvey implements ApiResponseCallbacks {
     if (_surveyPending) return;
     _surveyPending = true;
     try {
-      await _startSurvey();
+      // A survey already waiting out its on-page delay is resumed rather than
+      // re-evaluated, so repeated calls cannot push its deadline back.
+      if (_pendingSurvey.hasPending) {
+        await _pendingSurvey.resume(_multipleTokens);
+      } else {
+        await _startSurvey();
+      }
     } finally {
       _surveyPending = false;
     }
   }
 
   Future<void> _startSurvey() async {
+    if (_multipleTokens.isEmpty) return;
+    await userInfo(customAttributehashMap ?? {}, _multipleTokens.first);
+
+    // contacts/tracking is called at most once per run. The contact's lists
+    // belong to the contact, not the token, so one response serves every
+    // token's segment check. It is deferred until the first token whose
+    // widget is active, so inactive tokens cost no tracking call and the
+    // request carries the companyId that token's validation just saved.
+    bool contactCreated = false;
     bool checkValidationValue = false;
-    for (int i = 0; i < _multipleTokens.length; i++) {
-      userInfo(customAttributehashMap ?? {}, _multipleTokens[i]);
-      await DataManager().createContactForDynamicAttribute(
-        customAttributehashMap ?? {},
-        _multipleTokens[i],
-        true,
-      );
-      checkValidationValue = await checkValidation(_multipleTokens[i]);
+    for (final String token in _multipleTokens) {
+      await DataManager().hitSurveyActiveApi(token);
+      final bool widgetActive = DataManager().isWidgetActive();
+      if (widgetActive && !contactCreated) {
+        await _createContact(token);
+        contactCreated = true;
+      }
+      checkValidationValue = widgetActive && checkSegmenting();
+      if (kDebugMode) {
+        debugPrint('[ZF-SEG] token=$token -> widgetActive=$widgetActive'
+            ' valid=$checkValidationValue');
+      }
       if (checkValidationValue) {
-        _survey = Survey(_multipleTokens[i], _regionValue);
-        await SessionService().syncSessionServer(_multipleTokens[i]);
+        _survey = Survey(token, _regionValue);
+        await SessionService().syncSessionServer(token);
         SessionService().sessionStarted();
         break;
       }
     }
 
+    // No widget was active: still record the visit once, as every run did
+    // before tracking was deduplicated.
+    if (!contactCreated) {
+      await _createContact(_multipleTokens.first);
+    }
+
     if (checkValidationValue) {
       final int pageDelay = DataManager().getPageDelay();
       if (pageDelay > 0) {
-        final bool elapsed = await _awaitPageDelay(pageDelay);
-        // Cancelled because the app was backgrounded -- the user is no longer
-        // on the page, so the survey is dropped for this run.
-        if (!elapsed) return;
+        await _pendingSurvey.start(
+            _survey.getSurveyToken(), Duration(seconds: pageDelay));
+        return;
       }
 
-      // The delay widens the gap between validation and display to as much as
-      // a minute, during which the host screen can be popped or disposed.
-      if (!_context.mounted) return;
-      await _getZfSurveyUrl();
-      if (!_context.mounted) return;
-
-      String openUrl = _url + Constant.EMBED_URL;
-      if (uiType == 'popup') {
-        await ZFSurveyDialog.show(
-          context: _context,
-          surveyUrl: openUrl,
-          closeIconType: _closeIconType,
-          autoClose: _autoClose ?? true,
-          fixedHeight: _fixedHeightValue ?? 100,
-          expandedHeight: _expandedHeightValue ?? 100,
-          crossIconPosition: _crossIconPosition ?? "left",
-        );
-      } else if (uiType == 'slide-up') {
-        await ZfBottomSheetDialog.show(
-          context: _context,
-          surveyUrl: openUrl,
-          closeIconType: _closeIconType,
-          autoClose: _autoClose ?? true,
-          fixedHeight: _fixedHeightValue ?? 100,
-          expandedHeight: _expandedHeightValue ?? 100,
-          crossIconPosition: _crossIconPosition ?? "left",
-        );
-      }
+      final BuildContext? context = _activeContext();
+      if (context == null || !context.mounted) return;
+      await _showSurvey(context);
     }
   }
 
-  /// Waits [seconds] before the survey is shown, resolving to `true` when the
-  /// delay ran to completion and `false` when it was cancelled.
-  ///
-  /// Uses a cancellable [Timer] rather than `Future.delayed` so that
-  /// backgrounding the app can abandon the pending survey. Left uncancelled,
-  /// the platforms disagree: Android keeps the isolate running and would open
-  /// the survey while the app is not visible, while iOS suspends the process
-  /// and fires the moment the user returns.
-  Future<bool> _awaitPageDelay(int seconds) {
-    _cancelPageDelay();
-    final completer = Completer<bool>();
-    _pageDelayCompleter = completer;
-    _pageDelayTimer = Timer(Duration(seconds: seconds), () {
-      if (!completer.isCompleted) completer.complete(true);
-    });
-    return completer.future;
+  /// A context that can show the survey: the [init] context while its screen
+  /// is open, otherwise the app navigator's, or `null` when neither is.
+  BuildContext? _activeContext() {
+    if (_context.mounted) return _context;
+    final BuildContext? navigatorContext = _navigatorKey?.currentContext;
+    if (navigatorContext != null && navigatorContext.mounted) {
+      return navigatorContext;
+    }
+    return null;
   }
 
-  void _cancelPageDelay() {
-    _pageDelayTimer?.cancel();
-    _pageDelayTimer = null;
-    final completer = _pageDelayCompleter;
-    _pageDelayCompleter = null;
-    if (completer != null && !completer.isCompleted) completer.complete(false);
+  Future<void> _showSurvey(BuildContext context) async {
+    await _getZfSurveyUrl(context);
+    if (!context.mounted) return;
+
+    String openUrl = _url + Constant.EMBED_URL;
+    if (uiType == 'popup') {
+      await ZFSurveyDialog.show(
+        context: context,
+        surveyUrl: openUrl,
+        closeIconType: _closeIconType,
+        autoClose: _autoClose ?? true,
+        fixedHeight: _fixedHeightValue ?? 100,
+        expandedHeight: _expandedHeightValue ?? 100,
+        crossIconPosition: _crossIconPosition ?? "left",
+      );
+    } else if (uiType == 'slide-up') {
+      await ZfBottomSheetDialog.show(
+        context: context,
+        surveyUrl: openUrl,
+        closeIconType: _closeIconType,
+        autoClose: _autoClose ?? true,
+        fixedHeight: _fixedHeightValue ?? 100,
+        expandedHeight: _expandedHeightValue ?? 100,
+        crossIconPosition: _crossIconPosition ?? "left",
+      );
+    }
+  }
+
+  Future<void> _createContact(String token) {
+    return DataManager().createContactForDynamicAttribute(
+      customAttributehashMap ?? {},
+      token,
+      true,
+    );
   }
 
 // session update value
@@ -341,6 +377,8 @@ class ZFSurvey implements ApiResponseCallbacks {
     // Handle specific states
     switch (state) {
       case AppLifecycleState.resumed:
+        // Re-arm, or show if it fell due while the app was in the background.
+        if (_pendingSurvey.hasPending) startSurvey();
         SessionService().sessionStarted();
         SessionService().sessionListPrint();
         // App is visible and in the foreground
@@ -353,19 +391,21 @@ class ZFSurvey implements ApiResponseCallbacks {
         break;
 
       case AppLifecycleState.paused:
-        _cancelPageDelay();
+        // Only the timer stops; the persisted deadline keeps running and is
+        // honoured on resume.
+        _pendingSurvey.cancelTimer();
         SessionService().sessionEnded();
         SessionService().sessionListPrint();
         break;
 
       case AppLifecycleState.detached:
-        _cancelPageDelay();
+        _pendingSurvey.cancelTimer();
         SessionService().sessionEnded();
         SessionService().sessionListPrint();
         // Perform cleanup actions like closing database connections or saving state
         break;
       case AppLifecycleState.hidden:
-      // TODO: Handle this case.
+        _pendingSurvey.cancelTimer();
     }
   }
 
@@ -377,7 +417,8 @@ class ZFSurvey implements ApiResponseCallbacks {
   }
 
   void clear() {
-    // Clear preferences
+    _pendingSurvey.cancelTimer();
+    // Clear preferences (this includes any pending survey)
     DataManager().clearPreference();
     SessionService().clearSession();
     // Save updated data

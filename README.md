@@ -159,11 +159,40 @@ whatever the dashboard is set to.
 A distribution saved before this setting existed has no delay and shows the
 survey immediately, as before.
 
-**Backgrounding cancels a pending delay.** If the app is sent to the
-background while the survey is waiting to appear, the survey is dropped for
-that run rather than being shown later, since the user is no longer on the
-page. It will be reconsidered the next time `startSurvey()` is called. For
-this to work, the host app must forward lifecycle events:
+**The delay keeps running in the background.** When the survey qualifies, the
+SDK saves the time it is due. Locking the phone, switching apps, taking a call,
+or even the app being killed does not reset or cancel it. Time spent in the
+background counts toward the delay. If the survey falls due while the app is
+in the background, it is shown as soon as the user returns, or on the next
+`startSurvey()` after a restart. Calling `startSurvey()` again while a survey is
+waiting does not restart its delay.
+
+Just before showing, the SDK checks again that the widget is still active and
+the contact is still in the targeted segments. If not, the survey is dropped.
+If that check cannot reach the server, the survey stays pending and is tried
+again on the next resume.
+
+Long delays usually outlast the screen that called `init`. Pass your app's
+navigator key so the survey can be shown on whichever screen is open when it
+falls due:
+
+```dart
+final navigatorKey = GlobalKey<NavigatorState>();
+
+MaterialApp(navigatorKey: navigatorKey, ...);
+
+ZFSurvey().init(
+  token: ['{{SDK_TOKEN}}'],
+  zfRegion: '{{REGION}}',
+  context: context,
+  navigatorKey: navigatorKey,
+);
+```
+
+Without it, a survey whose screen has closed stays pending until a mounted
+context is available.
+
+For the delay to be resumed, the host app must forward lifecycle events:
 
 ```dart
 @override

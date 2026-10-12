@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
-// import 'package:zonkafeedback_sdk_example/attribute_form.dart';
-// import 'attribute_form.dart';
+import 'attribute_form.dart';
+
+/// Lets the SDK show a delayed survey on whichever screen is open when the
+/// delay runs out.
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +22,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ZonkaFeedBackSurvey(),
+      navigatorKey: navigatorKey,
+      home: AttributeForm(navigatorKey: navigatorKey),
     );
   }
 }
@@ -36,8 +40,8 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
   @override
   void initState() {
     ZFSurvey().init(
-        token: ['w6IkW9', '8xD7eH'],
-        zfRegion: 'IN',
+        token: ['V13Flt', '8xD7eH'],
+        zfRegion: 'US',
         context: context,
         displayType: 'slide-up',
         minimumHeight: 410,

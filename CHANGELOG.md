@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+- The on-page delay is now a saved deadline rather than an in-memory timer.
+  Backgrounding the app, locking the phone, or the app being killed no longer
+  drops the survey; it is shown once the delay has passed, as soon as the app
+  is in the foreground again
+- The widget and segment checks run again just before a delayed survey is shown
+- Added an optional `navigatorKey` to `init` so a delayed survey can be shown
+  after the screen that called `init` has closed
+- `startSurvey()` calls while a survey is waiting no longer restart its delay
+
 ## 1.2.3
 - Added support for the **On page delay** setting configured in the dashboard;
   the survey now waits `embedSettings.trigger.after` seconds before appearing
