@@ -4,7 +4,7 @@ import '../constant.dart';
 import '../data_manager.dart';
 import '../model/contact_response/contact_response.dart';
 import '../model/session_request_model/update_session_request.dart';
-import '../model/widget_response/widget.dart';
+import '../model/token_validation.dart';
 
 class ApiManager {
   static final ApiManager _instance = ApiManager._internal();
@@ -64,23 +64,24 @@ class ApiManager {
   }
 
   static String _getBaseUrl({required bool forContactTracking}) {
-    String zfRegion = DataManager().getRegion();
+    // String zfRegion = DataManager().getRegion();
 
-    if (zfRegion.toUpperCase() == 'EU') {
-      return forContactTracking
-          ? 'https://e.zonkafeedback.com/api/v1/'
-          : "${Constant.HTTPS}e${Constant.RETROFIT_URL}";
-    } else if (zfRegion.toUpperCase() == 'IN') {
-      return forContactTracking
-          ? 'https://in.apis.zonkafeedback.com/'
-          : "${Constant.HTTPS}in${Constant.RETROFIT_URL}";
-    } else {
-      return forContactTracking
-          ? 'https://us1.apis.zonkafeedback.com/'
-          : "${Constant.HTTPS}us1${Constant.RETROFIT_URL}";
-    }
+    // if (zfRegion.toUpperCase() == 'EU') {
+    //   return forContactTracking
+    //       ? 'https://e.zonkafeedback.com/api/v1/'
+    //       : "${Constant.HTTPS}e${Constant.RETROFIT_URL}";
+    // } else if (zfRegion.toUpperCase() == 'IN') {
+    //   return forContactTracking
+    //       ? 'https://in.apis.zonkafeedback.com/'
+    //       : "${Constant.HTTPS}in${Constant.RETROFIT_URL}";
+    // } else {
+    //   return forContactTracking
+    //       ? 'https://us1.apis.zonkafeedback.com/'
+    //       : "${Constant.HTTPS}us1${Constant.RETROFIT_URL}";
+    // }
 
-    // return "https://us1.zonkasurvey.com/api/v1/";
+    return "https://us1.zonkasurvey.com/api/v1/";
+
   }
 
   Dio _getContactTrackingClient() {
@@ -99,12 +100,19 @@ class ApiManager {
     return _apiServerHostClient;
   }
 
-  Future<WidgetResponse?> hitSurveyActiveApi(String token) async {
+  /// Validates every token in one request. Results carry the token they
+  /// belong to; their order is not relied on.
+  Future<List<TokenValidation>> validateTokens(List<String> tokens) async {
     final dioClient = _getApiServerClient();
-    Response value = await dioClient.get(
-      'distribution/validateCode/returnResponse/$token',
+    Response value = await dioClient.post(
+      'distribution/validateCodes',
+      data: {'tokens': tokens},
     );
-    return WidgetResponse.fromJson(value.data);
+    final List<dynamic> results = value.data['data']['results'] as List;
+    return results
+        .map((result) =>
+            TokenValidation.fromJson(Map<String, dynamic>.from(result as Map)))
+        .toList();
   }
 
   Future<ContactResponse> hitCreateContactApi(Map<String, dynamic> data) async {
