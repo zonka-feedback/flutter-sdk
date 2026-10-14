@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.1
+- All tokens are now validated with one `distribution/validateCodes` request
+  instead of one `validateCode/returnResponse` request per token
+- If that request fails, no survey is shown for that run; the old per-token
+  endpoint is no longer used as a fallback
+- `checkValidation()` and resuming a delayed survey use `validateCodes` too
+
 ## 1.3.0
 - The on-page delay is now a saved deadline rather than an in-memory timer.
   Backgrounding the app, locking the phone, or the app being killed no longer
