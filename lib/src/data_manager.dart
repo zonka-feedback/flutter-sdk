@@ -11,6 +11,9 @@ import 'constant.dart';
 import 'model/contact_response/contact_response.dart';
 import 'model/session_request_model/session_log.dart';
 import 'model/session_request_model/update_session_request.dart';
+import 'model/token_validation.dart';
+import 'model/widget_response/distribution_info.dart';
+import 'model/widget_response/embed_settings.dart';
 import 'model/widget_response/include_segment.dart';
 import 'network/api_manager.dart';
 import 'network/api_response_callback.dart';
@@ -47,55 +50,81 @@ class DataManager {
     _callbacks = callbacks;
   }
 
-  /// Fetches the widget settings for [token]. Resolves to `false` when the
-  /// request failed, in which case the cached segment settings have already
-  /// been cleared and must not be treated as the server's answer.
-  Future<bool> hitSurveyActiveApi(String token) async {
+  /// Validates every token with one `distribution/validateCodes` request.
+  ///
+  /// Resolves to `null` when the request failed; no token can then be
+  /// treated as valid.
+  Future<List<TokenValidation>?> validateTokens(List<String> tokens) async {
+    try {
+      return await _apiManager.validateTokens(tokens);
+    } catch (e) {
+      if (kDebugMode) debugPrint('[ZF-SEG] validateCodes failed: $e');
+      return null;
+    }
+  }
+
+  /// Re-fetches the settings of a single [token] through `validateCodes`.
+  /// Resolves to `false` when the server could not be reached, in which case
+  /// the cached settings have been cleared and must not be treated as the
+  /// server's answer.
+  Future<bool> refreshToken(String token) async {
+    final List<TokenValidation>? results = await validateTokens([token]);
+    if (results == null) {
+      await _clearDistributionSettings();
+      return false;
+    }
+
+    final Iterable<TokenValidation> match =
+        results.where((result) => result.token == token && result.valid);
+    if (match.isEmpty) {
+      await _clearDistributionSettings();
+    } else {
+      await applyValidDistribution(match.first.distributionInfo);
+    }
+    return true;
+  }
+
+  /// Makes [info], a distribution that `validateCodes` reported as valid, the
+  /// one the segment check and the on-page delay read from.
+  ///
+  /// `validateCodes` has no `isWidgetActive`: a valid token is an active one,
+  /// unless the field is present and says otherwise.
+  Future<void> applyValidDistribution(DistributionInfo? info) async {
+    await _clearDistributionSettings();
+    await _saveDistributionSettings(info,
+        widgetActive: info?.isWidgetActive ?? true);
+  }
+
+  /// The widget is reset to inactive too, so a validation that fails cannot
+  /// leave an earlier token's active state behind.
+  Future<void> _clearDistributionSettings() async {
     await clearExcludedList();
     await clearIncludeList();
     await clearIncludeType();
     await clearExcludeType();
     await clearPageDelay();
+    setWidgetActivity(false);
+  }
 
-    try {
-      final widget = await _apiManager.hitSurveyActiveApi(token);
+  Future<void> _saveDistributionSettings(DistributionInfo? info,
+      {required bool widgetActive}) async {
+    final EmbedSettings? embedSettings = info?.embedSettings;
+    if (embedSettings != null) {
+      final ExcludeSegment? excludeSegment = embedSettings.excludeSegment;
+      final IncludeSegment? includeSegment = embedSettings.includeSegment;
 
-      if (widget?.data?.distributionInfo?.embedSettings != null) {
-        ExcludeSegment? excludeSegment =
-            widget?.data?.distributionInfo?.embedSettings?.excludeSegment;
-        IncludeSegment? includeSegment =
-            widget?.data?.distributionInfo?.embedSettings?.includeSegment;
+      await saveExcludeType(excludeSegment?.type ?? "");
+      await saveIncludeType(includeSegment?.type ?? "");
+      await savePageDelay(embedSettings.trigger?.after ?? 0);
 
-        await saveExcludeType(excludeSegment?.type ?? "");
-        await saveIncludeType(includeSegment?.type ?? "");
-
-        await savePageDelay(
-            widget?.data?.distributionInfo?.embedSettings?.trigger?.after ?? 0);
-
-        if (excludeSegment?.list?.isNotEmpty ?? false) {
-          saveExcludedList(excludeSegment!.list!);
-        } else if (includeSegment?.list?.isNotEmpty ?? false) {
-          saveIncludedList(includeSegment!.list!);
-        } else {
-          // If both are empty, still saving empty lists
-          saveExcludedList(excludeSegment?.list ?? []);
-          saveIncludedList(includeSegment?.list ?? []);
-        }
-      }
-
-      DataManager().setWidgetActivity(
-          widget?.data?.distributionInfo?.isWidgetActive ?? false);
-      DataManager()
-          .setCompanyId(widget?.data?.distributionInfo?.companyId ?? "");
-      return true;
-    } on DioException catch (error) {
-      // Handle Dio errors
-      print("DioException: $error");
-    } catch (e) {
-      // Handle other types of errors
-      print("Unexpected error: $e");
+      // Both lists are kept: a distribution may include some segments and
+      // exclude others at the same time.
+      saveExcludedList(excludeSegment?.list ?? []);
+      saveIncludedList(includeSegment?.list ?? []);
     }
-    return false;
+
+    setWidgetActivity(widgetActive);
+    setCompanyId(info?.companyId ?? "");
   }
 
   Future<void> createContactForDynamicAttribute(

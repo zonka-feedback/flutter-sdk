@@ -4,7 +4,7 @@ import '../constant.dart';
 import '../data_manager.dart';
 import '../model/contact_response/contact_response.dart';
 import '../model/session_request_model/update_session_request.dart';
-import '../model/widget_response/widget.dart';
+import '../model/token_validation.dart';
 
 class ApiManager {
   static final ApiManager _instance = ApiManager._internal();
@@ -81,6 +81,7 @@ class ApiManager {
     }
 
     // return "https://us1.zonkasurvey.com/api/v1/";
+
   }
 
   Dio _getContactTrackingClient() {
@@ -99,12 +100,19 @@ class ApiManager {
     return _apiServerHostClient;
   }
 
-  Future<WidgetResponse?> hitSurveyActiveApi(String token) async {
+  /// Validates every token in one request. Results carry the token they
+  /// belong to; their order is not relied on.
+  Future<List<TokenValidation>> validateTokens(List<String> tokens) async {
     final dioClient = _getApiServerClient();
-    Response value = await dioClient.get(
-      'distribution/validateCode/returnResponse/$token',
+    Response value = await dioClient.post(
+      'distribution/validateCodes',
+      data: {'tokens': tokens},
     );
-    return WidgetResponse.fromJson(value.data);
+    final List<dynamic> results = value.data['data']['results'] as List;
+    return results
+        .map((result) =>
+            TokenValidation.fromJson(Map<String, dynamic>.from(result as Map)))
+        .toList();
   }
 
   Future<ContactResponse> hitCreateContactApi(Map<String, dynamic> data) async {

@@ -73,7 +73,7 @@ class PendingSurveyScheduler {
     // The widget can be switched off, or the contact can leave the segment,
     // while the delay runs, so the decision is re-checked at display time.
     // If the check cannot reach the server the survey stays pending.
-    if (!await DataManager().hitSurveyActiveApi(pending.token)) return;
+    if (!await DataManager().refreshToken(pending.token)) return;
     final bool stillValid = isEligible();
     if (kDebugMode) {
       debugPrint('[ZF-SEG] pending token=${pending.token}'

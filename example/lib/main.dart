@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
-// import 'package:zonkafeedback_sdk_example/attribute_form.dart';
-// import 'attribute_form.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,16 +14,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  // Shared with the SDK so a delayed survey can find a live screen to open on.
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ZonkaFeedBackSurvey(),
+      navigatorKey: _navigatorKey,
+      home: ZonkaFeedBackSurvey(navigatorKey: _navigatorKey),
     );
   }
 }
 
 class ZonkaFeedBackSurvey extends StatefulWidget {
-  const ZonkaFeedBackSurvey({super.key});
+  const ZonkaFeedBackSurvey({super.key, this.navigatorKey});
+
+  final GlobalKey<NavigatorState>? navigatorKey;
 
   @override
   State<ZonkaFeedBackSurvey> createState() => _ZonkaFeedBackSurveyState();
@@ -39,6 +43,7 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
         token: ['V13Flt', '8xD7eH'],
         zfRegion: 'US',
         context: context,
+        navigatorKey: widget.navigatorKey,
         displayType: 'slide-up',
         minimumHeight: 410,
         closeIconPosition: "left",

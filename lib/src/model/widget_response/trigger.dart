@@ -16,7 +16,7 @@ class Trigger {
   /// The backend stores these as numbers, but a value that round-trips through
   /// Mongo or JSON can arrive as a double (`5.0`) or a string (`"5"`). A raw
   /// cast would throw inside [Trigger.fromJson], and that exception is
-  /// swallowed by the catch in `DataManager.hitSurveyActiveApi`, leaving the
+  /// swallowed by the catch in `DataManager.validateTokens`, leaving the
   /// widget state unset and suppressing the survey entirely.
   static int? _toInt(dynamic value) {
     if (value == null) return null;

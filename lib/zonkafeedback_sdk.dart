@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:zonkafeedback_sdk/src/constant.dart';
 import 'package:zonkafeedback_sdk/src/data_manager.dart';
+import 'package:zonkafeedback_sdk/src/model/token_validation.dart';
 import 'package:zonkafeedback_sdk/src/network/api_response_callback.dart';
 import 'package:zonkafeedback_sdk/src/pending_survey_scheduler.dart';
 import 'package:zonkafeedback_sdk/src/session_database/session_service.dart';
@@ -239,6 +240,11 @@ class ZFSurvey implements ApiResponseCallbacks {
         }
       }
     }
+    // validateCodes sends no include type; with an empty list that means the
+    // distribution is not restricted to any segment.
+    else if (inclueType.isEmpty) {
+      processEmbedSurvey = true;
+    }
 
     // Check excluded segments
     if (excludedList.isNotEmpty) {
@@ -256,7 +262,7 @@ class ZFSurvey implements ApiResponseCallbacks {
   }
 
   Future<bool> checkValidation(String token) async {
-    await DataManager().hitSurveyActiveApi(token);
+    await DataManager().refreshToken(token);
     bool widgetActive = DataManager().isWidgetActive();
     bool segmentAllowed = checkSegmenting();
     if (kDebugMode) {
@@ -287,6 +293,14 @@ class ZFSurvey implements ApiResponseCallbacks {
     if (_multipleTokens.isEmpty) return;
     await userInfo(customAttributehashMap ?? {}, _multipleTokens.first);
 
+    // All tokens are validated in one validateCodes request. If it fails
+    // (null), no token is valid.
+    final List<TokenValidation> results =
+        await DataManager().validateTokens(_multipleTokens) ?? const [];
+    final Map<String, TokenValidation> resultByToken = {
+      for (final TokenValidation result in results) result.token: result
+    };
+
     // contacts/tracking is called at most once per run. The contact's lists
     // belong to the contact, not the token, so one response serves every
     // token's segment check. It is deferred until the first token whose
@@ -295,7 +309,12 @@ class ZFSurvey implements ApiResponseCallbacks {
     bool contactCreated = false;
     bool checkValidationValue = false;
     for (final String token in _multipleTokens) {
-      await DataManager().hitSurveyActiveApi(token);
+      final TokenValidation? result = resultByToken[token];
+      if (result == null || !result.valid) {
+        if (kDebugMode) debugPrint('[ZF-SEG] token=$token -> valid=false');
+        continue;
+      }
+      await DataManager().applyValidDistribution(result.distributionInfo);
       final bool widgetActive = DataManager().isWidgetActive();
       if (widgetActive && !contactCreated) {
         await _createContact(token);
