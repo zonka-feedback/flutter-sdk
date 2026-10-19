@@ -7,6 +7,11 @@ class Constant {
   static const String HTTPS = "https://";
   static const String URL = ".zonka.co/";
   static const String RETROFIT_URL = ".zonkafeedback.com/api/v1/";
+  /// `false` sends every request and survey to the nightly servers instead
+  /// of the production ones.
+  static const bool PRODUCTION = false;
+  static const String NIGHTLY_API_URL = "https://us1.zonkasurvey.com/api/v1/";
+  static const String NIGHTLY_SURVEY_URL = "https://s.zf2.zonkaplatform.com/";
   static const String SURVEY_CLOSE = "zf-embed-submit-close";
   static const String SURVEY_EXPAND = "zf-embed-expand-widget";
   static const String APP_VERSION_CODE = "zf_sdk_app_version_code";

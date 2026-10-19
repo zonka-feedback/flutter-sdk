@@ -64,6 +64,10 @@ class ApiManager {
   }
 
   static String _getBaseUrl({required bool forContactTracking}) {
+    if (!Constant.PRODUCTION) {
+      return "https://us1.zonkasurvey.com/api/v1/";
+    }
+
     String zfRegion = DataManager().getRegion();
 
     if (zfRegion.toUpperCase() == 'EU') {
@@ -79,9 +83,6 @@ class ApiManager {
           ? 'https://us1.apis.zonkafeedback.com/'
           : "${Constant.HTTPS}us1${Constant.RETROFIT_URL}";
     }
-
-    // return "https://us1.zonkasurvey.com/api/v1/";
-
   }
 
   Dio _getContactTrackingClient() {
