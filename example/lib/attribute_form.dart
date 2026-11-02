@@ -112,7 +112,6 @@ class _AttributeFormState extends State<AttributeForm>
                   sdkToken =
                       value.split(',').map((item) => item.trim()).toList();
                 });
-                print("sdktokens $sdkToken");
               },
               decoration: const InputDecoration(
                 labelText: 'SDK Token',
@@ -266,7 +265,7 @@ class _AttributeFormState extends State<AttributeForm>
                         onPressed: () {
                           runSurvey('popup');
                         },
-                        child: Text(
+                        child: const Text(
                           'popup',
                           style: TextStyle(color: Colors.white),
                         ),
