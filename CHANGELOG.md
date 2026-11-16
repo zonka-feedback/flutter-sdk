@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+- The on-page delay (`embedSettings.trigger.after`) is now a segment delay: an
+  included segment counts only once the contact's `listMemberships.modifiedDate`
+  from `contacts/tracking` plus the delay has passed
+- Removed the saved pending survey. When a segment becomes visible later, an
+  in-memory timer shows the survey at `modifiedDate + delay` while the app is
+  in the foreground; it pauses in the background and fires on return if the
+  time has passed
+
 ## 1.3.1
 - All tokens are now validated with one `distribution/validateCodes` request
   instead of one `validateCode/returnResponse` request per token

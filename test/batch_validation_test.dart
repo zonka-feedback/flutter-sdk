@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zonkafeedback_sdk/src/data_manager.dart';
+import 'package:zonkafeedback_sdk/src/model/contact_response/contact_info.dart';
 import 'package:zonkafeedback_sdk/src/model/token_validation.dart';
 import 'package:zonkafeedback_sdk/zonkafeedback_sdk.dart';
 
@@ -115,6 +116,119 @@ void main() {
     test('reads the on-page delay when present', () async {
       await _apply(_validResult(trigger: {'after': 30}));
       expect(DataManager().getPageDelay(), 30);
+    });
+  });
+
+  group('segment delay', () {
+    final Map<String, dynamic> vipWithDelay = _validResult(
+      includeSegment: {
+        'list': ['vip']
+      },
+      trigger: {'after': 600},
+    );
+
+    Future<void> joinedVip(Duration ago) async {
+      await DataManager().saveContactList(['vip']);
+      final String date =
+          DateTime.now().toUtc().subtract(ago).toIso8601String();
+      await DataManager().saveContactListMemberships({
+        'vip': ListMembership(createdDate: date, modifiedDate: date),
+      });
+    }
+
+    test('hidden until createdDate + delay has passed', () async {
+      await joinedVip(const Duration(minutes: 5));
+      expect(await _apply(vipWithDelay), isFalse);
+    });
+
+    test('shown once createdDate + delay has passed', () async {
+      await joinedVip(const Duration(minutes: 11));
+      expect(await _apply(vipWithDelay), isTrue);
+    });
+
+    test('createdDate wins over modifiedDate', () async {
+      await DataManager().saveContactList(['vip']);
+      final DateTime now = DateTime.now().toUtc();
+      await DataManager().saveContactListMemberships({
+        'vip': ListMembership(
+          createdDate: now.subtract(const Duration(hours: 1)).toIso8601String(),
+          // contacts/tracking bumps modifiedDate to "now" on every call.
+          modifiedDate:
+              now.subtract(const Duration(minutes: 1)).toIso8601String(),
+        ),
+      });
+      expect(await _apply(vipWithDelay), isTrue);
+    });
+
+    test('a list without a membership date is not delayed', () async {
+      await DataManager().saveContactList(['vip']);
+      await DataManager().saveContactListMemberships({});
+      expect(await _apply(vipWithDelay), isTrue);
+    });
+
+    test('a zero delay shows straight away', () async {
+      await joinedVip(Duration.zero);
+      expect(
+          await _apply(_validResult(includeSegment: {
+            'list': ['vip']
+          })),
+          isTrue);
+    });
+
+    test('parses listMemberships from contacts/tracking', () {
+      final ContactInfo info = ContactInfo.fromJson({
+        'lists': ['6afaa179b78b00e6a253da0f'],
+        'listMemberships': {
+          '6afaa179b78b00e6a253da0f': {
+            'createdDate': '2026-11-16T06:32:05.226Z',
+            'modifiedDate': '2026-11-16T06:58:11.904Z',
+          },
+        },
+      });
+      expect(info.listMemberships?['6afaa179b78b00e6a253da0f']?.modifiedDate,
+          '2026-11-16T06:58:11.904Z');
+    });
+  });
+
+  group('nextSegmentVisibleAt', () {
+    Future<void> setUpVip(Duration joinedAgo, {int delay = 1800}) async {
+      await DataManager().applyValidDistribution(
+          TokenValidation.fromJson(_validResult(includeSegment: {
+        'list': ['vip']
+      }, trigger: {
+        'after': delay
+      })).distributionInfo);
+      await DataManager().saveContactList(['vip']);
+      final String date =
+          DateTime.now().toUtc().subtract(joinedAgo).toIso8601String();
+      await DataManager().saveContactListMemberships({
+        'vip': ListMembership(modifiedDate: date),
+      });
+    }
+
+    test('returns modifiedDate + delay while it is ahead', () async {
+      await setUpVip(const Duration(minutes: 10));
+      final DateTime? due = ZFSurvey().nextSegmentVisibleAt();
+      expect(due, isNotNull);
+      final Duration left = due!.difference(DateTime.now());
+      expect(left.inMinutes, inInclusiveRange(19, 20));
+    });
+
+    test('null once the delay has passed', () async {
+      await setUpVip(const Duration(minutes: 31));
+      expect(ZFSurvey().nextSegmentVisibleAt(), isNull);
+    });
+
+    test('null without a delay', () async {
+      await setUpVip(Duration.zero, delay: 0);
+      expect(ZFSurvey().nextSegmentVisibleAt(), isNull);
+    });
+
+    test('null when the contact is in an excluded segment', () async {
+      await setUpVip(const Duration(minutes: 10));
+      DataManager().saveExcludedList(['churned']);
+      await DataManager().saveContactList(['vip', 'churned']);
+      expect(ZFSurvey().nextSegmentVisibleAt(), isNull);
     });
   });
 }

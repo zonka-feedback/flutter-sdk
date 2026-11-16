@@ -37,6 +37,8 @@ class Survey {
 
   /// Private method to generate the base URL
   String _generateBaseUrl(String surveyToken, String zfRegion) {
+    if (Constant.IS_NIGHTLY)
+      return '${Constant.NIGHTLY_SURVEY_URL}$surveyToken';
     if (zfRegion.isNotEmpty && zfRegion.toUpperCase() == "EU") {
       return '${Constant.HTTPS}e${Constant.URL}$surveyToken';
     }
@@ -44,7 +46,5 @@ class Survey {
       return '${Constant.HTTPS}in${Constant.URL}$surveyToken';
     }
     return '${Constant.HTTPS}us1${Constant.URL}$surveyToken';
-
-    //  return 'https://s.zf2.zonkaplatform.com/$surveyToken';
   }
 }

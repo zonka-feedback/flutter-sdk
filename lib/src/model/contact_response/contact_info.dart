@@ -6,6 +6,10 @@ class ContactInfo {
   String? mobile;
   String? uniqueId;
   List<String>? lists;
+
+  /// When the contact joined (`createdDate`) and last changed in
+  /// (`modifiedDate`) each list in [lists], keyed by list id.
+  Map<String, ListMembership>? listMemberships;
   bool? isDeleted;
   bool? unsubscribeEmail;
   bool? unsubscribeSMS;
@@ -69,6 +73,7 @@ class ContactInfo {
     this.mobile,
     this.uniqueId,
     this.lists,
+    this.listMemberships,
     this.isDeleted,
     this.unsubscribeEmail,
     this.unsubscribeSMS,
@@ -134,6 +139,9 @@ class ContactInfo {
       mobile: json['mobile'] as String?,
       uniqueId: json['uniqueId'] as String?,
       lists: (json['lists'] as List<dynamic>?)?.cast<String>(),
+      listMemberships: (json['listMemberships'] as Map<String, dynamic>?)?.map(
+          (key, value) => MapEntry(
+              key, ListMembership.fromJson(value as Map<String, dynamic>))),
       isDeleted: json['isDeleted'] as bool?,
       unsubscribeEmail: json['unsubscribeEmail'] as bool?,
       unsubscribeSMS: json['unsubscribeSMS'] as bool?,
@@ -203,6 +211,8 @@ class ContactInfo {
       'mobile': mobile,
       'uniqueId': uniqueId,
       'lists': lists,
+      'listMemberships':
+          listMemberships?.map((key, value) => MapEntry(key, value.toJson())),
       'isDeleted': isDeleted,
       'unsubscribeEmail': unsubscribeEmail,
       'unsubscribeSMS': unsubscribeSMS,
@@ -259,6 +269,27 @@ class ContactInfo {
       'createdDate': createdDate,
       'modifiedDate': modifiedDate,
       'pre_mongified_id': preMongifiedId,
+    };
+  }
+}
+
+class ListMembership {
+  String? createdDate;
+  String? modifiedDate;
+
+  ListMembership({this.createdDate, this.modifiedDate});
+
+  factory ListMembership.fromJson(Map<String, dynamic> json) {
+    return ListMembership(
+      createdDate: json['createdDate'] as String?,
+      modifiedDate: json['modifiedDate'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'createdDate': createdDate,
+      'modifiedDate': modifiedDate,
     };
   }
 }
