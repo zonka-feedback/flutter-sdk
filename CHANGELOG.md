@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.4.0
 - The on-page delay (`embedSettings.trigger.after`) is now a segment delay: an
   included segment counts only once the contact's `listMemberships.modifiedDate`
   from `contacts/tracking` plus the delay has passed
