@@ -7,6 +7,18 @@ class Constant {
   static const String HTTPS = "https://";
   static const String URL = ".zonka.co/";
   static const String RETROFIT_URL = ".zonkafeedback.com/api/v1/";
+
+  /// Points the SDK at the nightly environment instead of production.
+  /// Set to `true` for nightly, `false` for production. Keep `false` when releasing.
+  static const bool IS_NIGHTLY = false;
+  static const String NIGHTLY_API_URL = "https://us1.zonkasurvey.com/api/v1/";
+  static const String NIGHTLY_SURVEY_URL = "https://s.zf2.zonkaplatform.com/";
+
+  // API endpoint paths, relative to the base URL.
+  static const String VALIDATE_CODES_ENDPOINT = "distribution/validateCodes";
+  static const String CONTACT_TRACKING_ENDPOINT = "contacts/tracking";
+  static const String LOG_INTERACTION_ENDPOINT = "surveys/logInteraction";
+
   static const String SURVEY_CLOSE = "zf-embed-submit-close";
   static const String SURVEY_EXPAND = "zf-embed-expand-widget";
   static const String APP_VERSION_CODE = "zf_sdk_app_version_code";
@@ -67,6 +79,5 @@ class Constant {
   static const String INCLUDE_TYPE = "include_type";
   static const String EVD_LIST = "evd_list";
   static const String PAGE_DELAY_SECONDS = "page_delay_seconds";
-  static const String PENDING_SURVEY_TOKEN = "pending_survey_token";
-  static const String PENDING_SURVEY_SHOW_AT = "pending_survey_show_at";
+  static const String CONTACT_LIST_MEMBERSHIPS = "contact_list_memberships";
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 
@@ -7,6 +8,7 @@ import 'package:zonkafeedback_sdk/src/sharedpreference/preference_manager.dart';
 import 'package:zonkafeedback_sdk/src/utils/app_util.dart';
 import '../zonka_sdk.dart';
 import 'constant.dart';
+import 'model/contact_response/contact_info.dart';
 import 'model/contact_response/contact_response.dart';
 import 'model/session_request_model/session_log.dart';
 import 'model/session_request_model/update_session_request.dart';
@@ -84,7 +86,7 @@ class DataManager {
   }
 
   /// Makes [info], a distribution that `validateCodes` reported as valid, the
-  /// one the segment check and the on-page delay read from.
+  /// one the segment check and the segment delay read from.
   ///
   /// `validateCodes` has no `isWidgetActive`: a valid token is an active one,
   /// unless the field is present and says otherwise.
@@ -187,15 +189,20 @@ class DataManager {
     if (kDebugMode) {
       debugPrint('[ZF-SEG] contact token=$token'
           ' id=${contactResponse.data?.contactInfo?.id}'
-          ' lists=${contactResponse.data?.contactInfo?.lists}');
+          ' lists=${contactResponse.data?.contactInfo?.lists}'
+          ' memberships=${contactResponse.data?.contactInfo?.listMemberships?.map((k, v) => MapEntry(k, v.createdDate))}');
     }
 
     if (contactResponse.data != null) {
       if (contactResponse.data?.contactInfo != null) {
         if (contactResponse.data!.contactInfo!.id!.isNotEmpty) {
-          if (contactResponse.data!.contactInfo!.lists != null) {
-            await saveContactList(contactResponse.data!.contactInfo!.lists!);
+          final ContactInfo contactInfo = contactResponse.data!.contactInfo!;
+          if (contactInfo.lists != null) {
+            await saveContactList(contactInfo.lists!);
           }
+          // Replaced on every response, so memberships of lists the contact
+          // has left do not linger.
+          await saveContactListMemberships(contactInfo.listMemberships ?? {});
           await saveContactId(contactResponse.data!.contactInfo!.id!);
           _callbacks.onContactCreationSuccess(isContactCreated);
         }
@@ -394,9 +401,10 @@ class DataManager {
     return PreferenceManager().getString(Constant.INCLUDE_TYPE, "");
   }
 
-  /// Seconds to wait before showing the survey, from
-  /// `embedSettings.trigger.after`. Negative values are stored as 0; no upper
-  /// bound is applied, because the server does not cap the field either.
+  /// Seconds a contact must have been in an included segment before the
+  /// survey is shown to them, from `embedSettings.trigger.after`. Negative
+  /// values are stored as 0; no upper bound is applied, because the server
+  /// does not cap the field either.
   Future<void> savePageDelay(int seconds) async {
     await PreferenceManager()
         .putLong(Constant.PAGE_DELAY_SECONDS, seconds < 0 ? 0 : seconds);
@@ -410,29 +418,42 @@ class DataManager {
     await PreferenceManager().putLong(Constant.PAGE_DELAY_SECONDS, 0);
   }
 
-  /// Records that the survey for [token] qualified and is due at [showAt].
-  /// Persisted so the deadline survives backgrounding and process death.
-  Future<void> savePendingSurvey(String token, DateTime showAt) async {
-    await PreferenceManager().putString(Constant.PENDING_SURVEY_TOKEN, token);
-    await PreferenceManager().putLong(
-        Constant.PENDING_SURVEY_SHOW_AT, showAt.millisecondsSinceEpoch);
-  }
-
-  /// The survey waiting out its on-page delay, or `null` when there is none.
-  PendingSurvey? getPendingSurvey() {
-    final String token =
-        PreferenceManager().getString(Constant.PENDING_SURVEY_TOKEN, "");
-    if (token.isEmpty) return null;
-    return PendingSurvey(
-      token,
-      DateTime.fromMillisecondsSinceEpoch(
-          PreferenceManager().getLong(Constant.PENDING_SURVEY_SHOW_AT)),
+  /// Saves the `listMemberships` of the last `contacts/tracking` response.
+  Future<void> saveContactListMemberships(
+      Map<String, ListMembership> memberships) async {
+    await PreferenceManager().putString(
+      Constant.CONTACT_LIST_MEMBERSHIPS,
+      jsonEncode(
+          memberships.map((key, value) => MapEntry(key, value.toJson()))),
     );
   }
 
-  Future<void> clearPendingSurvey() async {
-    await PreferenceManager().putString(Constant.PENDING_SURVEY_TOKEN, "");
-    await PreferenceManager().putLong(Constant.PENDING_SURVEY_SHOW_AT, 0);
+  /// When the contact joined [listId]: its `createdDate`, falling back to
+  /// `modifiedDate`. `null` when the server sent no usable date for that list.
+  ///
+  /// `modifiedDate` is not preferred because `contacts/tracking` resets it to
+  /// "now" on every call, which would restart the segment delay each run.
+  DateTime? getListMembershipJoinedDate(String listId) {
+    final ListMembership? membership = getListMembership(listId);
+    final String? date = membership?.createdDate ?? membership?.modifiedDate;
+    return date == null ? null : DateTime.tryParse(date);
+  }
+
+  /// The saved `listMemberships` entry for [listId], or `null` when the
+  /// server sent none.
+  ListMembership? getListMembership(String listId) {
+    final String raw =
+        PreferenceManager().getString(Constant.CONTACT_LIST_MEMBERSHIPS, "");
+    if (raw.isEmpty) return null;
+    try {
+      final Object? decoded = jsonDecode(raw);
+      if (decoded is! Map<String, dynamic>) return null;
+      final Object? entry = decoded[listId];
+      if (entry is! Map<String, dynamic>) return null;
+      return ListMembership.fromJson(entry);
+    } catch (_) {
+      return null;
+    }
   }
 
   void saveEvdList(List<String> lists) {
@@ -450,11 +471,4 @@ class DataManager {
     PreferenceManager().clearAllPrefs();
     saveRegion(zfRegion);
   }
-}
-
-class PendingSurvey {
-  final String token;
-  final DateTime showAt;
-
-  const PendingSurvey(this.token, this.showAt);
 }

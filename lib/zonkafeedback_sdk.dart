@@ -6,9 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:zonkafeedback_sdk/src/constant.dart';
 import 'package:zonkafeedback_sdk/src/data_manager.dart';
+import 'package:zonkafeedback_sdk/src/debug/segment_debug_logger.dart';
 import 'package:zonkafeedback_sdk/src/model/token_validation.dart';
 import 'package:zonkafeedback_sdk/src/network/api_response_callback.dart';
-import 'package:zonkafeedback_sdk/src/pending_survey_scheduler.dart';
 import 'package:zonkafeedback_sdk/src/session_database/session_service.dart';
 import 'package:zonkafeedback_sdk/src/survey.dart';
 import 'package:zonkafeedback_sdk/src/utils/app_util.dart';
@@ -39,30 +39,26 @@ class ZFSurvey implements ApiResponseCallbacks {
 
   /// Guards against overlapping [startSurvey] runs. Stays set while a run is
   /// validating or the survey is on screen, so repeated calls cannot stack
-  /// dialogs. It is not held during the on-page delay: that is tracked by the
-  /// persisted pending survey instead.
+  /// dialogs.
   bool _surveyPending = false;
 
   /// Set once [init] has loaded preferences. Lifecycle events and
   /// [startSurvey] calls that arrive earlier are ignored.
   bool _initialized = false;
 
-  late final PendingSurveyScheduler _pendingSurvey = PendingSurveyScheduler(
-    onDue: startSurvey,
-    isEligible: () => DataManager().isWidgetActive() && checkSegmenting(),
-    displayContext: _activeContext,
-    show: (context, token) {
-      _survey = Survey(token, _regionValue);
-      return _showSurvey(context);
-    },
-  );
+  /// When the contact's earliest delayed segment becomes visible, so the
+  /// survey can be shown then without another [startSurvey] call. Kept in
+  /// memory only: it is recomputed from `contacts/tracking` on every run.
+  DateTime? _segmentDueAt;
+
+  /// Fires at [_segmentDueAt]. Runs only while the app is in the foreground.
+  Timer? _segmentTimer;
 
   /// Initialize SDK with necessary details
   ///
   /// [navigatorKey] is the key given to the app's `MaterialApp` /
-  /// `CupertinoApp`. When set, a survey whose on-page delay runs out after
-  /// [context]'s screen was closed is shown on the current route instead of
-  /// waiting for a screen that is gone.
+  /// `CupertinoApp`. When set, a survey started after [context]'s screen was
+  /// closed is shown on the current route instead of being skipped.
   Future<void> init(
       {required List<String> token,
       required String zfRegion,
@@ -91,10 +87,6 @@ class ZFSurvey implements ApiResponseCallbacks {
     _multipleTokens = token;
     _regionValue = zfRegion;
     _initialized = true;
-
-    // A survey that qualified before the app was killed is picked up here,
-    // so it does not wait for the host to call startSurvey() again.
-    if (_pendingSurvey.hasPending) startSurvey();
   }
 
   Future<bool> checkTokenIsValid(String token) async {
@@ -232,8 +224,10 @@ class ZFSurvey implements ApiResponseCallbacks {
     else if (includedList.isNotEmpty) {
       processEmbedSurvey = false;
       if (contactResponseList.isNotEmpty) {
+        final int delaySeconds = DataManager().getPageDelay();
         for (String segmentInContact in contactResponseList) {
-          if (includedList.contains(segmentInContact)) {
+          if (includedList.contains(segmentInContact) &&
+              _segmentDelayPassed(segmentInContact, delaySeconds)) {
             processEmbedSurvey = true;
             break;
           }
@@ -261,6 +255,55 @@ class ZFSurvey implements ApiResponseCallbacks {
     return processEmbedSurvey;
   }
 
+  /// The earliest time a delayed included segment the contact is in becomes
+  /// visible, or `null` when none is waiting: there is no delay, the
+  /// distribution targets everyone, the contact is in an excluded segment, or
+  /// no matching segment has a membership date in the future.
+  @visibleForTesting
+  DateTime? nextSegmentVisibleAt() {
+    final int delaySeconds = DataManager().getPageDelay();
+    if (delaySeconds <= 0 || DataManager().getIncludeType() == 'all') {
+      return null;
+    }
+    final List<String> included = DataManager().getIncludedList() ?? const [];
+    final List<String> excluded = DataManager().getExcludedList() ?? const [];
+    final List<String> contactLists =
+        DataManager().getContactList() ?? const [];
+    if (contactLists.any(excluded.contains)) return null;
+
+    final DateTime now = DateTime.now();
+    DateTime? next;
+    for (final String listId in contactLists) {
+      if (!included.contains(listId)) continue;
+      final DateTime? joinedDate =
+          DataManager().getListMembershipJoinedDate(listId);
+      if (joinedDate == null) continue;
+      final DateTime visibleFrom =
+          joinedDate.add(Duration(seconds: delaySeconds));
+      if (visibleFrom.isAfter(now) &&
+          (next == null || visibleFrom.isBefore(next))) {
+        next = visibleFrom;
+      }
+    }
+    return next;
+  }
+
+  /// Whether the contact has been in [listId] for at least [delaySeconds]
+  /// (`embedSettings.trigger.after`), counted from that list's
+  /// `listMemberships.createdDate` in the `contacts/tracking` response.
+  ///
+  /// A list with no membership date counts as joined long ago, so a server
+  /// that does not send `listMemberships` keeps the old behaviour.
+  bool _segmentDelayPassed(String listId, int delaySeconds) {
+    if (delaySeconds <= 0) return true;
+    final DateTime? joinedDate =
+        DataManager().getListMembershipJoinedDate(listId);
+    if (joinedDate == null) return true;
+    final DateTime visibleFrom =
+        joinedDate.add(Duration(seconds: delaySeconds));
+    return !DateTime.now().isBefore(visibleFrom);
+  }
+
   Future<bool> checkValidation(String token) async {
     await DataManager().refreshToken(token);
     bool widgetActive = DataManager().isWidgetActive();
@@ -277,13 +320,7 @@ class ZFSurvey implements ApiResponseCallbacks {
     if (!_initialized || _surveyPending) return;
     _surveyPending = true;
     try {
-      // A survey already waiting out its on-page delay is resumed rather than
-      // re-evaluated, so repeated calls cannot push its deadline back.
-      if (_pendingSurvey.hasPending) {
-        await _pendingSurvey.resume(_multipleTokens);
-      } else {
-        await _startSurvey();
-      }
+      await _startSurvey();
     } finally {
       _surveyPending = false;
     }
@@ -291,6 +328,9 @@ class ZFSurvey implements ApiResponseCallbacks {
 
   Future<void> _startSurvey() async {
     if (_multipleTokens.isEmpty) return;
+    // Every run decides afresh whether a delayed segment is still waiting.
+    _cancelSegmentTimer();
+    _segmentDueAt = null;
     await userInfo(customAttributehashMap ?? {}, _multipleTokens.first);
 
     // All tokens are validated in one validateCodes request. If it fails
@@ -308,6 +348,7 @@ class ZFSurvey implements ApiResponseCallbacks {
     // request carries the companyId that token's validation just saved.
     bool contactCreated = false;
     bool checkValidationValue = false;
+    DateTime? segmentDueAt;
     for (final String token in _multipleTokens) {
       final TokenValidation? result = resultByToken[token];
       if (result == null || !result.valid) {
@@ -320,6 +361,7 @@ class ZFSurvey implements ApiResponseCallbacks {
         await _createContact(token);
         contactCreated = true;
       }
+      if (widgetActive) SegmentDebugLogger.logSegmentTiming(token);
       checkValidationValue = widgetActive && checkSegmenting();
       if (kDebugMode) {
         debugPrint('[ZF-SEG] token=$token -> widgetActive=$widgetActive'
@@ -331,6 +373,20 @@ class ZFSurvey implements ApiResponseCallbacks {
         SessionService().sessionStarted();
         break;
       }
+      if (widgetActive) {
+        final DateTime? dueAt = nextSegmentVisibleAt();
+        if (dueAt != null &&
+            (segmentDueAt == null || dueAt.isBefore(segmentDueAt))) {
+          segmentDueAt = dueAt;
+        }
+      }
+    }
+
+    // Not eligible yet, but a segment becomes visible later: show the survey
+    // then if the user is still in the app.
+    if (!checkValidationValue && segmentDueAt != null) {
+      _segmentDueAt = segmentDueAt;
+      _armSegmentTimer();
     }
 
     // No widget was active: still record the visit once, as every run did
@@ -340,17 +396,34 @@ class ZFSurvey implements ApiResponseCallbacks {
     }
 
     if (checkValidationValue) {
-      final int pageDelay = DataManager().getPageDelay();
-      if (pageDelay > 0) {
-        await _pendingSurvey.start(
-            _survey.getSurveyToken(), Duration(seconds: pageDelay));
-        return;
-      }
-
       final BuildContext? context = _activeContext();
       if (context == null || !context.mounted) return;
       await _showSurvey(context);
     }
+  }
+
+  /// Arms [_segmentTimer] for the time left until [_segmentDueAt]. A deadline
+  /// that passed while the app was in the background fires straight away.
+  void _armSegmentTimer() {
+    _cancelSegmentTimer();
+    final DateTime? dueAt = _segmentDueAt;
+    if (dueAt == null) return;
+    Duration remaining = dueAt.difference(DateTime.now());
+    if (remaining.isNegative) remaining = Duration.zero;
+    if (kDebugMode) {
+      debugPrint('[ZF-SEG] segment visible at $dueAt, firing in $remaining');
+    }
+    // A second of slack so the run that fires sees the deadline as passed.
+    _segmentTimer = Timer(remaining + const Duration(seconds: 1), () {
+      _segmentTimer = null;
+      startSurvey();
+    });
+  }
+
+  /// Stops the timer only; [_segmentDueAt] is kept so it can be re-armed.
+  void _cancelSegmentTimer() {
+    _segmentTimer?.cancel();
+    _segmentTimer = null;
   }
 
   /// A context that can show the survey: the [init] context while its screen
@@ -405,8 +478,8 @@ class ZFSurvey implements ApiResponseCallbacks {
     // Handle specific states
     switch (state) {
       case AppLifecycleState.resumed:
-        // Re-arm, or show if it fell due while the app was in the background.
-        if (_initialized && _pendingSurvey.hasPending) startSurvey();
+        // The survey only fires while the app is in use.
+        if (_initialized && _segmentDueAt != null) _armSegmentTimer();
         SessionService().sessionStarted();
         SessionService().sessionListPrint();
         // App is visible and in the foreground
@@ -419,21 +492,20 @@ class ZFSurvey implements ApiResponseCallbacks {
         break;
 
       case AppLifecycleState.paused:
-        // Only the timer stops; the persisted deadline keeps running and is
-        // honoured on resume.
-        _pendingSurvey.cancelTimer();
+        _cancelSegmentTimer();
         SessionService().sessionEnded();
         SessionService().sessionListPrint();
         break;
 
       case AppLifecycleState.detached:
-        _pendingSurvey.cancelTimer();
+        _cancelSegmentTimer();
         SessionService().sessionEnded();
         SessionService().sessionListPrint();
         // Perform cleanup actions like closing database connections or saving state
         break;
       case AppLifecycleState.hidden:
-        _pendingSurvey.cancelTimer();
+        _cancelSegmentTimer();
+        break;
     }
   }
 
@@ -445,8 +517,9 @@ class ZFSurvey implements ApiResponseCallbacks {
   }
 
   void clear() {
-    _pendingSurvey.cancelTimer();
-    // Clear preferences (this includes any pending survey)
+    _cancelSegmentTimer();
+    _segmentDueAt = null;
+    // Clear preferences
     DataManager().clearPreference();
     SessionService().clearSession();
     // Save updated data

@@ -14,7 +14,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // Shared with the SDK so a delayed survey can find a live screen to open on.
+  // Shared with the SDK so a survey can open after the init screen has closed.
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
@@ -40,7 +40,7 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
   @override
   void initState() {
     ZFSurvey().init(
-        token: ['V13Flt', '8xD7eH'],
+        token: ['4zQ6Zd', ],
         zfRegion: 'US',
         context: context,
         navigatorKey: widget.navigatorKey,
@@ -78,9 +78,9 @@ class _ZonkaFeedBackSurveyState extends State<ZonkaFeedBackSurvey>
             child: ElevatedButton(
               onPressed: () {
                 Map<String, dynamic> properties = {
-                  'contact_name': 'Robin James',
-                  'contact_email': 'manavgarg@example.com',
-                  'contact_uniqueId': 'fhebfkebd',
+             
+                  'contact_email': 'manavgarg272@gmail.com',
+
                 };
                 ZFSurvey()
                     .sendDeviceDetails(true)

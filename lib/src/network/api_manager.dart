@@ -64,6 +64,8 @@ class ApiManager {
   }
 
   static String _getBaseUrl({required bool forContactTracking}) {
+    if (Constant.IS_NIGHTLY) return Constant.NIGHTLY_API_URL;
+
     String zfRegion = DataManager().getRegion();
 
     if (zfRegion.toUpperCase() == 'EU') {
@@ -79,9 +81,6 @@ class ApiManager {
           ? 'https://us1.apis.zonkafeedback.com/'
           : "${Constant.HTTPS}us1${Constant.RETROFIT_URL}";
     }
-
-    // return "https://us1.zonkasurvey.com/api/v1/";
-
   }
 
   Dio _getContactTrackingClient() {
@@ -105,7 +104,7 @@ class ApiManager {
   Future<List<TokenValidation>> validateTokens(List<String> tokens) async {
     final dioClient = _getApiServerClient();
     Response value = await dioClient.post(
-      'distribution/validateCodes',
+      Constant.VALIDATE_CODES_ENDPOINT,
       data: {'tokens': tokens},
     );
     final List<dynamic> results = value.data['data']['results'] as List;
@@ -119,7 +118,7 @@ class ApiManager {
     final dioClient = _getContactTrackingClient();
 
     Response value = await dioClient.post(
-      'contacts/tracking',
+      Constant.CONTACT_TRACKING_ENDPOINT,
       data: data,
     );
 
@@ -134,7 +133,7 @@ class ApiManager {
   Future<Response> sendEventToServer(Map<String, dynamic> eventRequest) async {
     final dioClient = _getApiServerClient();
     return await dioClient.post(
-      'surveys/logInteraction',
+      Constant.LOG_INTERACTION_ENDPOINT,
       data: eventRequest,
     );
   }

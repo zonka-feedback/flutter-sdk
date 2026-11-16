@@ -148,51 +148,40 @@ ZFSurvey().startSurvey();
 
 ---
 
-## On-Page Delay
+## Segment Delay
 
-The survey can wait a number of seconds before appearing. This is configured
-per distribution in the Zonka Feedback dashboard under **In-App SDK →
-Configuration → On page delay**, and is delivered to the SDK as
-`embedSettings.trigger.after`. There is no code parameter — the SDK reads
-whatever the dashboard is set to.
+A survey targeted at a segment can wait until the contact has been in that
+segment for a number of seconds. This is configured per distribution in the
+Zonka Feedback dashboard under **In-App SDK → Configuration → On page delay**,
+and is delivered to the SDK as `embedSettings.trigger.after`. There is no code
+parameter — the SDK reads whatever the dashboard is set to.
 
-A distribution saved before this setting existed has no delay and shows the
-survey immediately, as before.
+The delay is counted from the contact's membership of the segment, not from
+when `startSurvey()` is called. `contacts/tracking` returns when the contact's
+membership of each list last changed:
 
-**The delay keeps running in the background.** When the survey qualifies, the
-SDK saves the time it is due. Locking the phone, switching apps, taking a call,
-or even the app being killed does not reset or cancel it. Time spent in the
-background counts toward the delay. If the survey falls due while the app is
-in the background, it is shown as soon as the user returns. After a restart
-it is picked up by `init()`, so call `init()` when the app launches. Calling `startSurvey()` again while a survey is
-waiting does not restart its delay.
-
-Just before showing, the SDK checks again that the widget is still active and
-the contact is still in the targeted segments. If not, the survey is dropped.
-If that check cannot reach the server, the survey stays pending and is tried
-again on the next resume.
-
-Long delays usually outlast the screen that called `init`. Pass your app's
-navigator key so the survey can be shown on whichever screen is open when it
-falls due:
-
-```dart
-final navigatorKey = GlobalKey<NavigatorState>();
-
-MaterialApp(navigatorKey: navigatorKey, ...);
-
-ZFSurvey().init(
-  token: ['{{SDK_TOKEN}}'],
-  zfRegion: '{{REGION}}',
-  context: context,
-  navigatorKey: navigatorKey,
-);
+```json
+"lists": ["6afaa179b78b00e6a253da0f"],
+"listMemberships": {
+  "6afaa179b78b00e6a253da0f": {
+    "createdDate": "2026-11-16T06:32:05.226Z",
+    "modifiedDate": "2026-11-16T06:32:05.226Z"
+  }
+}
 ```
 
-Without it, a survey whose screen has closed stays pending until a mounted
-context is available.
+An included segment only counts once `modifiedDate + delay` has passed. If
+`startSurvey()` runs before then, the survey is not shown yet; instead the SDK
+waits until that time and shows it automatically if the user is still in the
+app. For example, with a 30 minute delay, a contact who joined the segment 10
+minutes ago sees the survey 20 minutes later without another `startSurvey()`
+call. If the contact is in several included segments, the earliest one decides.
 
-For the delay to be resumed, the host app must forward lifecycle events:
+The wait only runs while the app is in the foreground. If the time passes while
+the app is in the background, the survey is shown as soon as the user returns.
+Each `startSurvey()` call re-fetches the contact and recalculates the time, and
+`clear()` cancels it. For this to work the host app must forward lifecycle
+events:
 
 ```dart
 @override
@@ -201,6 +190,12 @@ void didChangeAppLifecycleState(AppLifecycleState state) {
   super.didChangeAppLifecycleState(state);
 }
 ```
+
+- Excluded segments apply immediately; the delay does not hold them back.
+- A distribution with no segment restriction (or include type `all`) shows the
+  survey straight away.
+- A list with no entry in `listMemberships` is not delayed.
+- A distribution with no delay shows the survey immediately, as before.
 
 ---
 
