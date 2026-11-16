@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:zonkafeedback_sdk/src/session_database/sessions.dart';
 import 'package:zonkafeedback_sdk/src/sharedpreference/preference_manager.dart';
 import 'package:zonkafeedback_sdk/src/utils/app_util.dart';
@@ -59,7 +58,6 @@ class DataManager {
     try {
       return await _apiManager.validateTokens(tokens);
     } catch (e) {
-      if (kDebugMode) debugPrint('[ZF-SEG] validateCodes failed: $e');
       return null;
     }
   }
@@ -185,13 +183,6 @@ class DataManager {
 
     ContactResponse contactResponse =
         await ApiManager().hitCreateContactApiDynamic(hashMapData);
-
-    if (kDebugMode) {
-      debugPrint('[ZF-SEG] contact token=$token'
-          ' id=${contactResponse.data?.contactInfo?.id}'
-          ' lists=${contactResponse.data?.contactInfo?.lists}'
-          ' memberships=${contactResponse.data?.contactInfo?.listMemberships?.map((k, v) => MapEntry(k, v.createdDate))}');
-    }
 
     if (contactResponse.data != null) {
       if (contactResponse.data?.contactInfo != null) {

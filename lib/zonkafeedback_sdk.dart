@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:zonkafeedback_sdk/src/constant.dart';
 import 'package:zonkafeedback_sdk/src/data_manager.dart';
-import 'package:zonkafeedback_sdk/src/debug/segment_debug_logger.dart';
 import 'package:zonkafeedback_sdk/src/model/token_validation.dart';
 import 'package:zonkafeedback_sdk/src/network/api_response_callback.dart';
 import 'package:zonkafeedback_sdk/src/session_database/session_service.dart';
@@ -308,11 +307,6 @@ class ZFSurvey implements ApiResponseCallbacks {
     await DataManager().refreshToken(token);
     bool widgetActive = DataManager().isWidgetActive();
     bool segmentAllowed = checkSegmenting();
-    if (kDebugMode) {
-      debugPrint('[ZF-SEG] token=$token -> widgetActive=$widgetActive'
-          ' segmentAllowed=$segmentAllowed'
-          ' valid=${widgetActive && segmentAllowed}');
-    }
     return (widgetActive && segmentAllowed);
   }
 
@@ -352,7 +346,6 @@ class ZFSurvey implements ApiResponseCallbacks {
     for (final String token in _multipleTokens) {
       final TokenValidation? result = resultByToken[token];
       if (result == null || !result.valid) {
-        if (kDebugMode) debugPrint('[ZF-SEG] token=$token -> valid=false');
         continue;
       }
       await DataManager().applyValidDistribution(result.distributionInfo);
@@ -361,12 +354,7 @@ class ZFSurvey implements ApiResponseCallbacks {
         await _createContact(token);
         contactCreated = true;
       }
-      if (widgetActive) SegmentDebugLogger.logSegmentTiming(token);
       checkValidationValue = widgetActive && checkSegmenting();
-      if (kDebugMode) {
-        debugPrint('[ZF-SEG] token=$token -> widgetActive=$widgetActive'
-            ' valid=$checkValidationValue');
-      }
       if (checkValidationValue) {
         _survey = Survey(token, _regionValue);
         await SessionService().syncSessionServer(token);
@@ -410,9 +398,6 @@ class ZFSurvey implements ApiResponseCallbacks {
     if (dueAt == null) return;
     Duration remaining = dueAt.difference(DateTime.now());
     if (remaining.isNegative) remaining = Duration.zero;
-    if (kDebugMode) {
-      debugPrint('[ZF-SEG] segment visible at $dueAt, firing in $remaining');
-    }
     // A second of slack so the run that fires sees the deadline as passed.
     _segmentTimer = Timer(remaining + const Duration(seconds: 1), () {
       _segmentTimer = null;
